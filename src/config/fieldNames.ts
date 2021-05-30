@@ -53,6 +53,8 @@ export default {
         domainSuffix: '@jello.com',
         userName: 'userName',
         uniqeFieldForDeepDiff: 'tz',
+        birthdate: 'birthday',
+        sex: 'sex',
     },
     ads_name: {
         firstName: 'KfirstName',

@@ -1,77 +1,62 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-case-declarations */
 /* eslint-disable array-callback-return */
 import fieldNames from '../../config/fieldNames';
+import * as basicFunctions from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.sf];
+
+const setSex = (matchedRecord: any, value: string): void => {
+    const sfSex: string[] = Object.keys(fn.sfSexValues);
+    matchedRecord.sex = value === sfSex[0] ? fn.sfSexValues[sfSex[0]] : fn.sfSexValues[sfSex[1]];
+};
+
+const setEntityType = (matchedRecord: any, value: string): void => {
+    if (value === fn.s) {
+        matchedRecord.entityType = fieldNames.entityTypeValue.s;
+    } else {
+        // send log
+    }
+};
+
+const setHierarchy = (matchedRecord: any, value: string[] | string): void => {
+    matchedRecord.hierarchy = typeof value === 'string' ? value : value.join('/');
+};
+
+const funcMap = new Map([
+    [fn.firstName, basicFunctions.setFirstName],
+    [fn.lastName, basicFunctions.setLastName],
+    [fn.rank, basicFunctions.setRank],
+    [fn.sex, setSex],
+    [fn.personalNumber, basicFunctions.setPersonalNumber],
+    [fn.identityCard, basicFunctions.setIdentityCard],
+    [fn.dischargeDay, basicFunctions.setDischargeDay],
+    [fn.entityType, setEntityType],
+    [fn.serviceType, basicFunctions.setServiceType],
+    [fn.mail, basicFunctions.setMail],
+    [fn.hierarchy, setHierarchy],
+    [fn.userName, basicFunctions.setUserID],
+]);
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
     const matchedRecord: any = {};
-    keys.map((key) => {
-        switch (key) {
-            // Identity card
-            case fn.identityCard:
-                matchedRecord.identityCard = record[key];
-                break;
 
-            // Personal number
-            case fn.personalNumber:
-                matchedRecord.personalNumber = record[key];
-                break;
-
-            // firstName
-            case fn.firstName:
-                matchedRecord.firstName = record[key];
-                break;
-
-            // lastName
-            case fn.lastName:
-                matchedRecord.lastName = record[key];
-                break;
-
-            // sex
-            case fn.sex:
-                const sfSex: string[] = Object.keys(fn.sfSexValues);
-                matchedRecord.sex = record[key] === sfSex[0] ? fn.sfSexValues[sfSex[0]] : fn.sfSexValues[sfSex[1]];
-                break;
-
-            // mail
-            case fn.mail:
-                matchedRecord.mail = record[key];
-                break;
-
-            // hierarchy
-            case fn.hierarchy:
-                matchedRecord.hierarchy = record[key].join('/');
-                break;
-
-            // rank
-            case fn.rank:
-                matchedRecord.rank = record[key];
-                break;
-
-            // entityType
-            case fn.entityType:
-                if (record[key] === fn.s) {
-                    matchedRecord.entityType = fieldNames.entityTypeValue.s;
-                } else {
-                    // send log
-                }
-                break;
-
-            // discharge day
-            case fn.dischargeDay:
-                const date: Date | null = record[key] ? new Date(record[key]) : null;
-                if (date) {
-                    const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
-                    matchedRecord.dischargeDay = date ? new Date(date.getTime() - userTimezoneOffset).toISOString() : null;
-                }
-                break;
-
-            default:
-            // do nothing
+    keys.map((key: string) => {
+        if (funcMap.has(key)) {
+            if (key === fn.hierarchy) {
+                funcMap.get(key)(matchedRecord, record[key]);
+            } else if (key === fn.entityType) {
+                funcMap.get(key)(matchedRecord, record[key]);
+            } else if (key === fn.sex) {
+                funcMap.get(key)(matchedRecord, record[key]);
+            } else {
+                funcMap.get(key)(matchedRecord, record[key]);
+            }
         }
     });
+
+    matchedRecord.source = fieldNames.dataSources.sf;
 
     return matchedRecord;
 };

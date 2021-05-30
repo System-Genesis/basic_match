@@ -6,27 +6,6 @@ import * as basicFunctions from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.aka];
 
-const aka = {
-    serviceType: 'nstype',
-    firstName: 'firstName',
-    lastName: 'lastName',
-    identityCard: 'tz',
-    personalNumber: 'mi',
-    rank: 'rnk',
-    phone: 'telephone',
-    areaCode: 'ktelephone',
-    mobilePhone: 'telephone',
-    areaCodeMobile: 'ktelephone',
-    dischargeDay: 'rld',
-    clearance: 'clearance',
-    unitName: 'hr',
-    telephoneType: 'telephoneType',
-    uniqeFieldForDeepDiff: 'mi',
-    birthDate: 'birthday',
-    sex: 'sex',
-    picture: 'picture',
-};
-
 const funcMap = new Map([
     [fn.firstName, basicFunctions.setFirstName],
     [fn.lastName, basicFunctions.setLastName],
@@ -36,11 +15,22 @@ const funcMap = new Map([
     [fn.personalNumber, basicFunctions.setPersonalNumber],
     [fn.identityCard, basicFunctions.setIdentityCard],
     [fn.dischargeDay, basicFunctions.setDischargeDay],
+    [fn.unitName, basicFunctions.setAkaUnit],
+    [fn.serviceType, basicFunctions.setServiceType],
+    [fn.mobilePhone, basicFunctions.setMobilePhone],
+    [fn.phone, basicFunctions.setPhone],
+    [fn.birthDate, basicFunctions.setBirthdate],
 ]);
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
     const matchedRecord: any = {};
+
+    keys.map((key: string) => {
+        if (funcMap.has(key)) {
+            funcMap.get(key)(matchedRecord, record[key]);
+        }
+    });
 
     return matchedRecord;
 };

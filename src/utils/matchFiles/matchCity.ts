@@ -1,115 +1,157 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-case-declarations */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-expressions */
 import fieldNames from '../../config/fieldNames';
-import validators from '../../config/validators';
+import * as basicFunctions from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.city];
+
+const isNumeric = (value: number | string) => {
+    return !isNaN(parseInt(value.toString(), 10));
+};
+
+const isStrContains = (target: string, pattern: string[]): boolean => {
+    let value = 0;
+
+    pattern.forEach((word) => {
+        value += target.includes(word) ? 1 : 0;
+    });
+
+    return value > 0;
+};
+
+const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void => {
+    const defaultHierarchy = `${fn.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
+    let tempHr: string = hierarchy.replace('\\', '/');
+    if (tempHr.includes('/')) {
+        const hr: string[] = tempHr.split('/').map((unit) => unit.trim());
+
+        const fullNameRegex = new RegExp(
+            `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
+        );
+        // eslint-disable-next-line prefer-const
+        for (let [index, value] of hr.entries()) {
+            value = value.replace('(', '').replace(')', '');
+            if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
+                hr.splice(index);
+                break;
+            }
+        }
+
+        // this condition come to fix insertion of "defaultHierarchy" to user that come from our "enviroment" to
+        // city "enviroment" and than return to us from city API. Can delete this code after stable the specific problem
+        // of "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
+        if (hr[0] === fn.rootHierarchy.city) {
+            let tempCityCount = 0;
+            for (const value of hr) {
+                if (value === fn.rootHierarchy.city) {
+                    tempCityCount += 1;
+                } else {
+                    break;
+                }
+            }
+            hr.splice(0, tempCityCount - 1);
+        }
+
+        tempHr = hr.join('/');
+    }
+
+    // this condition come to avoid insertion of "defaultHierarchy" to user that come from our "enviroment" to
+    // city "enviroment" and than return to us from city API\
+    if (tempHr.includes(fn.rootHierarchy.city)) {
+        if (tempHr.includes(defaultHierarchy)) {
+            matchedRecord.hierarchy = tempHr;
+        } else if (tempHr.startsWith(fn.rootHierarchy.city)) {
+            matchedRecord.hierarchy = tempHr.replace(fn.rootHierarchy.city, defaultHierarchy);
+        }
+    } else {
+        const isInternal: boolean = record.domains.includes('CTS');
+        // Keep the internal hierarchy of internal du
+        matchedRecord.hierarchy = `${isInternal ? '' : defaultHierarchy}${tempHr.includes('/') ? `/${tempHr}` : ''}`;
+        if (matchedRecord.hierarchy[0] === '/') {
+            matchedRecord.hierarchy = matchedRecord.hierarchy.substring(1);
+        }
+    }
+};
+
+const setEntityTypeAndDU = (matchedRecord: any, userID: string, record: any): void => {
+    let rawEntityType: string = '';
+    let defaultIdentifier: string = '';
+
+    for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
+        // check if the userID is valid
+        if ((index === 0 && isNumeric(char)) || (index === 1 && !isNumeric(char))) {
+            return;
+        }
+        // get the entity type key
+        if (index === 0) {
+            rawEntityType = char;
+        } else if (!isNumeric(char)) {
+            // get the identifier
+            defaultIdentifier = userID.substring(1, index);
+            break;
+        }
+    }
+
+    // Set the userID
+    matchedRecord.userID = userID;
+
+    // set the entityType
+    if (fn.entityTypePrefix.s.includes(rawEntityType)) {
+        matchedRecord.entityType = fieldNames.entityTypeValue.s;
+    } else if (fn.entityTypePrefix.c.includes(rawEntityType)) {
+        matchedRecord.entityType = fieldNames.entityTypeValue.c;
+    } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
+        matchedRecord.entityType = fieldNames.entityTypeValue.gu;
+    } else {
+        // TO DO
+        // log error entity type
+    }
+
+    // Set personal number for soldier - if already has, don't over write
+    if (matchedRecord.entityType === fn.entityTypePrefix.s && !record.personalNumber) {
+        matchedRecord.personalNumber = defaultIdentifier;
+    }
+};
+
+const funcMap = new Map([
+    [fn.firstName, basicFunctions.setFirstName],
+    [fn.lastName, basicFunctions.setLastName],
+    [fn.rank, basicFunctions.setRank],
+    [fn.clearance, basicFunctions.setClearance],
+    [fn.personalNumber, basicFunctions.setPersonalNumber],
+    [fn.identityCard, basicFunctions.setIdentityCard],
+    [fn.dischargeDay, basicFunctions.setDischargeDay],
+    [fn.currentUnit, basicFunctions.setAkaUnit],
+    [fn.serviceType, basicFunctions.setServiceType],
+    [fn.mobilePhone, basicFunctions.setMobilePhone],
+    [fn.mail, basicFunctions.setMail],
+    [fn.profession, basicFunctions.setJob],
+    [fn.job, basicFunctions.setJob],
+    [fn.hierarchy, setHierarchy],
+    [fn.domains, setEntityTypeAndDU],
+]);
 
 export default (record: any, runUID: string) => {
     const keys: string[] = record.keys(record);
     const matchedRecord: any = {};
-    keys.map((key) => {
-        switch (key) {
-            // Identity card
-            case fn.identityCard:
-                validators(record[key]).identityCard ? (matchedRecord.identityCard = record[key].toString()) : null;
-                break;
 
-            // Personal number
-            case fn.personalNumber:
-                matchedRecord.personalNumber = record[key];
-                break;
-
-            // firstName
-            case fn.firstName:
-                matchedRecord.firstName = record[key];
-                break;
-
-            // lastName
-            case fn.lastName:
-                matchedRecord.lastName = record[key];
-                break;
-
-            // rank
-            case fn.rank:
-                matchedRecord.rank = record[key];
-                break;
-
-            // dischargeDay
-            case fn.dischargeDay:
-                const date: Date | null = record[key] ? new Date(record[key]) : null;
-                if (date) {
-                    const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
-                    matchedRecord.dischargeDay = date ? new Date(date.getTime() - userTimezoneOffset).toISOString() : null;
-                }
-                break;
-
-            // clearance
-            case fn.clearance:
-                matchedRecord.clearance = record[key];
-                break;
-
-            // currentUnit
-            case fn.currentUnit:
-                matchedRecord.unitName = record[key].toString().replace(new RegExp('"', 'g'), ' ');
-                break;
-
-            // serviceType
-            case fn.serviceType:
-                matchedRecord.serviceType = record[key];
-                break;
-
-            // mobilePhone
-            case fn.mobilePhone:
-                validators().mobilePhone.test(record[key]) ? (matchedRecord.mobilePhone = [record[key]]) : null;
-                break;
-
-            // mail
-            case fn.mail:
-                matchedRecord.mail = record[key];
-                break;
-            // job
-
-            case fn.profession:
-            case fn.job:
-                if (!record.job) {
-                    matchedRecord.job = record[fn.job] || record[fn.profession];
-                }
-                break;
-
-            // hierarchy
-            case fn.hierarchy:
-                matchedRecord.hierarchy = record[key];
-                break;
-
-            // Entity type, userID and
-            case fn.domainUsers:
-                // Set the userID
-                matchedRecord.userID = record[key];
-                const entityTypeChar: string = record[key][0];
-                // set the entityType
-                if (fn.entityTypePrefix.s.includes(entityTypeChar)) {
-                    matchedRecord.entityType = fn.entityTypePrefix.s;
-                } else if (fn.entityTypePrefix.c.includes(entityTypeChar)) {
-                    matchedRecord.entityType = fn.entityTypePrefix.c;
-                } else if (fn.entityTypePrefix.gu.includes(entityTypeChar)) {
-                    matchedRecord.entityType = fn.entityTypePrefix.gu;
-                } else {
-                    // TO DO
-                    // log error entity type
-                }
-
-                // Set identity card or personal number - if already has don't over write
-                if (matchedRecord.entityType === fn.entityTypePrefix.s && !record.personalNumber) {
-                    const defaultIdentifier: string = record[key].split('@').substring(1);
-                    matchedRecord.personalNumber = defaultIdentifier;
-                }
-                break;
-            default:
-            // do nothing
+    keys.map((key: string) => {
+        if (funcMap.has(key)) {
+            if (key === fn.hierarchy) {
+                funcMap.get(key)(matchedRecord, record[key], record);
+            } else if (key === fn.domainUsers) {
+                funcMap.get(key)(matchedRecord, record[key], record);
+            } else {
+                funcMap.get(key)(matchedRecord, record[key]);
+            }
         }
     });
+
+    matchedRecord.source = record[fn.domains].includes(fn.dataSource.city) ? fn.dataSource.city : fn.dataSource.mir;
 
     return matchedRecord;
 };

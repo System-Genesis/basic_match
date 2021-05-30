@@ -15,16 +15,17 @@ interface queueObject {
 
 const matchMap = new Map([
     [fn.dataSources.aka, matchAka],
-    [fn.dataSources.sf, matchEs],
+    [fn.dataSources.es, matchEs],
     [fn.dataSources.adNN, matchAdNN],
     [fn.dataSources.city, matchCity],
-    [fn.dataSources.ads, matchAds],
     [fn.dataSources.sf, matchSf],
-    [fn.dataSources.nvSQL, matchNV],
 ]);
 
 export default (obj: queueObject) => {
     const { record, dataSource, runUID } = obj;
-    const matchedRecord = matchMap.get(dataSource)(record, runUID);
+    let matchedRecord: any;
+    if (matchMap.has(dataSource)) {
+        matchedRecord = matchMap.get(dataSource)(record, runUID);
+    }
     return matchedRecord;
 };
