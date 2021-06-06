@@ -5,9 +5,10 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-expressions */
 import fieldNames from '../../config/fieldNames';
-import * as basicFunctions from './basicFuncs';
+import { setDischargeDay, setField, setIdentityCard, setMobilePhone } from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.city];
+const macthedRecordFN = fieldNames.matchedRecord;
 
 const isNumeric = (value: number | string) => {
     return !isNaN(parseInt(value.toString(), 10));
@@ -24,7 +25,7 @@ const isStrContains = (target: string, pattern: string[]): boolean => {
 };
 
 const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void => {
-    const defaultHierarchy = `${fn.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
+    const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
     let tempHr: string = hierarchy.replace('\\', '/');
     if (tempHr.includes('/')) {
         const hr: string[] = tempHr.split('/').map((unit) => unit.trim());
@@ -42,33 +43,21 @@ const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void 
         }
 
         // this condition come to fix insertion of "defaultHierarchy" to user that come from our "enviroment" to
-        // city "enviroment" and than return to us from city API. Can delete this code after stable the specific problem
-        // of "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
-        if (hr[0] === fn.rootHierarchy.city) {
-            let tempCityCount = 0;
-            for (const value of hr) {
-                if (value === fn.rootHierarchy.city) {
-                    tempCityCount += 1;
-                } else {
-                    break;
-                }
-            }
-            hr.splice(0, tempCityCount - 1);
-        }
-
-        tempHr = hr.join('/');
+        // city "enviroment" and than return to us from city API.
+        // Prevent "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
+        tempHr = hr.join('/').substring(hr.join('/').lastIndexOf(fieldNames.rootHierarchy.city));
     }
 
     // this condition come to avoid insertion of "defaultHierarchy" to user that come from our "enviroment" to
-    // city "enviroment" and than return to us from city API\
-    if (tempHr.includes(fn.rootHierarchy.city)) {
+    // city "enviroment" and than return to us from city API
+    if (tempHr.includes(fieldNames.rootHierarchy.city)) {
         if (tempHr.includes(defaultHierarchy)) {
             matchedRecord.hierarchy = tempHr;
-        } else if (tempHr.startsWith(fn.rootHierarchy.city)) {
+        } else if (tempHr.startsWith(fieldNames.rootHierarchy.city)) {
             matchedRecord.hierarchy = tempHr.replace(fn.rootHierarchy.city, defaultHierarchy);
         }
     } else {
-        const isInternal: boolean = record.domains.includes('CTS');
+        const isInternal: boolean = record.domains.includes(fieldNames.city_name.domainNames.internal);
         // Keep the internal hierarchy of internal du
         matchedRecord.hierarchy = `${isInternal ? '' : defaultHierarchy}${tempHr.includes('/') ? `/${tempHr}` : ''}`;
         if (matchedRecord.hierarchy[0] === '/') {
@@ -77,9 +66,8 @@ const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void 
     }
 };
 
-const setEntityTypeAndDU = (matchedRecord: any, userID: string, record: any): void => {
+const setEntityTypeAndDU = (matchedRecord: any, userID: string): void => {
     let rawEntityType: string = '';
-    let defaultIdentifier: string = '';
 
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
         // check if the userID is valid
@@ -90,8 +78,6 @@ const setEntityTypeAndDU = (matchedRecord: any, userID: string, record: any): vo
         if (index === 0) {
             rawEntityType = char;
         } else if (!isNumeric(char)) {
-            // get the identifier
-            defaultIdentifier = userID.substring(1, index);
             break;
         }
     }
@@ -110,48 +96,57 @@ const setEntityTypeAndDU = (matchedRecord: any, userID: string, record: any): vo
         // TO DO
         // log error entity type
     }
+};
 
-    // Set personal number for soldier - if already has, don't over write
-    if (matchedRecord.entityType === fn.entityTypePrefix.s && !record.personalNumber) {
-        matchedRecord.personalNumber = defaultIdentifier;
+// Give priority to job field
+const setJob = (matchedRecord: any, value: string, originFieldName: string): void => {
+    if (originFieldName === fn.profession) {
+        if (!matchedRecord[macthedRecordFN.job]) {
+            matchedRecord[macthedRecordFN.job] = value;
+        }
+    } else {
+        matchedRecord[macthedRecordFN.job] = value;
     }
 };
 
-const funcMap = new Map([
-    [fn.firstName, basicFunctions.setFirstName],
-    [fn.lastName, basicFunctions.setLastName],
-    [fn.rank, basicFunctions.setRank],
-    [fn.clearance, basicFunctions.setClearance],
-    [fn.personalNumber, basicFunctions.setPersonalNumber],
-    [fn.identityCard, basicFunctions.setIdentityCard],
-    [fn.dischargeDay, basicFunctions.setDischargeDay],
-    [fn.currentUnit, basicFunctions.setAkaUnit],
-    [fn.serviceType, basicFunctions.setServiceType],
-    [fn.mobilePhone, basicFunctions.setMobilePhone],
-    [fn.mail, basicFunctions.setMail],
-    [fn.profession, basicFunctions.setJob],
-    [fn.job, basicFunctions.setJob],
-    [fn.hierarchy, setHierarchy],
-    [fn.domains, setEntityTypeAndDU],
+const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
+    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
+    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.clearance)],
+    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.personalNumber)],
+    [fn.identityCard, setIdentityCard],
+    [fn.dischargeDay, setDischargeDay],
+    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.akaUnit)],
+    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
+    [fn.mobilePhone, setMobilePhone],
+    [fn.address, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.address)],
+    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
+    [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],
+    [fn.job, (matchedRecord, value) => setJob(matchedRecord, value, fn.job)],
 ]);
 
 export default (record: any, runUID: string) => {
-    const keys: string[] = record.keys(record);
+    const keys: string[] = Object.keys(record);
     const matchedRecord: any = {};
+    // eslint-disable-next-line no-console
+    console.log(runUID);
 
     keys.map((key: string) => {
-        if (funcMap.has(key)) {
-            if (key === fn.hierarchy) {
-                funcMap.get(key)(matchedRecord, record[key], record);
+        if (record[key] && record[key] !== 'לא ידוע') {
+            if (funcMap.has(key)) {
+                funcMap.get(key)!(matchedRecord, record[key]);
+            } else if (key === fn.hierarchy) {
+                setHierarchy(matchedRecord, record[key], record);
             } else if (key === fn.domainUsers) {
-                funcMap.get(key)(matchedRecord, record[key], record);
-            } else {
-                funcMap.get(key)(matchedRecord, record[key]);
+                setEntityTypeAndDU(matchedRecord, record[key]);
             }
         }
     });
 
-    matchedRecord.source = record[fn.domains].includes(fn.dataSource.city) ? fn.dataSource.city : fn.dataSource.mir;
+    matchedRecord[macthedRecordFN.source] = record[fn.domains].includes(fn.domainNames.external)
+        ? fieldNames.dataSources.city
+        : fieldNames.dataSources.mir;
 
     return matchedRecord;
 };

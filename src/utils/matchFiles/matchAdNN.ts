@@ -4,9 +4,10 @@
 /* eslint-disable no-case-declarations */
 import fieldNames from '../../config/fieldNames';
 import validators from '../../config/validators';
-import * as basicFunctions from './basicFuncs';
+import { setField } from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.adNN];
+const macthedRecordFN = fieldNames.matchedRecord;
 
 const setIdentifierDUAndEntityType = (matchedRecord: any, userID: string): void => {
     let uniqueNum: string;
@@ -38,7 +39,7 @@ const setHierarchyAndJob = (matchedRecord: any, hierarchy: string, record: any):
     if (hr[0] === '') {
         return;
     }
-    hr[0] === fn.rootHierarchy.ourCompany ? null : hr.unshift(fn.rootHierarchy.ourCompany);
+    hr[0] === fieldNames.rootHierarchy.ourCompany ? null : hr.unshift(fieldNames.rootHierarchy.ourCompany);
     hr = hr.map((organizationName) => {
         return organizationName.trim();
     });
@@ -65,31 +66,29 @@ const setHierarchyAndJob = (matchedRecord: any, hierarchy: string, record: any):
     }
 };
 
-const funcMap = new Map([
-    [fn.firstName, basicFunctions.setFirstName],
-    [fn.lastName, basicFunctions.setLastName],
-    [fn.mail, basicFunctions.setMail],
-    [fn.sAMAccountName, setIdentifierDUAndEntityType],
-    [fn.hierarchy, setHierarchyAndJob],
+const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
+    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
 ]);
 
 export default (record: any, runUID: string) => {
-    const keys: string[] = record.keys(record);
+    const keys: string[] = Object.keys(record);
     const matchedRecord: any = {};
 
     keys.map((key: string) => {
-        if (funcMap.has(key)) {
-            if (key === fn.hierarchy) {
-                funcMap.get(key)(matchedRecord, record[key], record);
+        if (record[key] && record[key] !== 'לא ידוע') {
+            if (funcMap.has(key)) {
+                funcMap.get(key)!(matchedRecord, record[key]);
+            } else if (key === fn.hierarchy) {
+                setHierarchyAndJob(matchedRecord, record[key], record);
             } else if (key === fn.sAMAccountName) {
-                funcMap.get(key)(matchedRecord, record[key]);
-            } else {
-                funcMap.get(key)(matchedRecord, record[key]);
+                setIdentifierDUAndEntityType(matchedRecord, record[key]);
             }
         }
     });
 
-    matchedRecord.source = fieldNames.dataSources.adNN;
+    matchedRecord[macthedRecordFN.source] = fieldNames.dataSources.adNN;
 
     return matchedRecord;
 };

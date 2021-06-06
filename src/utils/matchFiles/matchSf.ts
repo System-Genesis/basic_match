@@ -2,9 +2,10 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable array-callback-return */
 import fieldNames from '../../config/fieldNames';
-import * as basicFunctions from './basicFuncs';
+import { setField, setIdentityCard, setDischargeDay } from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.sf];
+const macthedRecordFN = fieldNames.matchedRecord;
 
 const setSex = (matchedRecord: any, value: string): void => {
     const sfSex: string[] = Object.keys(fn.sfSexValues);
@@ -23,19 +24,16 @@ const setHierarchy = (matchedRecord: any, value: string[] | string): void => {
     matchedRecord.hierarchy = typeof value === 'string' ? value : value.join('/');
 };
 
-const funcMap = new Map([
-    [fn.firstName, basicFunctions.setFirstName],
-    [fn.lastName, basicFunctions.setLastName],
-    [fn.rank, basicFunctions.setRank],
-    [fn.sex, setSex],
-    [fn.personalNumber, basicFunctions.setPersonalNumber],
-    [fn.identityCard, basicFunctions.setIdentityCard],
-    [fn.dischargeDay, basicFunctions.setDischargeDay],
-    [fn.entityType, setEntityType],
-    [fn.serviceType, basicFunctions.setServiceType],
-    [fn.mail, basicFunctions.setMail],
-    [fn.hierarchy, setHierarchy],
-    [fn.userName, basicFunctions.setUserID],
+const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
+    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
+    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.personalNumber)],
+    [fn.identityCard, setIdentityCard],
+    [fn.dischargeDay, setDischargeDay],
+    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
+    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
+    [fn.userName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.userID)],
 ]);
 
 export default (record: any, runUID: string) => {
@@ -43,20 +41,20 @@ export default (record: any, runUID: string) => {
     const matchedRecord: any = {};
 
     keys.map((key: string) => {
-        if (funcMap.has(key)) {
-            if (key === fn.hierarchy) {
-                funcMap.get(key)(matchedRecord, record[key]);
+        if (record[key] && record[key] !== 'לא ידוע') {
+            if (funcMap.has(key)) {
+                funcMap.get(key)!(matchedRecord, record[key]);
+            } else if (key === fn.hierarchy) {
+                setHierarchy(matchedRecord, record[key]);
             } else if (key === fn.entityType) {
-                funcMap.get(key)(matchedRecord, record[key]);
+                setEntityType(matchedRecord, record[key]);
             } else if (key === fn.sex) {
-                funcMap.get(key)(matchedRecord, record[key]);
-            } else {
-                funcMap.get(key)(matchedRecord, record[key]);
+                setSex(matchedRecord, record[key]);
             }
         }
     });
 
-    matchedRecord.source = fieldNames.dataSources.sf;
+    matchedRecord[macthedRecordFN.source] = fieldNames.dataSources.sf;
 
     return matchedRecord;
 };

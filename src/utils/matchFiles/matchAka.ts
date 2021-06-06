@@ -1,25 +1,34 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
 import fieldNames from '../../config/fieldNames';
-import * as basicFunctions from './basicFuncs';
+import { setField, setDischargeDay, setIdentityCard } from './basicFuncs';
+import validators from '../../config/validators';
 
 const fn = fieldNames[fieldNames.dataSources.aka];
+const macthedRecordFN = fieldNames.matchedRecord;
 
-const funcMap = new Map([
-    [fn.firstName, basicFunctions.setFirstName],
-    [fn.lastName, basicFunctions.setLastName],
-    [fn.rank, basicFunctions.setRank],
-    [fn.clearance, basicFunctions.setClearance],
-    [fn.sex, basicFunctions.setSex],
-    [fn.personalNumber, basicFunctions.setPersonalNumber],
-    [fn.identityCard, basicFunctions.setIdentityCard],
-    [fn.dischargeDay, basicFunctions.setDischargeDay],
-    [fn.unitName, basicFunctions.setAkaUnit],
-    [fn.serviceType, basicFunctions.setServiceType],
-    [fn.mobilePhone, basicFunctions.setMobilePhone],
-    [fn.phone, basicFunctions.setPhone],
-    [fn.birthDate, basicFunctions.setBirthdate],
+const setPhone = (matchedRecord: any, phone: string, areaCode: string) => {
+    validators().phone.test(`${areaCode}-${phone}`) ? (matchedRecord.phone = [`${areaCode}-${phone}`]) : null;
+};
+
+const setMobilePhone = (matchedRecord: any, mobilePhone: string, mobileAreaCode: string) => {
+    validators().mobilePhone.test(`${mobileAreaCode}-${mobilePhone}`) ? (matchedRecord.mobilePhone = [`${mobileAreaCode}-${mobilePhone}`]) : null;
+};
+
+const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
+    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
+    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.clearance)],
+    [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.sex)],
+    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.personalNumber)],
+    [fn.identityCard, setIdentityCard],
+    [fn.dischargeDay, setDischargeDay],
+    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.akaUnit)],
+    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
+    [fn.birthDate, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.birthDate)],
 ]);
 
 export default (record: any, runUID: string) => {
@@ -27,8 +36,14 @@ export default (record: any, runUID: string) => {
     const matchedRecord: any = {};
 
     keys.map((key: string) => {
-        if (funcMap.has(key)) {
-            funcMap.get(key)(matchedRecord, record[key]);
+        if (record[key] && record[key] !== 'לא ידוע') {
+            if (funcMap.has(key)) {
+                funcMap.get(key)!(matchedRecord, record[key]);
+            } else if (key === fn.mobilePhone && record[fn.areaCodeMobile]) {
+                setMobilePhone(matchedRecord, record[key], record[fn.areaCodeMobile]);
+            } else if (key === fn.phone && record[fn.areaCode]) {
+                setPhone(matchedRecord, record[key], record[fn.areaCode]);
+            }
         }
     });
 

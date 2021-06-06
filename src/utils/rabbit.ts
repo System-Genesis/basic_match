@@ -7,28 +7,32 @@ const { rabbit } = config;
 
 require('dotenv').config();
 
-interface queueObject {
+type queueObject = {
     record: any;
     dataSource: string;
     runUID: string;
-}
+};
 
 export default async () => {
     console.log('Trying connect to rabbit...');
 
     await menash.connect(rabbit.uri);
     await menash.declareQueue(rabbit.beforeMatch);
-    await menash.declareQueue(rabbit.afterMatch);
+    // await menash.declareQueue(rabbit.afterMatch);
 
     console.log('Rabbit connected');
 
-    await menash.queue('beforeMatch').activateConsumer(
+    await menash.queue(rabbit.beforeMatch).activateConsumer(
         async (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
 
+            console.log(obj);
+
             const matchedRecord: any = basicMatch(obj);
 
-            await menash.send('afterMatch', { record: matchedRecord, dataSource: obj.dataSource });
+            console.log(matchedRecord);
+
+            // await menash.send('afterMatch', { record: matchedRecord, dataSource: obj.dataSource });
 
             msg.ack();
         },
