@@ -1,15 +1,10 @@
-import matchAka from './matchAka';
-import matchEs from './matchEs';
-import matchAdNN from './matchAdNN';
-import matchCity from './matchCity';
-import matchSf from './matchSf';
-import fn from '../config/fieldNames';
-
-type queueObject = {
-    record: any;
-    dataSource: string;
-    runUID: string;
-};
+import matchAka from './matchFiles/matchAka';
+import matchEs from './matchFiles/matchEs';
+import matchAdNN from './matchFiles/matchAdNN';
+import matchCity from './matchFiles/matchCity';
+import matchSf from './matchFiles/matchSf';
+import fn from './config/fieldNames';
+import { queueObject } from './types/queueObject';
 
 const matchMap = new Map([
     [fn.dataSources.aka, matchAka],

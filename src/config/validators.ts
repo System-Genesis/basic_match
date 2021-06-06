@@ -5,7 +5,7 @@ export default () => {
     return {
         phone: /^\d{1,2}-?\d{6,7}$|^\*\d{3}$|^\d{4,5}$/,
         mobilePhone: /^\d{2,3}-?\d{7}$/,
-        identityCard: ((idNumber: string): string | boolean | void => {
+        identityCard: (idNumber: string): string | boolean | void => {
             idNumber = idNumber.toString();
             if (!idNumber.match(/^\d{5,9}$/g)) return false;
             // The number is too short - add leading zeroes
@@ -16,6 +16,6 @@ export default () => {
                 return (count += num > 9 ? num - 9 : num);
             }, 0);
             return accumulator % 10 === 0;
-        }),
+        },
     };
 };

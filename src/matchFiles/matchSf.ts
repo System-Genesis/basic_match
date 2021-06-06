@@ -34,6 +34,9 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
     [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
     [fn.userName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.userID)],
+    [fn.hierarchy, setHierarchy],
+    [fn.entityType, setEntityType],
+    [fn.sex, setSex],
 ]);
 
 export default (record: any, runUID: string) => {
@@ -44,12 +47,6 @@ export default (record: any, runUID: string) => {
         if (record[key] && record[key] !== 'לא ידוע') {
             if (funcMap.has(key)) {
                 funcMap.get(key)!(matchedRecord, record[key]);
-            } else if (key === fn.hierarchy) {
-                setHierarchy(matchedRecord, record[key]);
-            } else if (key === fn.entityType) {
-                setEntityType(matchedRecord, record[key]);
-            } else if (key === fn.sex) {
-                setSex(matchedRecord, record[key]);
             }
         }
     });

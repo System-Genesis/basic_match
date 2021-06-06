@@ -70,7 +70,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
-    [fn.sAMAccountName, setIdentifierDUAndEntityType]
+    [fn.sAMAccountName, setIdentifierDUAndEntityType],
 ]);
 
 export default (record: any, runUID: string) => {

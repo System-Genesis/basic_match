@@ -1,17 +1,12 @@
 /* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
-import basicMatch from './matchFiles/basicMatch';
+import basicMatch from './basicMatch';
 import config from './config/index';
+import { queueObject } from './types/queueObject';
 
 const { rabbit } = config;
 
 require('dotenv').config();
-
-type queueObject = {
-    record: any;
-    dataSource: string;
-    runUID: string;
-};
 
 export default async () => {
     console.log('Trying connect to rabbit...');
