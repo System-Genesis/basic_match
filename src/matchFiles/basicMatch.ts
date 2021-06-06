@@ -3,7 +3,7 @@ import matchEs from './matchEs';
 import matchAdNN from './matchAdNN';
 import matchCity from './matchCity';
 import matchSf from './matchSf';
-import fn from '../../config/fieldNames';
+import fn from '../config/fieldNames';
 
 type queueObject = {
     record: any;

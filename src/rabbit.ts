@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
 import basicMatch from './matchFiles/basicMatch';
-import config from '../config/index';
+import config from './config/index';
 
 const { rabbit } = config;
 

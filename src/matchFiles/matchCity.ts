@@ -4,25 +4,13 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-expressions */
-import fieldNames from '../../config/fieldNames';
+import fieldNames from '../config/fieldNames';
 import { setDischargeDay, setField, setIdentityCard, setMobilePhone } from './basicFuncs';
+import { isNumeric } from '../utils/isNumeric';
+import { isStrContains } from '../utils/isStrContains';
 
 const fn = fieldNames[fieldNames.dataSources.city];
 const macthedRecordFN = fieldNames.matchedRecord;
-
-const isNumeric = (value: number | string) => {
-    return !isNaN(parseInt(value.toString(), 10));
-};
-
-const isStrContains = (target: string, pattern: string[]): boolean => {
-    let value = 0;
-
-    pattern.forEach((word) => {
-        value += target.includes(word) ? 1 : 0;
-    });
-
-    return value > 0;
-};
 
 const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void => {
     const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
@@ -60,7 +48,7 @@ const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void 
         const isInternal: boolean = record.domains.includes(fieldNames.city_name.domainNames.internal);
         // Keep the internal hierarchy of internal du
         matchedRecord.hierarchy = `${isInternal ? '' : defaultHierarchy}${tempHr.includes('/') ? `/${tempHr}` : ''}`;
-        if (matchedRecord.hierarchy[0] === '/') {
+        if (matchedRecord.hierarchy.startsWith('/')) {
             matchedRecord.hierarchy = matchedRecord.hierarchy.substring(1);
         }
     }
@@ -124,6 +112,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
     [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],
     [fn.job, (matchedRecord, value) => setJob(matchedRecord, value, fn.job)],
+    [fn.domainUsers, setEntityTypeAndDU],
 ]);
 
 export default (record: any, runUID: string) => {
@@ -138,8 +127,6 @@ export default (record: any, runUID: string) => {
                 funcMap.get(key)!(matchedRecord, record[key]);
             } else if (key === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[key], record);
-            } else if (key === fn.domainUsers) {
-                setEntityTypeAndDU(matchedRecord, record[key]);
             }
         }
     });

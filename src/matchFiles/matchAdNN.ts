@@ -2,8 +2,8 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-case-declarations */
-import fieldNames from '../../config/fieldNames';
-import validators from '../../config/validators';
+import fieldNames from '../config/fieldNames';
+import validators from '../config/validators';
 import { setField } from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.adNN];
@@ -11,15 +11,15 @@ const macthedRecordFN = fieldNames.matchedRecord;
 
 const setIdentifierDUAndEntityType = (matchedRecord: any, userID: string): void => {
     let uniqueNum: string;
-    if (userID.toLowerCase().includes(fn.extension)) {
+    if (userID.toLowerCase().startsWith(fn.extension)) {
         uniqueNum = userID.toLowerCase().replace(fn.extension, '');
     } else {
         // send log
         return;
     }
 
-    if (validators(uniqueNum).identityCard) {
-        // if the unique number is identity Number so it's a civillian
+    if (validators().identityCard(uniqueNum)) {
+        // if the unique number is identity Number so it's a c
         matchedRecord.identityCard = uniqueNum.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else {
@@ -70,6 +70,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
+    [fn.sAMAccountName, setIdentifierDUAndEntityType]
 ]);
 
 export default (record: any, runUID: string) => {
@@ -82,8 +83,6 @@ export default (record: any, runUID: string) => {
                 funcMap.get(key)!(matchedRecord, record[key]);
             } else if (key === fn.hierarchy) {
                 setHierarchyAndJob(matchedRecord, record[key], record);
-            } else if (key === fn.sAMAccountName) {
-                setIdentifierDUAndEntityType(matchedRecord, record[key]);
             }
         }
     });

@@ -2,9 +2,9 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
-import fieldNames from '../../config/fieldNames';
+import fieldNames from '../config/fieldNames';
 import { setField, setDischargeDay, setIdentityCard } from './basicFuncs';
-import validators from '../../config/validators';
+import validators from '../config/validators';
 
 const fn = fieldNames[fieldNames.dataSources.aka];
 const macthedRecordFN = fieldNames.matchedRecord;

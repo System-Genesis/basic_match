@@ -2,7 +2,7 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
-import fieldNames from '../../config/fieldNames';
+import fieldNames from '../config/fieldNames';
 import { setDischargeDay, setField, setIdentityCard, setMobilePhone, setPhone } from './basicFuncs';
 
 const fn = fieldNames[fieldNames.dataSources.es];

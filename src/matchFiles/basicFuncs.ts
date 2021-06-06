@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-param-reassign */
-import validators from '../../config/validators';
+import validators from '../config/validators';
 
 // raplace all other functions for spesific files
 
@@ -9,7 +9,7 @@ export const setField = (mathcedRecord: any, value: string, fieldName: string): 
 };
 
 export const setIdentityCard = (matchedRecord: any, value: string): void => {
-    validators(value).identityCard ? (matchedRecord.identityCard = value) : null;
+    validators().identityCard(value) ? (matchedRecord.identityCard = value) : null;
 };
 
 export const setDischargeDay = (matchedRecord: any, value: string): void => {
@@ -21,9 +21,9 @@ export const setDischargeDay = (matchedRecord: any, value: string): void => {
 };
 
 export const setMobilePhone = (matchedRecord: any, value: string): void => {
-    validators(value).mobilePhone.test(value) ? (matchedRecord.mobilePhone = value) : null;
+    validators().mobilePhone.test(value) ? (matchedRecord.mobilePhone = value) : null;
 };
 
 export const setPhone = (matchedRecord: any, value: string): void => {
-    validators(value).phone.test(value) ? (matchedRecord.phone = value) : null;
+    validators().phone.test(value) ? (matchedRecord.phone = value) : null;
 };

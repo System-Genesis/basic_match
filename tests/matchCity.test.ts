@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import matchCity from '../src/utils/matchFiles/matchCity';
+import matchCity from '../src/matchFiles/matchCity';
 
 describe('Match City unit testings', () => {
     test('Test local hierarchy', async () => {
