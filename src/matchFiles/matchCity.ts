@@ -8,11 +8,12 @@ import fieldNames from '../config/fieldNames';
 import { setDischargeDay, setField, setIdentityCard, setMobilePhone } from './basicFuncs';
 import { isNumeric } from '../utils/isNumeric';
 import { isStrContains } from '../utils/isStrContains';
+import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.city];
 const macthedRecordFN = fieldNames.matchedRecord;
 
-const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void => {
+const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
     let tempHr: string = hierarchy.replace('\\', '/');
     if (tempHr.includes('/')) {
@@ -54,7 +55,7 @@ const setHierarchy = (matchedRecord: any, hierarchy: string, record: any): void 
     }
 };
 
-const setEntityTypeAndDU = (matchedRecord: any, userID: string): void => {
+const setEntityTypeAndDU = (matchedRecord: matchedRecordType, userID: string): void => {
     let rawEntityType: string = '';
 
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
@@ -87,7 +88,7 @@ const setEntityTypeAndDU = (matchedRecord: any, userID: string): void => {
 };
 
 // Give priority to job field
-const setJob = (matchedRecord: any, value: string, originFieldName: string): void => {
+const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName: string): void => {
     if (originFieldName === fn.profession) {
         if (!matchedRecord[macthedRecordFN.job]) {
             matchedRecord[macthedRecordFN.job] = value;
@@ -97,7 +98,7 @@ const setJob = (matchedRecord: any, value: string, originFieldName: string): voi
     }
 };
 
-const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
@@ -117,7 +118,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
-    const matchedRecord: any = {};
+    const matchedRecord: matchedRecordType = {};
     // eslint-disable-next-line no-console
     console.log(runUID);
 

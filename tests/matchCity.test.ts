@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import matchCity from '../src/matchFiles/matchCity';
+import { matchedRecord as matchedRecordType } from '../src/types/matchedRecord';
 
 describe('Match City unit testings', () => {
     test('Test local hierarchy', async () => {
@@ -29,7 +30,7 @@ describe('Match City unit testings', () => {
             domains: ['external', 'local'],
         };
 
-        const matchedRecord: any = matchCity(user, '123');
+        const matchedRecord: matchedRecordType = matchCity(user, '123');
         expect(matchedRecord.hierarchy).toEqual('wallmart/dolores/animi/cum/ullam');
     });
 
@@ -60,7 +61,7 @@ describe('Match City unit testings', () => {
             domains: ['external'],
         };
 
-        const matchedRecord: any = matchCity(user, '123');
+        const matchedRecord: matchedRecordType = matchCity(user, '123');
         expect(matchedRecord.hierarchy).toEqual('city_name/bladerunners/quas/et/recusandae/eos');
     });
 
@@ -91,7 +92,7 @@ describe('Match City unit testings', () => {
             domains: ['external'],
         };
 
-        const matchedRecord: any = matchCity(user, '123');
+        const matchedRecord: matchedRecordType = matchCity(user, '123');
         expect(matchedRecord.hierarchy).toEqual('city_name/bladerunners/quas/et/recusandae/eos');
     });
 });

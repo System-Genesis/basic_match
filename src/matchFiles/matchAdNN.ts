@@ -5,11 +5,12 @@
 import fieldNames from '../config/fieldNames';
 import validators from '../config/validators';
 import { setField } from './basicFuncs';
+import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.adNN];
 const macthedRecordFN = fieldNames.matchedRecord;
 
-const setIdentifierDUAndEntityType = (matchedRecord: any, userID: string): void => {
+const setIdentifierDUAndEntityType = (matchedRecord: matchedRecordType, userID: string): void => {
     let uniqueNum: string;
     if (userID.toLowerCase().startsWith(fn.extension)) {
         uniqueNum = userID.toLowerCase().replace(fn.extension, '');
@@ -23,7 +24,7 @@ const setIdentifierDUAndEntityType = (matchedRecord: any, userID: string): void 
         matchedRecord.identityCard = uniqueNum.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else {
-        // we can infer the entityType is soldier
+        // we can infer the entityType is s
         matchedRecord.personalNumber = uniqueNum.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     }
@@ -31,7 +32,7 @@ const setIdentifierDUAndEntityType = (matchedRecord: any, userID: string): void 
     matchedRecord.userID = userID.toLowerCase();
 };
 
-const setHierarchyAndJob = (matchedRecord: any, hierarchy: string, record: any): void => {
+const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     let job: string;
     let hr: string[] = hierarchy.includes('\\')
         ? hierarchy.substring(0, hierarchy.lastIndexOf('\\')).trim().split('\\')
@@ -66,7 +67,7 @@ const setHierarchyAndJob = (matchedRecord: any, hierarchy: string, record: any):
     }
 };
 
-const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
@@ -75,7 +76,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
-    const matchedRecord: any = {};
+    const matchedRecord: matchedRecordType = {};
 
     keys.map((key: string) => {
         if (record[key] && record[key] !== 'לא ידוע') {

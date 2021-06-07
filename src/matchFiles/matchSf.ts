@@ -3,16 +3,17 @@
 /* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
 import { setField, setIdentityCard, setDischargeDay } from './basicFuncs';
+import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.sf];
 const macthedRecordFN = fieldNames.matchedRecord;
 
-const setSex = (matchedRecord: any, value: string): void => {
+const setSex = (matchedRecord: matchedRecordType, value: string): void => {
     const sfSex: string[] = Object.keys(fn.sfSexValues);
     matchedRecord.sex = value === sfSex[0] ? fn.sfSexValues[sfSex[0]] : fn.sfSexValues[sfSex[1]];
 };
 
-const setEntityType = (matchedRecord: any, value: string): void => {
+const setEntityType = (matchedRecord: matchedRecordType, value: string): void => {
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
@@ -20,11 +21,11 @@ const setEntityType = (matchedRecord: any, value: string): void => {
     }
 };
 
-const setHierarchy = (matchedRecord: any, value: string[] | string): void => {
+const setHierarchy = (matchedRecord: matchedRecordType, value: string[] | string): void => {
     matchedRecord.hierarchy = typeof value === 'string' ? value : value.join('/');
 };
 
-const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
@@ -41,7 +42,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
-    const matchedRecord: any = {};
+    const matchedRecord: matchedRecordType = {};
 
     keys.map((key: string) => {
         if (record[key] && record[key] !== 'לא ידוע') {

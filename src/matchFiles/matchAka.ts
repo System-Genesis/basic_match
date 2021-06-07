@@ -5,19 +5,20 @@
 import fieldNames from '../config/fieldNames';
 import { setField, setDischargeDay, setIdentityCard } from './basicFuncs';
 import validators from '../config/validators';
+import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.aka];
 const macthedRecordFN = fieldNames.matchedRecord;
 
-const setPhone = (matchedRecord: any, phone: string, areaCode: string) => {
-    validators().phone.test(`${areaCode}-${phone}`) ? (matchedRecord.phone = [`${areaCode}-${phone}`]) : null;
+const setPhone = (matchedRecord: matchedRecordType, phone: string, areaCode: string) => {
+    validators().phone.test(`${areaCode}-${phone}`) ? (matchedRecord.phone = `${areaCode}-${phone}`) : null;
 };
 
-const setMobilePhone = (matchedRecord: any, mobilePhone: string, mobileAreaCode: string) => {
-    validators().mobilePhone.test(`${mobileAreaCode}-${mobilePhone}`) ? (matchedRecord.mobilePhone = [`${mobileAreaCode}-${mobilePhone}`]) : null;
+const setMobilePhone = (matchedRecord: matchedRecordType, mobilePhone: string, mobileAreaCode: string) => {
+    validators().mobilePhone.test(`${mobileAreaCode}-${mobilePhone}`) ? (matchedRecord.mobilePhone = `${mobileAreaCode}-${mobilePhone}`) : null;
 };
 
-const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
@@ -33,7 +34,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
-    const matchedRecord: any = {};
+    const matchedRecord: matchedRecordType = {};
 
     keys.map((key: string) => {
         if (record[key] && record[key] !== 'לא ידוע') {

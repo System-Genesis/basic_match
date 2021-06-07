@@ -4,15 +4,16 @@
 /* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
 import { setDischargeDay, setField, setIdentityCard, setMobilePhone, setPhone } from './basicFuncs';
+import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.es];
 const macthedRecordFN = fieldNames.matchedRecord;
 
-const setJob = (matchedRecord: any, location: string, job: string): void => {
+const setJob = (matchedRecord: matchedRecordType, location: string, job: string): void => {
     matchedRecord.job = location ? `${job} - ${location}` : job;
 };
 
-const setHierarchy = (matchedRecord: any, value: string): void => {
+const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => {
     let hr: string[] = value.split('/');
     if (hr[0] === '') {
         return;
@@ -24,7 +25,7 @@ const setHierarchy = (matchedRecord: any, value: string): void => {
     matchedRecord.hierarchy = hr.join('/');
 };
 
-const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
+const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
@@ -45,7 +46,7 @@ const funcMap = new Map<string, (matchedRecord: any, value: string) => void>([
 
 export default (record: any, runUID: string) => {
     const keys: string[] = Object.keys(record);
-    const matchedRecord: any = {};
+    const matchedRecord: matchedRecordType = {};
 
     const job: string = record[fn.job];
     const location: string = record[fn.location];

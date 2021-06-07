@@ -3,6 +3,7 @@ import menash, { ConsumerMessage } from 'menashmq';
 import basicMatch from './basicMatch';
 import config from './config/index';
 import { queueObject } from './types/queueObject';
+import { matchedRecord as matchedRecordType } from './types/matchedRecord';
 
 const { rabbit } = config;
 
@@ -23,7 +24,7 @@ export default async () => {
 
             console.log(obj);
 
-            const matchedRecord: any = basicMatch(obj);
+            const matchedRecord: matchedRecordType = basicMatch(obj);
 
             console.log(matchedRecord);
 
