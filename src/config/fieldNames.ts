@@ -206,27 +206,5 @@ export default {
         ourCompany: 'wallmart',
         city: 'city_name',
     },
-    personStatus: {
-        incomplete: 'incomplete',
-        inactive: 'inactive',
-        active: 'active',
-    },
-    runnigTypes: {
-        dailyRun: 'daily_run',
-        recoveryRun: 'recovery_run',
-        immediateRun: 'immediate_run',
-        kafkaRun: 'kafka',
-    },
-    organizationGroups: {
-        incompletes_name: 'incomplete',
-    },
-    flowTypes: {
-        add: 'add',
-        update: 'update',
-    },
-    redisRetryCount: 3,
-    immediatePort: 3002,
-    chunckSize: 200,
-    luigiLogsPath: 'log/immediate_run',
-    kartoffelUrl: 'http://localhost:3000',
+    unknown: 'unknown',
 };

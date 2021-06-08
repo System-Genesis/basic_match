@@ -8,30 +8,32 @@ import { setField } from './basicFuncs';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.adNN];
-const macthedRecordFN = fieldNames.matchedRecord;
+const matchedRecordFieldNames = fieldNames.matchedRecord;
 
-const setIdentifierDUAndEntityType = (matchedRecord: matchedRecordType, userID: string): void => {
-    let uniqueNum: string;
+const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: string): void => {
+    let suffixIdenttifier: string;
     if (userID.toLowerCase().startsWith(fn.extension)) {
-        uniqueNum = userID.toLowerCase().replace(fn.extension, '');
+        suffixIdenttifier = userID.toLowerCase().replace(fn.extension, '');
     } else {
         // send log
         return;
     }
 
-    if (validators().identityCard(uniqueNum)) {
+    if (validators().identityCard(suffixIdenttifier)) {
         // if the unique number is identity Number so it's a c
-        matchedRecord.identityCard = uniqueNum.toString();
+        matchedRecord.identityCard = suffixIdenttifier.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else {
         // we can infer the entityType is s
-        matchedRecord.personalNumber = uniqueNum.toString();
+        matchedRecord.personalNumber = suffixIdenttifier.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     }
 
     matchedRecord.userID = userID.toLowerCase();
 };
 
+// Take out job and hierarchy from the Hierarchy field. For the most part the lst field contains the job and the full name
+// Example: root/OG1/OG2/OG3/full name - job
 const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     let job: string;
     let hr: string[] = hierarchy.includes('\\')
@@ -40,7 +42,11 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
     if (hr[0] === '') {
         return;
     }
+
+    // Insert our root hierarchy if needed(the original hierarchy doesn't contains our root hierarchy)
     hr[0] === fieldNames.rootHierarchy.ourCompany ? null : hr.unshift(fieldNames.rootHierarchy.ourCompany);
+
+    // Delete unwanted spaces
     hr = hr.map((organizationName) => {
         return organizationName.trim();
     });
@@ -67,28 +73,28 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
     }
 };
 
-const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
-    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
-    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
-    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
-    [fn.sAMAccountName, setIdentifierDUAndEntityType],
+const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.lastName)],
+    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
+    [fn.sAMAccountName, setIdentifierDIAndEntityType],
 ]);
 
 export default (record: any, runUID: string) => {
-    const keys: string[] = Object.keys(record);
+    const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
-    keys.map((key: string) => {
-        if (record[key] && record[key] !== 'לא ידוע') {
-            if (funcMap.has(key)) {
-                funcMap.get(key)!(matchedRecord, record[key]);
-            } else if (key === fn.hierarchy) {
-                setHierarchyAndJob(matchedRecord, record[key], record);
+    originalRecordFields.map((field: string) => {
+        if (record[field] && record[field] !== fieldNames.unknown) {
+            if (fieldsFuncs.has(field)) {
+                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            } else if (field === fn.hierarchy) {
+                setHierarchyAndJob(matchedRecord, record[field], record);
             }
         }
     });
 
-    matchedRecord[macthedRecordFN.source] = fieldNames.dataSources.adNN;
+    matchedRecord[matchedRecordFieldNames.source] = fieldNames.dataSources.adNN;
 
     return matchedRecord;
 };

@@ -7,7 +7,7 @@ import { setDischargeDay, setField, setIdentityCard, setMobilePhone, setPhone } 
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.es];
-const macthedRecordFN = fieldNames.matchedRecord;
+const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const setJob = (matchedRecord: matchedRecordType, location: string, job: string): void => {
     matchedRecord.job = location ? `${job} - ${location}` : job;
@@ -25,44 +25,44 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => 
     matchedRecord.hierarchy = hr.join('/');
 };
 
-const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
-    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
-    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
-    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
-    [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.sex)],
-    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.personalNumber)],
+const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.lastName)],
+    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
+    [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
+    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.personalNumber)],
     [fn.identityCard, setIdentityCard],
     [fn.dischargeDay, setDischargeDay],
-    [fn.entityType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.entityType)],
-    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
+    [fn.entityType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.entityType)],
+    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mobilePhone, setMobilePhone],
     [fn.phone, setPhone],
-    [fn.birthDate, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.birthDate)],
-    [fn.address, (matched, value) => setField(matched, value, macthedRecordFN.address)],
-    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
-    [fn.userName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.userID)],
+    [fn.birthDate, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.birthDate)],
+    [fn.address, (matched, value) => setField(matched, value, matchedRecordFieldNames.address)],
+    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
+    [fn.userName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.userID)],
     [fn.hierarchy, setHierarchy],
 ]);
 
 export default (record: any, runUID: string) => {
-    const keys: string[] = Object.keys(record);
+    const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
     const job: string = record[fn.job];
     const location: string = record[fn.location];
     matchedRecord.job = job || location; // incase theres no job but there is an location
 
-    keys.map((key: string) => {
-        if (record[key] && record[key] !== 'לא ידוע') {
-            if (funcMap.has(key)) {
-                funcMap.get(key)!(matchedRecord, record[key]);
-            } else if (key === fn.job) {
-                setJob(matchedRecord, location, record[key]);
+    originalRecordFields.map((field: string) => {
+        if (record[field] && record[field] !== fieldNames.unknown) {
+            if (fieldsFuncs.has(field)) {
+                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            } else if (field === fn.job) {
+                setJob(matchedRecord, location, record[field]);
             }
         }
     });
 
-    matchedRecord[macthedRecordFN.source] = fieldNames.dataSources.es;
+    matchedRecord[matchedRecordFieldNames.source] = fieldNames.dataSources.es;
 
     return matchedRecord;
 };

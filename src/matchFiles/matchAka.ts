@@ -8,7 +8,7 @@ import validators from '../config/validators';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.aka];
-const macthedRecordFN = fieldNames.matchedRecord;
+const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const setPhone = (matchedRecord: matchedRecordType, phone: string, areaCode: string) => {
     validators().phone.test(`${areaCode}-${phone}`) ? (matchedRecord.phone = `${areaCode}-${phone}`) : null;
@@ -18,32 +18,32 @@ const setMobilePhone = (matchedRecord: matchedRecordType, mobilePhone: string, m
     validators().mobilePhone.test(`${mobileAreaCode}-${mobilePhone}`) ? (matchedRecord.mobilePhone = `${mobileAreaCode}-${mobilePhone}`) : null;
 };
 
-const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
-    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
-    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
-    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
-    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.clearance)],
-    [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.sex)],
-    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.personalNumber)],
+const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.lastName)],
+    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
+    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
+    [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
+    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.personalNumber)],
     [fn.identityCard, setIdentityCard],
     [fn.dischargeDay, setDischargeDay],
-    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.akaUnit)],
-    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
-    [fn.birthDate, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.birthDate)],
+    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.akaUnit)],
+    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.serviceType)],
+    [fn.birthDate, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.birthDate)],
 ]);
 
 export default (record: any, runUID: string) => {
-    const keys: string[] = Object.keys(record);
+    const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
-    keys.map((key: string) => {
-        if (record[key] && record[key] !== 'לא ידוע') {
-            if (funcMap.has(key)) {
-                funcMap.get(key)!(matchedRecord, record[key]);
-            } else if (key === fn.mobilePhone && record[fn.areaCodeMobile]) {
-                setMobilePhone(matchedRecord, record[key], record[fn.areaCodeMobile]);
-            } else if (key === fn.phone && record[fn.areaCode]) {
-                setPhone(matchedRecord, record[key], record[fn.areaCode]);
+    originalRecordFields.map((field: string) => {
+        if (record[field] && record[field] !== fieldNames.unknown) {
+            if (fieldsFuncs.has(field)) {
+                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            } else if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
+                setMobilePhone(matchedRecord, record[field], record[fn.areaCodeMobile]);
+            } else if (field === fn.phone && record[fn.areaCode]) {
+                setPhone(matchedRecord, record[field], record[fn.areaCode]);
             }
         }
     });

@@ -2,6 +2,7 @@
 /* eslint-disable no-param-reassign */
 import validators from '../config/validators';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import fieldNames from '../config/fieldNames';
 
 // raplace all other functions for spesific files
 
@@ -14,7 +15,7 @@ export const setIdentityCard = (matchedRecord: matchedRecordType, value: string)
 };
 
 export const setDischargeDay = (matchedRecord: matchedRecordType, value: string): void => {
-    const date: Date | null = value && value !== 'לא ידוע' ? new Date(value) : null;
+    const date: Date | null = value && value !== fieldNames.unknown ? new Date(value) : null;
     if (date) {
         const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
         matchedRecord.dischargeDay = new Date(date.getTime() - userTimezoneOffset).toISOString();

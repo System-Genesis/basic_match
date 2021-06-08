@@ -11,7 +11,7 @@ import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.dataSources.city];
-const macthedRecordFN = fieldNames.matchedRecord;
+const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
@@ -23,8 +23,8 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
             `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
         );
         // eslint-disable-next-line prefer-const
-        for (let [index, value] of hr.entries()) {
-            value = value.replace('(', '').replace(')', '');
+        for (const [index, val] of hr.entries()) {
+            const value = val.replace('(', '').replace(')', '');
             if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
                 hr.splice(index);
                 break;
@@ -55,7 +55,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
     }
 };
 
-const setEntityTypeAndDU = (matchedRecord: matchedRecordType, userID: string): void => {
+const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): void => {
     let rawEntityType: string = '';
 
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
@@ -90,49 +90,49 @@ const setEntityTypeAndDU = (matchedRecord: matchedRecordType, userID: string): v
 // Give priority to job field
 const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName: string): void => {
     if (originFieldName === fn.profession) {
-        if (!matchedRecord[macthedRecordFN.job]) {
-            matchedRecord[macthedRecordFN.job] = value;
+        if (!matchedRecord[matchedRecordFieldNames.job]) {
+            matchedRecord[matchedRecordFieldNames.job] = value;
         }
     } else {
-        matchedRecord[macthedRecordFN.job] = value;
+        matchedRecord[matchedRecordFieldNames.job] = value;
     }
 };
 
-const funcMap = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
-    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.firstName)],
-    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.lastName)],
-    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.rank)],
-    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.clearance)],
-    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.personalNumber)],
+const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
+    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.lastName)],
+    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
+    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
+    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.personalNumber)],
     [fn.identityCard, setIdentityCard],
     [fn.dischargeDay, setDischargeDay],
-    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.akaUnit)],
-    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.serviceType)],
+    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.akaUnit)],
+    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mobilePhone, setMobilePhone],
-    [fn.address, (mathcedRecord, value) => setField(mathcedRecord, value, macthedRecordFN.address)],
-    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, macthedRecordFN.mail)],
+    [fn.address, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.address)],
+    [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],
     [fn.job, (matchedRecord, value) => setJob(matchedRecord, value, fn.job)],
-    [fn.domainUsers, setEntityTypeAndDU],
+    [fn.domainUsers, setEntityTypeAndDI],
 ]);
 
 export default (record: any, runUID: string) => {
-    const keys: string[] = Object.keys(record);
+    const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
     // eslint-disable-next-line no-console
     console.log(runUID);
 
-    keys.map((key: string) => {
-        if (record[key] && record[key] !== 'לא ידוע') {
-            if (funcMap.has(key)) {
-                funcMap.get(key)!(matchedRecord, record[key]);
-            } else if (key === fn.hierarchy) {
-                setHierarchy(matchedRecord, record[key], record);
+    originalRecordFields.map((field: string) => {
+        if (record[field] && record[field] !== fieldNames.unknown) {
+            if (fieldsFuncs.has(field)) {
+                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            } else if (field === fn.hierarchy) {
+                setHierarchy(matchedRecord, record[field], record);
             }
         }
     });
 
-    matchedRecord[macthedRecordFN.source] = record[fn.domains].includes(fn.domainNames.external)
+    matchedRecord[matchedRecordFieldNames.source] = record[fn.domains].includes(fn.domainNames.external)
         ? fieldNames.dataSources.city
         : fieldNames.dataSources.mir;
 
