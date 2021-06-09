@@ -4,6 +4,7 @@
 import fieldNames from '../config/fieldNames';
 import { setField, setIdentityCard, setDischargeDay } from './basicFuncs';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import { sendLog } from '../rabbit';
 
 const fn = fieldNames[fieldNames.dataSources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -17,7 +18,7 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string): void =>
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        // send log
+        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.sf });
     }
 };
 

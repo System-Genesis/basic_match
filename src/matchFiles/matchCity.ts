@@ -9,6 +9,7 @@ import { setDischargeDay, setField, setIdentityCard, setMobilePhone } from './ba
 import { isNumeric } from '../utils/isNumeric';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import { sendLog } from '../rabbit';
 
 const fn = fieldNames[fieldNames.dataSources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -82,8 +83,7 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
     } else {
-        // TO DO
-        // log error entity type
+        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.city });
     }
 };
 

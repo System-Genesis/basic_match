@@ -4,12 +4,13 @@ import basicMatch from './basicMatch';
 import config from './config/index';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
+import { logObject } from './types/log';
 
 const { rabbit } = config;
 
 require('dotenv').config();
 
-export default async () => {
+export const rabbitConect = async () => {
     console.log('Trying connect to rabbit...');
 
     await menash.connect(rabbit.uri);
@@ -34,4 +35,19 @@ export default async () => {
         },
         { noAck: false },
     );
+};
+
+export const sendLog = async (level: string, message: string, system: string, service: string, extraFields?: any): void => {
+    const logToSend: logObject = {
+        level,
+        message,
+        system,
+        service,
+    };
+
+    if (extraFields) {
+        logToSend.extraFields = extraFields;
+    }
+
+    await menash.send(rabbit.logQueue, logToSend);
 };

@@ -4,8 +4,6 @@ import validators from '../config/validators';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import fieldNames from '../config/fieldNames';
 
-// raplace all other functions for spesific files
-
 export const setField = (mathcedRecord: any, value: string, fieldName: string): void => {
     mathcedRecord[fieldName] = value;
 };

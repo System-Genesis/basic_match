@@ -6,6 +6,7 @@ import fieldNames from '../config/fieldNames';
 import validators from '../config/validators';
 import { setField } from './basicFuncs';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import { sendLog } from '../rabbit';
 
 const fn = fieldNames[fieldNames.dataSources.adNN];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -15,7 +16,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     if (userID.toLowerCase().startsWith(fn.extension)) {
         suffixIdenttifier = userID.toLowerCase().replace(fn.extension, '');
     } else {
-        // send log
+        sendLog('error', 'Invalid suffix identifier', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.adNN });
         return;
     }
 
