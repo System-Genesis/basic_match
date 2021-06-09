@@ -56,7 +56,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
     }
 };
 
-const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): void => {
+const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: string): Promise<void> => {
     let rawEntityType: string = '';
 
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
@@ -78,12 +78,13 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
     // set the entityType
     if (fn.entityTypePrefix.s.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
+        await sendLog('info', 'HAGAI GOMO', 'IMA', 'SHELO', { name: 'ALAY' });
     } else if (fn.entityTypePrefix.c.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
     } else {
-        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.city });
+        await sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.city });
     }
 };
 
