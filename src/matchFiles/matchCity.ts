@@ -78,7 +78,6 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     // set the entityType
     if (fn.entityTypePrefix.s.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
-        await sendLog('info', 'HAGAI GOMO', 'IMA', 'SHELO', { name: 'ALAY' });
     } else if (fn.entityTypePrefix.c.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
