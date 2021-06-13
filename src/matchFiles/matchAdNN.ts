@@ -16,7 +16,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     if (userID.toLowerCase().startsWith(fn.extension)) {
         suffixIdenttifier = userID.toLowerCase().replace(fn.extension, '');
     } else {
-        sendLog('error', 'Invalid suffix identifier', 'Karting', 'Basic Match', {
+        sendLog('error', `Invalid suffix identifier for user ${userID}`, 'Karting', 'Basic Match', {
             user: 'userID',
             source: fieldNames.dataSources.adNN,
             runUID,

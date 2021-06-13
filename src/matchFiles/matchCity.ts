@@ -62,6 +62,11 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
         // check if the userID is valid
         if ((index === 0 && isNumeric(char)) || (index === 1 && !isNumeric(char))) {
+            sendLog('error', 'Invalid userID', 'Karting', 'Basic Match', {
+                user: 'userID',
+                source: fieldNames.dataSources.city,
+                runUID,
+            });
             return;
         }
         // get the entity type key
