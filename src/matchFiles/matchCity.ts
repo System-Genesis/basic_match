@@ -56,7 +56,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
     }
 };
 
-const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: string): Promise<void> => {
+const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: string, runUID: string): Promise<void> => {
     let rawEntityType: string = '';
 
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
@@ -83,7 +83,11 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
     } else {
-        await sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.city });
+        await sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', {
+            user: 'userID',
+            source: fieldNames.dataSources.city,
+            runUID,
+        });
     }
 };
 
@@ -113,14 +117,11 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],
     [fn.job, (matchedRecord, value) => setJob(matchedRecord, value, fn.job)],
-    [fn.domainUsers, setEntityTypeAndDI],
 ]);
 
 export default (record: any, runUID: string) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
-    // eslint-disable-next-line no-console
-    console.log(runUID);
 
     originalRecordFields.map((field: string) => {
         if (record[field] && record[field] !== fieldNames.unknown) {
@@ -128,6 +129,8 @@ export default (record: any, runUID: string) => {
                 fieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field], record);
+            } else if (field === fn.domainUsers) {
+                setEntityTypeAndDI(matchedRecord, record[field], runUID);
             }
         }
     });

@@ -14,11 +14,11 @@ const setSex = (matchedRecord: matchedRecordType, value: string): void => {
     matchedRecord.sex = value === sfSex[0] ? fn.sfSexValues[sfSex[0]] : fn.sfSexValues[sfSex[1]];
 };
 
-const setEntityType = (matchedRecord: matchedRecordType, value: string): void => {
+const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: string): void => {
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.sf });
+        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.sf, runUID });
     }
 };
 
@@ -37,7 +37,6 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.userName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.userID)],
     [fn.hierarchy, setHierarchy],
-    [fn.entityType, setEntityType],
     [fn.sex, setSex],
 ]);
 
@@ -49,6 +48,8 @@ export default (record: any, runUID: string) => {
         if (record[field] && record[field] !== fieldNames.unknown) {
             if (fieldsFuncs.has(field)) {
                 fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            } else if (field === fn.entityType) {
+                setEntityType(matchedRecord, record[field], runUID);
             }
         }
     });
