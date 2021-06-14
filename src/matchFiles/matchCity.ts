@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
@@ -78,7 +79,7 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     }
 
     // Set the userID
-    matchedRecord.userID = userID;
+    matchedRecord.userID = userID.split('@')[0];
 
     // set the entityType
     if (fn.entityTypePrefix.s.includes(rawEntityType)) {

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-case-declarations */
 /* eslint-disable array-callback-return */
@@ -26,6 +27,10 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string[] | string
     matchedRecord.hierarchy = typeof value === 'string' ? value : value.join('/');
 };
 
+const setUserID = (matchedRecord: matchedRecordType, value: string) => {
+    matchedRecord.userID = value.split('@')[0];
+};
+
 const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.lastName)],
@@ -35,7 +40,7 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.dischargeDay, setDischargeDay],
     [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
-    [fn.userName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.userID)],
+    [fn.userName, setUserID],
     [fn.hierarchy, setHierarchy],
     [fn.sex, setSex],
 ]);

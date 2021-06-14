@@ -26,6 +26,8 @@ export const initializeRabbit = async (): Promise<void> => {
 
             const matchedRecord: matchedRecordType = basicMatch(obj);
 
+            console.log(matchedRecord);
+
             await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: obj.dataSource, runUID: obj.runUID });
 
             msg.ack();

@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
@@ -35,7 +36,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     }
 
-    matchedRecord.userID = userID.toLowerCase();
+    matchedRecord.userID = userID.toLowerCase().split('@')[0];
 };
 
 // Take out job and hierarchy from the Hierarchy field. For the most part the last field contains the job and the full name
