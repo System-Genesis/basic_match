@@ -4,19 +4,10 @@
 /* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
 import { setField, setDischargeDay, setIdentityCard } from './basicFuncs';
-import validators from '../config/validators';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
-const fn = fieldNames[fieldNames.dataSources.aka];
+const fn = fieldNames[fieldNames.sources.aka];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
-
-const setPhone = (matchedRecord: matchedRecordType, phone: string, areaCode: string) => {
-    validators().phone.test(`${areaCode}-${phone}`) ? (matchedRecord.phone = `${areaCode}-${phone}`) : null;
-};
-
-const setMobilePhone = (matchedRecord: matchedRecordType, mobilePhone: string, mobileAreaCode: string) => {
-    validators().mobilePhone.test(`${mobileAreaCode}-${mobilePhone}`) ? (matchedRecord.mobilePhone = `${mobileAreaCode}-${mobilePhone}`) : null;
-};
 
 const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
@@ -29,6 +20,8 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.dischargeDay, setDischargeDay],
     [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.akaUnit)],
     [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.serviceType)],
+    [fn.phone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.phone)],
+    [fn.mobilePhone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mobilePhone)],
     [fn.birthDate, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.birthDate)],
 ]);
 
@@ -38,15 +31,17 @@ export default (record: any, runUID: string) => {
 
     originalRecordFields.map((field: string) => {
         if (record[field] && record[field] !== fieldNames.unknown) {
-            if (fieldsFuncs.has(field)) {
-                fieldsFuncs.get(field)!(matchedRecord, record[field]);
-            } else if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
-                setMobilePhone(matchedRecord, record[field], record[fn.areaCodeMobile]);
+            if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
+                fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`);
             } else if (field === fn.phone && record[fn.areaCode]) {
-                setPhone(matchedRecord, record[field], record[fn.areaCode]);
+                fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCode]}-${record[field]}`);
+            } else {
+                fieldsFuncs.get(field)!(matchedRecord, record[field]);
             }
         }
     });
+
+    matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.aka;
 
     return matchedRecord;
 };

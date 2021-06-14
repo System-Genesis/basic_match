@@ -6,7 +6,7 @@ import { setField, setIdentityCard, setDischargeDay } from './basicFuncs';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
 
-const fn = fieldNames[fieldNames.dataSources.sf];
+const fn = fieldNames[fieldNames.sources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const setSex = (matchedRecord: matchedRecordType, value: string): void => {
@@ -18,7 +18,7 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: 
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.dataSources.sf, runUID });
+        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.sources.sf, runUID });
     }
 };
 
@@ -54,7 +54,7 @@ export default (record: any, runUID: string) => {
         }
     });
 
-    matchedRecord[matchedRecordFieldNames.source] = fieldNames.dataSources.sf;
+    matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.sf;
 
     return matchedRecord;
 };

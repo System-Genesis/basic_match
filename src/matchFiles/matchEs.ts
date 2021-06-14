@@ -6,7 +6,7 @@ import fieldNames from '../config/fieldNames';
 import { setDischargeDay, setField, setIdentityCard, setMobilePhone, setPhone } from './basicFuncs';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
-const fn = fieldNames[fieldNames.dataSources.es];
+const fn = fieldNames[fieldNames.sources.es];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const setJob = (matchedRecord: matchedRecordType, location: string, job: string): void => {
@@ -18,6 +18,8 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => 
     if (hr[0] === '') {
         return;
     }
+
+    // Add our root hierarchy if needed - wasn't in the original hierarchy
     hr[0] === fieldNames.rootHierarchy.ourCompany ? null : hr.unshift(fieldNames.rootHierarchy.ourCompany);
     hr = hr.map((organizationName) => {
         return organizationName.trim();
@@ -62,7 +64,7 @@ export default (record: any, runUID: string) => {
         }
     });
 
-    matchedRecord[matchedRecordFieldNames.source] = fieldNames.dataSources.es;
+    matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.es;
 
     return matchedRecord;
 };

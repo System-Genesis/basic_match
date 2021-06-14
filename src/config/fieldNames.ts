@@ -1,5 +1,5 @@
 export default {
-    dataSources: {
+    sources: {
         // aka: "aka_name",
         aka: 'aka',
         es: 'es_name',

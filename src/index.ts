@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
-import { rabbitConect } from './rabbit';
+import { initializeRabbit } from './rabbit';
 
 const main = async () => {
-    await rabbitConect();
+    await initializeRabbit();
 };
 
 main().catch((err) => console.error(err));

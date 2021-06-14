@@ -8,11 +8,11 @@ import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
 
 const matchMap = new Map([
-    [fn.dataSources.aka, matchAka],
-    [fn.dataSources.es, matchEs],
-    [fn.dataSources.adNN, matchAdNN],
-    [fn.dataSources.city, matchCity],
-    [fn.dataSources.sf, matchSf],
+    [fn.sources.aka, matchAka],
+    [fn.sources.es, matchEs],
+    [fn.sources.adNN, matchAdNN],
+    [fn.sources.city, matchCity],
+    [fn.sources.sf, matchSf],
 ]);
 
 export default (obj: queueObject): matchedRecordType => {

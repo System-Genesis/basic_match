@@ -11,7 +11,7 @@ import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
 
-const fn = fieldNames[fieldNames.dataSources.city];
+const fn = fieldNames[fieldNames.sources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
@@ -62,9 +62,9 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
         // check if the userID is valid
         if ((index === 0 && isNumeric(char)) || (index === 1 && !isNumeric(char))) {
-            sendLog('error', 'Invalid userID', 'Karting', 'Basic Match', {
-                user: 'userID',
-                source: fieldNames.dataSources.city,
+            sendLog('error', `Invalid userID for user ${userID}`, 'Karting', 'Basic Match', {
+                user: userID,
+                source: fieldNames.sources.city,
                 runUID,
             });
             return;
@@ -90,7 +90,7 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     } else {
         await sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', {
             user: 'userID',
-            source: fieldNames.dataSources.city,
+            source: fieldNames.sources.city,
             runUID,
         });
     }
@@ -141,8 +141,8 @@ export default (record: any, runUID: string) => {
     });
 
     matchedRecord[matchedRecordFieldNames.source] = record[fn.domains].includes(fn.domainNames.external)
-        ? fieldNames.dataSources.city
-        : fieldNames.dataSources.mir;
+        ? fieldNames.sources.city
+        : fieldNames.sources.mir;
 
     return matchedRecord;
 };

@@ -8,9 +8,10 @@ import { setField } from './basicFuncs';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
 
-const fn = fieldNames[fieldNames.dataSources.adNN];
+const fn = fieldNames[fieldNames.sources.adNN];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
+// We derive the identifier, the DI and the entity type form the original userID
 const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: string, runUID: string): void => {
     let suffixIdenttifier: string;
     if (userID.toLowerCase().startsWith(fn.extension)) {
@@ -18,7 +19,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     } else {
         sendLog('error', `Invalid suffix identifier for user ${userID}`, 'Karting', 'Basic Match', {
             user: 'userID',
-            source: fieldNames.dataSources.adNN,
+            source: fieldNames.sources.adNN,
             runUID,
         });
         return;
@@ -37,7 +38,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     matchedRecord.userID = userID.toLowerCase();
 };
 
-// Take out job and hierarchy from the Hierarchy field. For the most part the lst field contains the job and the full name
+// Take out job and hierarchy from the Hierarchy field. For the most part the last field contains the job and the full name
 // Example: root/OG1/OG2/OG3/full name - job
 const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     let job: string;
@@ -58,7 +59,7 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
     matchedRecord.hierarchy = hr.join('/');
     matchedRecord.hierarchy = matchedRecord.hierarchy.replace(new RegExp('\u{200f}', 'g'), '');
 
-    // Getting job
+    // Getting job from the last cell of the hierarchy (usualy if there is a '-' it contains the job)
     if (hierarchy.includes('-')) {
         if (hierarchy.includes('\\')) {
             job = hierarchy
@@ -100,7 +101,7 @@ export default (record: any, runUID: string) => {
         }
     });
 
-    matchedRecord[matchedRecordFieldNames.source] = fieldNames.dataSources.adNN;
+    matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.adNN;
 
     return matchedRecord;
 };
