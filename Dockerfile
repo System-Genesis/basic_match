@@ -11,3 +11,4 @@ RUN chmod g+rwx -R /usr/src/app
 CMD npm run dev
 
 EXPOSE 8000
+
