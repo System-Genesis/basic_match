@@ -14,9 +14,9 @@ const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 // We derive the identifier, the DI and the entity type form the original userID
 const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: string, runUID: string): void => {
-    let suffixIdenttifier: string;
+    let suffixIdentifier: string;
     if (userID.toLowerCase().startsWith(fn.extension)) {
-        suffixIdenttifier = userID.toLowerCase().replace(fn.extension, '');
+        suffixIdentifier = userID.toLowerCase().replace(fn.extension, '');
     } else {
         sendLog('error', `Invalid suffix identifier for user ${userID}`, 'Karting', 'Basic Match', {
             user: 'userID',
@@ -26,13 +26,13 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
         return;
     }
 
-    if (validators().identityCard(suffixIdenttifier)) {
+    if (validators().identityCard(suffixIdentifier)) {
         // if the unique number is identity Number so it's a c
-        matchedRecord.identityCard = suffixIdenttifier.toString();
+        matchedRecord.identityCard = suffixIdentifier.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else {
         // we can infer the entityType is s
-        matchedRecord.personalNumber = suffixIdenttifier.toString();
+        matchedRecord.personalNumber = suffixIdentifier.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     }
 

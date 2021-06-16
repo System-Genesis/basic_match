@@ -19,4 +19,5 @@ export type matchedRecord = {
     hierarchy?: string;
     userID?: string;
     source?: string;
+    goalUserId?: string;
 };

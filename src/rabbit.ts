@@ -10,6 +10,21 @@ const { rabbit } = config;
 
 require('dotenv').config();
 
+export const sendLog = async (level: string, message: string, system: string, service: string, extraFields?: any): Promise<void> => {
+    const logToSend: logObject = {
+        level,
+        message,
+        system,
+        service,
+    };
+
+    if (extraFields) {
+        logToSend.extraFields = extraFields;
+    }
+
+    await menash.send(rabbit.logQueue, logToSend);
+};
+
 export const initializeRabbit = async (): Promise<void> => {
     console.log('Trying connect to rabbit...');
 
@@ -26,27 +41,14 @@ export const initializeRabbit = async (): Promise<void> => {
 
             const matchedRecord: matchedRecordType = basicMatch(obj);
 
-            console.log(matchedRecord);
-
-            await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: obj.dataSource, runUID: obj.runUID });
+            if (!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId)) {
+                sendLog('error', `No identifier for user ${matchedRecord.userID}`, 'Karting', 'Basic match');
+            } else {
+                await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: obj.dataSource, runUID: obj.runUID });
+            }
 
             msg.ack();
         },
         { noAck: false },
     );
-};
-
-export const sendLog = async (level: string, message: string, system: string, service: string, extraFields?: any): Promise<void> => {
-    const logToSend: logObject = {
-        level,
-        message,
-        system,
-        service,
-    };
-
-    if (extraFields) {
-        logToSend.extraFields = extraFields;
-    }
-
-    await menash.send(rabbit.logQueue, logToSend);
 };
