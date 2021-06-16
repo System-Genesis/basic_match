@@ -88,6 +88,11 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
+
+        // Remove the GU prefix
+        if (matchedRecord.userID.startsWith(fn.mirGUPrefixes.ads || fn.mirGUPrefixes.ads)) {
+            matchedRecord.goalUserId = matchedRecord.userID.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
+        }
     } else {
         await sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', {
             user: 'userID',

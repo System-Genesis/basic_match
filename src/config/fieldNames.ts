@@ -126,6 +126,10 @@ export default {
             internal: 'local',
             external: 'external',
         },
+        mirGUPrefixes: {
+            ads: 'mads',
+            adNN: 'madNN',
+        },
     },
     mm_name: {
         userName: 'userName',
