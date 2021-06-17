@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-restricted-globals */
 /* eslint-disable no-param-reassign */
@@ -7,7 +8,6 @@
 /* eslint-disable no-unused-expressions */
 import fieldNames from '../config/fieldNames';
 import { setDischargeDay, setField, setIdentityCard, setMobilePhone } from './basicFuncs';
-import { isNumeric } from '../utils/isNumeric';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
@@ -33,14 +33,14 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
             }
         }
 
-        // this condition come to fix insertion of "defaultHierarchy" to user that come from our "enviroment" to
-        // city "enviroment" and than return to us from city API.
+        // this condition come to fix insertion of "defaultHierarchy" to user that come from our "environment" to
+        // city "environment" and than return to us from city API.
         // Prevent "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
         tempHr = hr.join('/').substring(hr.join('/').lastIndexOf(fieldNames.rootHierarchy.city));
     }
 
-    // this condition come to avoid insertion of "defaultHierarchy" to user that come from our "enviroment" to
-    // city "enviroment" and than return to us from city API
+    // this condition come to avoid insertion of "defaultHierarchy" to user that come from our "environment" to
+    // city "environment" and than return to us from city API
     if (tempHr.includes(fieldNames.rootHierarchy.city)) {
         if (tempHr.includes(defaultHierarchy)) {
             matchedRecord.hierarchy = tempHr;
@@ -58,28 +58,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
 };
 
 const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: string, runUID: string): Promise<void> => {
-    let rawEntityType: string = '';
-
-    for (const [index, char] of Array.from(userID.toLowerCase().trim()).entries()) {
-        // check if the userID is valid
-        if ((index === 0 && isNumeric(char)) || (index === 1 && !isNumeric(char))) {
-            sendLog('error', `Invalid userID for user ${userID}`, 'Karting', 'Basic Match', {
-                user: userID,
-                source: fieldNames.sources.city,
-                runUID,
-            });
-            return;
-        }
-        // get the entity type key
-        if (index === 0) {
-            rawEntityType = char;
-        } else if (!isNumeric(char)) {
-            break;
-        }
-    }
-
-    // Set the userID
-    matchedRecord.userID = userID.split('@')[0];
+    const rawEntityType: string = userID[0];
 
     // set the entityType
     if (fn.entityTypePrefix.s.includes(rawEntityType)) {
@@ -88,18 +67,23 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
+        matchedRecord.goalUserId = userID.split('@')[0];
 
-        // Remove the GU prefix
-        if (matchedRecord.userID.startsWith(fn.mirGUPrefixes.ads || fn.mirGUPrefixes.ads)) {
-            matchedRecord.goalUserId = matchedRecord.userID.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
+        // Remove the local GU prefix
+        if (userID.startsWith(fn.mirGUPrefixes.ads || fn.mirGUPrefixes.adNN)) {
+            matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
         }
     } else {
-        await sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', {
+        await sendLog('error', `Invalid user id and entity type of user ${userID}`, 'Karting', 'Basic Match', {
             user: 'userID',
             source: fieldNames.sources.city,
             runUID,
         });
+        return;
     }
+
+    // Set the userID
+    matchedRecord.userID = userID.split('@')[0];
 };
 
 // Give priority to job field
@@ -114,17 +98,17 @@ const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName
 };
 
 const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
-    [fn.firstName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.firstName)],
-    [fn.lastName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.lastName)],
+    [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
+    [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
     [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
-    [fn.personalNumber, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.personalNumber)],
+    [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
     [fn.identityCard, setIdentityCard],
     [fn.dischargeDay, setDischargeDay],
-    [fn.unitName, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.akaUnit)],
-    [fn.serviceType, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.serviceType)],
+    [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
+    [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mobilePhone, setMobilePhone],
-    [fn.address, (mathcedRecord, value) => setField(mathcedRecord, value, matchedRecordFieldNames.address)],
+    [fn.address, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],
     [fn.job, (matchedRecord, value) => setJob(matchedRecord, value, fn.job)],

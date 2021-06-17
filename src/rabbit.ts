@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
+import * as fs from 'fs';
 import basicMatch from './basicMatch';
 import config from './config/index';
 import { queueObject } from './types/queueObject';
@@ -41,10 +42,12 @@ export const initializeRabbit = async (): Promise<void> => {
 
             const matchedRecord: matchedRecordType = basicMatch(obj);
 
-            if (!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId)) {
+            if (!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId || matchedRecord.userID)) {
                 sendLog('error', `No identifier for user ${matchedRecord.userID}`, 'Karting', 'Basic match');
             } else {
-                await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: obj.dataSource, runUID: obj.runUID });
+                fs.appendFileSync('a.json', JSON.stringify({ record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID }));
+                fs.appendFileSync('a.json', ',');
+                await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
             }
 
             msg.ack();

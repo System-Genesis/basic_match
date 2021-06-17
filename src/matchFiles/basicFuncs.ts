@@ -6,8 +6,8 @@ import fieldNames from '../config/fieldNames';
 
 // Basic functions
 
-export const setField = (mathcedRecord: any, value: string, fieldName: string): void => {
-    mathcedRecord[fieldName] = value;
+export const setField = (matchedRecord: any, value: string, fieldName: string): void => {
+    matchedRecord[fieldName] = value;
 };
 
 export const setIdentityCard = (matchedRecord: matchedRecordType, value: string): void => {
