@@ -44,7 +44,7 @@ export const initializeRabbit = async (): Promise<void> => {
 
             const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
 
-            if (!hasIdentifier && !matchedRecord.userID) {
+            if (!hasIdentifier || !matchedRecord.userID) {
                 sendLog('error', `No identifier/userID for user ${matchedRecord.userID}`, 'Karting', 'Basic match');
             } else {
                 fs.appendFileSync('a.json', JSON.stringify({ record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID }));
