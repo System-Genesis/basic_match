@@ -42,8 +42,10 @@ export const initializeRabbit = async (): Promise<void> => {
 
             const matchedRecord: matchedRecordType = basicMatch(obj);
 
-            if (!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId || matchedRecord.userID)) {
-                sendLog('error', `No identifier for user ${matchedRecord.userID}`, 'Karting', 'Basic match');
+            const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
+
+            if (!hasIdentifier && !matchedRecord.userID) {
+                sendLog('error', `No identifier/userID for user ${matchedRecord.userID}`, 'Karting', 'Basic match');
             } else {
                 fs.appendFileSync('a.json', JSON.stringify({ record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID }));
                 fs.appendFileSync('a.json', ',');
