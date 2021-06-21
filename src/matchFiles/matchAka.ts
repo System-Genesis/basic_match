@@ -33,6 +33,7 @@ export default (record: any, runUID: string): matchedRecordType => {
     originalRecordFields.map((field: string) => {
         if (record[field] && record[field] !== fieldNames.unknown && fieldsFuncs.has(field)) {
             if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
+                console.log(`${record[fn.areaCodeMobile]}-${record[field]}`);
                 fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`);
             } else if (field === fn.phone && record[fn.areaCode]) {
                 fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCode]}-${record[field]}`);

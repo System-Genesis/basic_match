@@ -49,7 +49,6 @@ export const initializeRabbit = async (): Promise<void> => {
             } else {
                 fs.appendFileSync('a.json', JSON.stringify({ record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID }));
                 fs.appendFileSync('a.json', ',');
-                console.log(matchedRecord);
                 await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
             }
 
