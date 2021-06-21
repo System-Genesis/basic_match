@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-case-declarations */
@@ -51,7 +52,7 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.hierarchy, setHierarchy],
 ]);
 
-export default (record: any, runUID: string) => {
+export default (record: any, _runUID: string) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 

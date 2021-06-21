@@ -39,6 +39,7 @@ export const initializeRabbit = async (): Promise<void> => {
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         async (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
+            console.log(obj);
 
             const matchedRecord: matchedRecordType = basicMatch(obj);
 

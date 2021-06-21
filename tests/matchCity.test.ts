@@ -3,7 +3,7 @@ import matchCity from '../src/matchFiles/matchCity';
 import { matchedRecord as matchedRecordType } from '../src/types/matchedRecord';
 
 describe('Match City unit testings', () => {
-    test('Test local hierarchy', async () => {
+    test('Test local hierarchy', () => {
         const user: any = {
             domUser: 'g172007621@turtle.com',
             telephone: '0534215028',
@@ -34,7 +34,7 @@ describe('Match City unit testings', () => {
         expect(matchedRecord.hierarchy).toEqual('wallmart/dolores/animi/cum/ullam');
     });
 
-    test('Test external hierarchy', async () => {
+    test('Test external hierarchy', () => {
         const user = {
             domUser: 'e702048317@turtle.com',
             telephone: '0502335236',
@@ -65,7 +65,7 @@ describe('Match City unit testings', () => {
         expect(matchedRecord.hierarchy).toEqual('city_name/bladerunners/quas/et/recusandae/eos');
     });
 
-    test('Test external hierarchy with fullName', async () => {
+    test('Test external hierarchy with fullName', () => {
         const user = {
             domUser: 'e702048317@turtle.com',
             telephone: '0502335236',

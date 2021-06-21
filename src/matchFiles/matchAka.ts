@@ -26,7 +26,7 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.birthDate, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.birthDate)],
 ]);
 
-export default (record: any, runUID: string): matchedRecordType => {
+export default (record: any, _runUID: string): matchedRecordType => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
