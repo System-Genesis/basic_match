@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import matchAka from './matchFiles/matchAka';
 import matchEs from './matchFiles/matchEs';
 import matchAdNN from './matchFiles/matchAdNN';

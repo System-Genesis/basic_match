@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-case-declarations */
 /* eslint-disable no-unused-expressions */
@@ -30,7 +31,7 @@ export default (record: any, runUID: string) => {
     const matchedRecord: matchedRecordType = {};
 
     originalRecordFields.map((field: string) => {
-        if (record[field] && record[field] !== fieldNames.unknown) {
+        if (record[field] && record[field] !== fieldNames.unknown && fieldsFuncs.has(field)) {
             if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
                 fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`);
             } else if (field === fn.phone && record[fn.areaCode]) {
