@@ -5,7 +5,7 @@
 /* eslint-disable no-case-declarations */
 import fieldNames from '../config/fieldNames';
 import validators from '../config/validators';
-import { setField } from './basicFuncs';
+import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
 

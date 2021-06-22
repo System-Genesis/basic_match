@@ -7,7 +7,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-unused-expressions */
 import fieldNames from '../config/fieldNames';
-import { setDischargeDay, setField, setIdentityCard, setMobilePhone } from './basicFuncs';
+import setField from './setField';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
@@ -103,11 +103,11 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
     [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
-    [fn.identityCard, setIdentityCard],
-    [fn.dischargeDay, setDischargeDay],
+    [fn.identityCard, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.identityCard)],
+    [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
-    [fn.mobilePhone, setMobilePhone],
+    [fn.mobilePhone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mobilePhone)],
     [fn.address, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],

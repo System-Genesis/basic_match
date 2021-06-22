@@ -4,7 +4,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
-import { setField, setDischargeDay, setIdentityCard } from './basicFuncs';
+import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
 const fn = fieldNames[fieldNames.sources.aka];
@@ -17,8 +17,8 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
     [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
-    [fn.identityCard, setIdentityCard],
-    [fn.dischargeDay, setDischargeDay],
+    [fn.identityCard, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.identityCard)],
+    [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.phone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.phone)],

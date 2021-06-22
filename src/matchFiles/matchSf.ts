@@ -3,7 +3,7 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
-import { setField, setIdentityCard, setDischargeDay } from './basicFuncs';
+import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import { sendLog } from '../rabbit';
 
@@ -36,8 +36,8 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
-    [fn.identityCard, setIdentityCard],
-    [fn.dischargeDay, setDischargeDay],
+    [fn.identityCard, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.identityCard)],
+    [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.userName, setUserID],

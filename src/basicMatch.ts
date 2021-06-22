@@ -7,6 +7,7 @@ import matchSf from './matchFiles/matchSf';
 import fn from './config/fieldNames';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
+import validateRecord from './validateRecord';
 
 const matchMap = new Map([
     [fn.sources.aka, matchAka],
@@ -22,5 +23,6 @@ export default (obj: queueObject): matchedRecordType => {
     if (matchMap.has(dataSource)) {
         matchedRecord = matchMap.get(dataSource)!(record, runUID);
     }
+    validateRecord(matchedRecord);
     return matchedRecord;
 };
