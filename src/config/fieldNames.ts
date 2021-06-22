@@ -200,6 +200,7 @@ export default {
         hierarchy: 'hierarchy',
         userID: 'userID',
         source: 'source',
+        goalUserId: 'goalUserId',
     },
     entityTypeValue: {
         s: 'agumon',
