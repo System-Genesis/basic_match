@@ -113,7 +113,9 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, identifie
 ]);
 
 export default (matchedRecord: matchedRecordType): void => {
-    validateIdentityCard(matchedRecord);
+    if (matchedRecord.identityCard) {
+        validateIdentityCard(matchedRecord);
+    }
     const identifier: string =
         matchedRecord[matchedRecordFieldNames.identityCard] ||
         matchedRecord[matchedRecordFieldNames.personalNumber] ||

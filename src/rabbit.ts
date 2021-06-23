@@ -23,6 +23,7 @@ export const sendLog = async (level: string, message: string, system: string, se
         logToSend.extraFields = extraFields;
     }
 
+    console.log(`${message}, identifier: ${extraFields.identifier}, userID: ${extraFields.user}`);
     await menash.send(rabbit.logQueue, logToSend);
 };
 
@@ -39,14 +40,12 @@ export const initializeRabbit = async (): Promise<void> => {
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         async (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
-            console.log(obj);
-
             const matchedRecord: matchedRecordType = basicMatch(obj);
 
             const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
 
             if (!hasIdentifier) {
-                sendLog('error', `No identifier/userID for user ${matchedRecord.userID}`, 'Karting', 'Basic match');
+                sendLog('error', `No identifier `, 'Karting', 'Basic match', { user: `${matchedRecord.userID}` });
             } else {
                 fs.appendFileSync('a.json', JSON.stringify({ record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID }));
                 fs.appendFileSync('a.json', ',');
