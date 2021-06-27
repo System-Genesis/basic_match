@@ -10,4 +10,3 @@ RUN npm run build || true
 CMD [ "npm", "start" ]
 
 EXPOSE 9000
-
