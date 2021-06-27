@@ -13,6 +13,7 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.rank],
         });
         return false;
     }
@@ -26,6 +27,7 @@ const validateAKAUnit = (matchedRecord: matchedRecordType, identifier: string): 
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.akaUnit],
         });
         return false;
     }
@@ -39,6 +41,7 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.serviceType],
         });
         return false;
     }
@@ -52,6 +55,7 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.clearance],
         });
         return false;
     }
@@ -64,6 +68,7 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
         sendLog('error', 'Invalid Identity Card', false, {
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.identityCard],
         });
         return false;
     }
@@ -77,6 +82,7 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.mobilePhone],
         });
         return false;
     }
@@ -90,6 +96,7 @@ const validatePhone = (matchedRecord: matchedRecordType, identifier: string): bo
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.phone],
         });
         return false;
     }
@@ -108,6 +115,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.dischargeDay],
         });
         return false;
     }
@@ -121,6 +129,7 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.mail],
         });
         return false;
     }
@@ -134,6 +143,7 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
             identifier: identityCard,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
+            value: fieldNames.invalidRankForPN,
         });
         return false;
     }
