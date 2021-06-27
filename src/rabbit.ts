@@ -1,33 +1,17 @@
 /* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
-import * as fs from 'fs';
+// import * as fs from 'fs';
 import basicMatch from './basicMatch';
 import config from './config/index';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
-import { logObject } from './types/log';
+import sendLog from './logger';
 
 const { rabbit } = config;
 
 require('dotenv').config();
 
-export const sendLog = async (level: string, message: string, system: string, service: string, extraFields?: any): Promise<void> => {
-    const logToSend: logObject = {
-        level,
-        message,
-        system,
-        service,
-    };
-
-    if (extraFields) {
-        logToSend.extraFields = extraFields;
-    }
-
-    console.log(`${message}, identifier: ${extraFields.identifier}, userID: ${extraFields.user}`);
-    await menash.send(rabbit.logQueue, logToSend);
-};
-
-export const initializeRabbit = async (): Promise<void> => {
+export default async (): Promise<void> => {
     console.log('Trying connect to rabbit...');
 
     await menash.connect(rabbit.uri);
@@ -40,19 +24,25 @@ export const initializeRabbit = async (): Promise<void> => {
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         async (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
-            const matchedRecord: matchedRecordType = basicMatch(obj);
+            try {
+                const matchedRecord: matchedRecordType = basicMatch(obj);
 
-            const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
+                const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
 
-            if (!hasIdentifier) {
-                sendLog('error', `No identifier `, 'Karting', 'Basic match', { user: `${matchedRecord.userID}` });
-            } else {
-                fs.appendFileSync('a.json', JSON.stringify({ record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID }));
-                fs.appendFileSync('a.json', ',');
-                await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
+                if (!matchedRecord) {
+                    sendLog('error', `Didn't went trough Basic Match`, false);
+                }
+                if (!hasIdentifier) {
+                    sendLog('error', `No identifier `, false, { user: `${matchedRecord.userID}` });
+                } else {
+                    await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
+                }
+
+                msg.ack();
+            } catch (err) {
+                sendLog('error', 'Unknown error', true);
+                msg.ack();
             }
-
-            msg.ack();
         },
         { noAck: false },
     );

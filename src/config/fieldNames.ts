@@ -212,4 +212,5 @@ export default {
         city: 'city_name',
     },
     unknown: 'unknown',
+    invalidRankForPN: 'az',
 };

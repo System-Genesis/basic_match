@@ -7,7 +7,7 @@ export default () => {
         mobilePhone: /^\d{2,3}-?\d{7}$/,
         mail: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         clearance: /[0-9]/,
-        identityCard: (idNumber: string): string | boolean | void => {
+        identityCard: (idNumber: string): boolean => {
             idNumber = idNumber.toString();
             if (!idNumber.match(/^\d{5,9}$/g)) return false;
             // The number is too short - add leading zeroes

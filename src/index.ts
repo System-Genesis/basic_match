@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { initializeRabbit } from './rabbit';
+import initializeRabbit from './rabbit';
 
 const main = async () => {
     await initializeRabbit();

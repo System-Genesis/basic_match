@@ -5,7 +5,7 @@
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import { sendLog } from '../rabbit';
+import sendLog from '../logger';
 
 const fn = fieldNames[fieldNames.sources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -19,7 +19,7 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: 
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        sendLog('error', 'Invalid entity type', 'Karting', 'Basic Match', { user: 'userID', source: fieldNames.sources.sf, runUID });
+        sendLog('error', 'Invalid entity type', false, { user: 'userID', source: fieldNames.sources.sf, runUID });
     }
 };
 
@@ -31,7 +31,7 @@ const setUserID = (matchedRecord: matchedRecordType, value: string) => {
     matchedRecord.userID = value.split('@')[0];
 };
 
-const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
@@ -49,10 +49,10 @@ export default (record: any, runUID: string) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
-    originalRecordFields.map((field: string) => {
+    originalRecordFields.forEach((field: string) => {
         if (record[field] && record[field] !== fieldNames.unknown) {
-            if (fieldsFuncs.has(field)) {
-                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            if (setFieldsFuncs.has(field)) {
+                setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.entityType) {
                 setEntityType(matchedRecord, record[field], runUID);
             }

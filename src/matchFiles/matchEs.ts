@@ -7,6 +7,7 @@
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import sendLog from '../logger';
 
 const fn = fieldNames[fieldNames.sources.es];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -15,9 +16,14 @@ const setJob = (matchedRecord: matchedRecordType, location: string, job: string)
     matchedRecord.job = location ? `${job} - ${location}` : job;
 };
 
-const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => {
+const setHierarchy = (matchedRecord: matchedRecordType, value: string, runUID: string): void => {
     let hr: string[] = value.split('/');
     if (hr[0] === '') {
+        sendLog('error', `Invalid hierarchy`, false, {
+            user: matchedRecord.userID,
+            source: fieldNames.sources.es,
+            runUID,
+        });
         return;
     }
 
@@ -33,7 +39,7 @@ const setUserID = (matchedRecord: matchedRecordType, value: string) => {
     matchedRecord.userID = value.split('@')[0];
 };
 
-const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
@@ -49,10 +55,9 @@ const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: st
     [fn.address, (matched, value) => setField(matched, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.userName, setUserID],
-    [fn.hierarchy, setHierarchy],
 ]);
 
-export default (record: any, _runUID: string) => {
+export default (record: any, runUID: string) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
@@ -60,12 +65,14 @@ export default (record: any, _runUID: string) => {
     const location: string = record[fn.location];
     matchedRecord.job = job || location; // incase theres no job but there is an location
 
-    originalRecordFields.map((field: string) => {
+    originalRecordFields.forEach((field: string) => {
         if (record[field] && record[field] !== fieldNames.unknown) {
-            if (fieldsFuncs.has(field)) {
-                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            if (setFieldsFuncs.has(field)) {
+                setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.job) {
                 setJob(matchedRecord, location, record[field]);
+            } else if (field === fn.hierarchy) {
+                setHierarchy(matchedRecord, record[field], runUID);
             }
         }
     });

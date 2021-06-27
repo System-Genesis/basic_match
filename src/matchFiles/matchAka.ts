@@ -10,7 +10,7 @@ import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 const fn = fieldNames[fieldNames.sources.aka];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
-const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
@@ -30,15 +30,14 @@ export default (record: any, _runUID: string): matchedRecordType => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
-    originalRecordFields.map((field: string) => {
-        if (record[field] && record[field] !== fieldNames.unknown && fieldsFuncs.has(field)) {
+    originalRecordFields.forEach((field: string) => {
+        if (record[field] && record[field] !== fieldNames.unknown && setFieldsFuncs.has(field)) {
             if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
-                console.log(`${record[fn.areaCodeMobile]}-${record[field]}`);
-                fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`);
+                setFieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`);
             } else if (field === fn.phone && record[fn.areaCode]) {
-                fieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCode]}-${record[field]}`);
+                setFieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCode]}-${record[field]}`);
             } else {
-                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+                setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             }
         }
     });

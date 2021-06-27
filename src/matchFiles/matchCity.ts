@@ -10,7 +10,7 @@ import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import { sendLog } from '../rabbit';
+import sendLog from '../logger';
 
 const fn = fieldNames[fieldNames.sources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -74,7 +74,7 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
             matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
         }
     } else {
-        await sendLog('error', `Invalid user id and entity type of user ${userID}`, 'Karting', 'Basic Match', {
+        await sendLog('error', `Invalid user id and entity type`, false, {
             user: 'userID',
             source: fieldNames.sources.city,
             runUID,
@@ -97,7 +97,7 @@ const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName
     }
 };
 
-const fieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
+const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
@@ -118,10 +118,10 @@ export default (record: any, runUID: string) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
-    originalRecordFields.map((field: string) => {
+    originalRecordFields.forEach((field: string) => {
         if (record[field] && record[field] !== fieldNames.unknown) {
-            if (fieldsFuncs.has(field)) {
-                fieldsFuncs.get(field)!(matchedRecord, record[field]);
+            if (setFieldsFuncs.has(field)) {
+                setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field], record);
             } else if (field === fn.domainUsers) {
