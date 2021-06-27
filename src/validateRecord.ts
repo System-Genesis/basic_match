@@ -12,6 +12,7 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
         sendLog('error', 'Invalid Rank', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -24,6 +25,7 @@ const validateAKAUnit = (matchedRecord: matchedRecordType, identifier: string): 
         sendLog('error', 'Invalid AKA Unit', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -36,6 +38,7 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
         sendLog('error', 'Invalid Service Type', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -48,6 +51,7 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
         sendLog('error', 'Invalid Clearance', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -59,6 +63,7 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
     if (!validators().identityCard(matchedRecord[matchedRecordFieldNames.identityCard])) {
         sendLog('error', 'Invalid Identity Card', false, {
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -71,6 +76,7 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
         sendLog('error', 'Invalid Mobile Phone', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -83,6 +89,7 @@ const validatePhone = (matchedRecord: matchedRecordType, identifier: string): bo
         sendLog('error', 'Invalid Phone', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -100,6 +107,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
         sendLog('error', 'Invalid Discharge Day', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -112,6 +120,7 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
         sendLog('error', 'Invalid mail', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
@@ -124,6 +133,7 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
         sendLog('warn', 'Removed Personal Number due to It is not a personal number', false, {
             identifier: identityCard,
             user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
         });
         return false;
     }
