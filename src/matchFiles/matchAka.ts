@@ -1,8 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-case-declarations */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';

@@ -53,8 +53,9 @@ export default {
         domainSuffix: '@jello.com',
         userName: 'userName',
         uniqeFieldForDeepDiff: 'tz',
-        birthdate: 'birthday',
+        birthDate: 'birthday',
         sex: 'sex',
+        serviceType: 'stype',
     },
     ads_name: {
         firstName: 'KfirstName',
@@ -166,8 +167,8 @@ export default {
         uniqeFieldForDeepDiff: 'personalNumber',
         sex: 'sex',
         sfSexValues: {
-            m: 'male',
-            f: 'female',
+            m: 'ז',
+            f: 'נ',
         },
         serviceType: 'stype',
         rank: 'rank',

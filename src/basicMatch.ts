@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import matchAka from './matchFiles/matchAka';
 import matchEs from './matchFiles/matchEs';
 import matchAdNN from './matchFiles/matchAdNN';
@@ -7,7 +6,7 @@ import matchSf from './matchFiles/matchSf';
 import fn from './config/fieldNames';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
-import validateRecord from './validateRecord';
+import filterFieldsByValidation from './utils/filterFieldsByValidation';
 import sendLog from './logger';
 
 const matchMap = new Map([
@@ -18,14 +17,14 @@ const matchMap = new Map([
     [fn.sources.sf, matchSf],
 ]);
 
-export default (obj: queueObject): matchedRecordType => {
+export default (obj: queueObject): matchedRecordType | null => {
     const { record, dataSource, runUID } = obj;
     let matchedRecord: matchedRecordType = {};
     if (matchMap.has(dataSource)) {
         matchedRecord = matchMap.get(dataSource)!(record, runUID);
-        validateRecord(matchedRecord);
+        filterFieldsByValidation(matchedRecord);
         return matchedRecord;
     }
     sendLog('error', `Unknown source`, false, { source: dataSource });
-    return {};
+    return null;
 };

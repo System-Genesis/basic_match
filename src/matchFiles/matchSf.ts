@@ -1,11 +1,8 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-case-declarations */
-/* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
+import assembleUserID from '../utils/assembleUserID';
 
 const fn = fieldNames[fieldNames.sources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -19,16 +16,14 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: 
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        sendLog('error', 'Invalid entity type', false, { user: 'userID', source: fieldNames.sources.sf, runUID });
+        sendLog('warn', 'Invalid entity type', false, { user: 'userID', source: fieldNames.sources.sf, runUID });
     }
 };
 
-const setHierarchy = (matchedRecord: matchedRecordType, value: string[] | string): void => {
-    matchedRecord.hierarchy = typeof value === 'string' ? value : value.join('/');
-};
-
-const setUserID = (matchedRecord: matchedRecordType, value: string) => {
-    matchedRecord.userID = value.split('@')[0];
+const setHierarchy = (matchedRecord: matchedRecordType, value: string[]): void => {
+    const hr = value;
+    if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    matchedRecord.hierarchy = hr.join('/');
 };
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
@@ -40,8 +35,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
-    [fn.userName, setUserID],
-    [fn.hierarchy, setHierarchy],
+    [fn.userName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.userID)],
     [fn.sex, setSex],
 ]);
 
@@ -55,11 +49,14 @@ export default (record: any, runUID: string) => {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.entityType) {
                 setEntityType(matchedRecord, record[field], runUID);
+            } else if (field === fn.hierarchy) {
+                setHierarchy(matchedRecord, record[field]);
             }
         }
     });
 
     matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.sf;
+    if (matchedRecord[matchedRecordFieldNames.userID]) matchedRecord[matchedRecordFieldNames.userID] = assembleUserID(matchedRecord);
 
     return matchedRecord;
 };

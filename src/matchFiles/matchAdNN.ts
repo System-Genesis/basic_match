@@ -1,13 +1,10 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-unused-expressions */
 /* eslint-disable array-callback-return */
-/* eslint-disable no-case-declarations */
 import fieldNames from '../config/fieldNames';
 import validators from '../config/validators';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
+import assembleUserID from '../utils/assembleUserID';
 
 const fn = fieldNames[fieldNames.sources.adNN];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -18,7 +15,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     if (userID.toLowerCase().startsWith(fn.extension)) {
         suffixIdentifier = userID.toLowerCase().replace(fn.extension, '');
     } else {
-        sendLog('error', `Invalid suffix identifier`, false, {
+        sendLog('warn', `Invalid suffix identifier`, false, {
             user: userID,
             source: fieldNames.sources.adNN,
             runUID,
@@ -36,7 +33,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     }
 
-    matchedRecord.userID = userID.toLowerCase().split('@')[0];
+    matchedRecord.userID = userID.toLowerCase();
 };
 
 // Take out job and hierarchy from the Hierarchy field. For the most part the last field contains the job and the full name
@@ -46,7 +43,7 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
     const splitSymbol = hierarchy.includes('\\') ? '\\' : '/';
     let hr: string[] = hierarchy.substring(0, hierarchy.lastIndexOf(splitSymbol)).trim().split(splitSymbol);
     if (hr[0] === '') {
-        sendLog('error', `Invalid hierarchy`, false, {
+        sendLog('warn', `Invalid hierarchy`, false, {
             user: matchedRecord.userID,
             source: fieldNames.sources.adNN,
             runUID,
@@ -55,7 +52,7 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
     }
 
     // Insert our root hierarchy if needed(the original hierarchy doesn't contains our root hierarchy)
-    hr[0] === fieldNames.rootHierarchy.ourCompany ? null : hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    if (hr[0] === fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
 
     // Delete unwanted spaces
     hr = hr.map((organizationName) => {
@@ -100,6 +97,7 @@ export default (record: any, runUID: string) => {
     });
 
     matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.adNN;
+    if (matchedRecord[matchedRecordFieldNames.userID]) matchedRecord[matchedRecordFieldNames.userID] = assembleUserID(matchedRecord);
 
     return matchedRecord;
 };

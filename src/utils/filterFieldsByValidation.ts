@@ -1,15 +1,14 @@
-/* eslint-disable no-param-reassign */
-import { matchedRecord as matchedRecordType } from './types/matchedRecord';
-import fieldNames from './config/fieldNames';
-import { RANKS, SERVICE_TYPES, AKA_UNITS } from './config/enums';
-import validators from './config/validators';
-import sendLog from './logger';
+import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import fieldNames from '../config/fieldNames';
+import { RANKS, SERVICE_TYPES, AKA_UNITS } from '../config/enums';
+import validators from '../config/validators';
+import sendLog from '../logger';
 
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const validateRank = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!RANKS.includes(matchedRecord[matchedRecordFieldNames.rank])) {
-        sendLog('error', 'Invalid Rank', false, {
+        sendLog('warn', 'Invalid Rank', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -23,7 +22,7 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
 
 const validateAKAUnit = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!AKA_UNITS.includes(matchedRecord[matchedRecordFieldNames.akaUnit])) {
-        sendLog('error', 'Invalid AKA Unit', false, {
+        sendLog('warn', 'Invalid AKA Unit', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -37,7 +36,7 @@ const validateAKAUnit = (matchedRecord: matchedRecordType, identifier: string): 
 
 const validateServiceType = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])) {
-        sendLog('error', 'Invalid Service Type', false, {
+        sendLog('warn', 'Invalid Service Type', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -51,7 +50,7 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
 
 const validateClearance = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().clearance.test(matchedRecord[matchedRecordFieldNames.clearance])) {
-        sendLog('error', 'Invalid Clearance', false, {
+        sendLog('warn', 'Invalid Clearance', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -64,8 +63,10 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
 };
 
 const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
+    // Remove 0's from the start
+    matchedRecord[matchedRecordFieldNames.identityCard] = matchedRecord[matchedRecordFieldNames.identityCard].replace(/^0+/, '');
     if (!validators().identityCard(matchedRecord[matchedRecordFieldNames.identityCard])) {
-        sendLog('error', 'Invalid Identity Card', false, {
+        sendLog('warn', 'Invalid Identity Card', false, {
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
             value: matchedRecord[matchedRecordFieldNames.identityCard],
@@ -78,7 +79,7 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
 
 const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().mobilePhone.test(matchedRecord[matchedRecordFieldNames.mobilePhone])) {
-        sendLog('error', 'Invalid Mobile Phone', false, {
+        sendLog('warn', 'Invalid Mobile Phone', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -92,7 +93,7 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
 
 const validatePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().phone.test(matchedRecord[matchedRecordFieldNames.phone])) {
-        sendLog('error', 'Invalid Phone', false, {
+        sendLog('warn', 'Invalid Phone', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -111,7 +112,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
         const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
         matchedRecord[matchedRecordFieldNames.dischargeDay] = new Date(date.getTime() - userTimezoneOffset).toISOString();
     } else {
-        sendLog('error', 'Invalid Discharge Day', false, {
+        sendLog('warn', 'Invalid Discharge Day', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -125,7 +126,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
 
 const validateMail = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().mail.test(matchedRecord[matchedRecordFieldNames.mail])) {
-        sendLog('error', 'Invalid mail', false, {
+        sendLog('warn', 'Invalid mail', false, {
             identifier,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
@@ -151,6 +152,20 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
     return true;
 };
 
+const validateBirthday = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    if (!Date.parse(matchedRecord[matchedRecordFieldNames.birthDate])) {
+        sendLog('warn', 'Invalid birthday', false, {
+            identifier,
+            user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
+            value: fieldNames.invalidRankForPN,
+        });
+        return false;
+    }
+
+    return true;
+};
+
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
     [matchedRecordFieldNames.akaUnit, validateAKAUnit],
     [matchedRecordFieldNames.clearance, validateClearance],
@@ -160,6 +175,7 @@ const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, i
     [matchedRecordFieldNames.phone, validatePhone],
     [matchedRecordFieldNames.rank, validateRank],
     [matchedRecordFieldNames.serviceType, validateServiceType],
+    [matchedRecordFieldNames.birthDate, validateBirthday],
 ]);
 
 export default (matchedRecord: matchedRecordType): void => {

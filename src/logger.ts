@@ -1,5 +1,4 @@
 import { menash } from 'menashmq';
-// import * as path from 'path';
 import * as winston from 'winston';
 import envConfig from './config/index';
 import { logObject } from './types/log';
@@ -7,8 +6,6 @@ import { logObject } from './types/log';
 const { rabbit } = envConfig;
 
 const { config, format } = winston;
-
-// const date = () => new Date(Date.now()).toLocaleDateString();
 
 const logger = winston.createLogger({
     levels: config.npm.levels,
@@ -24,7 +21,7 @@ const logger = winston.createLogger({
     transports: [new winston.transports.Console()],
 });
 
-export default async (level: string, message: string, localLog: boolean, extraFields?: any): Promise<void> => {
+export default (level: string, message: string, localLog: boolean, extraFields?: any): void => {
     const logToSend: logObject = {
         level,
         message,
@@ -37,7 +34,7 @@ export default async (level: string, message: string, localLog: boolean, extraFi
     }
 
     if (!localLog) {
-        await menash.send(rabbit.logQueue, logToSend);
+        menash.send(rabbit.logQueue, logToSend);
     }
 
     logger[level](`${message} ${!extraFields ? '' : JSON.stringify(extraFields)}`);

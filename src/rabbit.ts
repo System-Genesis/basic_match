@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
-// import * as fs from 'fs';
 import basicMatch from './basicMatch';
 import config from './config/index';
 import { queueObject } from './types/queueObject';
@@ -12,35 +10,46 @@ const { rabbit } = config;
 require('dotenv').config();
 
 export default async (): Promise<void> => {
-    console.log('Trying connect to rabbit...');
+    sendLog('info', 'Trying connect to rabbit...', true);
 
     await menash.connect(rabbit.uri);
     await menash.declareQueue(rabbit.beforeMatch);
     await menash.declareQueue(rabbit.afterMatch);
     await menash.declareQueue(rabbit.logQueue);
 
-    console.log('Rabbit connected');
+    sendLog('info', 'Rabbit connected', true);
 
     await menash.queue(rabbit.beforeMatch).activateConsumer(
-        async (msg: ConsumerMessage) => {
+        (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
+            // eslint-disable-next-line no-console
+            console.log(obj);
             try {
-                const matchedRecord: matchedRecordType = basicMatch(obj);
-
-                const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
+                const matchedRecord: matchedRecordType | null = basicMatch(obj);
 
                 if (!matchedRecord) {
                     sendLog('error', `Didn't went trough Basic Match`, false);
-                }
-                if (!hasIdentifier) {
-                    sendLog('error', `No identifier `, false, { user: `${matchedRecord.userID}` });
                 } else {
-                    await menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
-                }
+                    // eslint-disable-next-line no-console
+                    console.log(matchedRecord);
+                    const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
 
+                    if (!hasIdentifier) {
+                        sendLog('warn', `No identifier `, false, { user: `${matchedRecord.userID}` });
+                    } else {
+                        const identifier = matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId;
+                        menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
+                        sendLog(
+                            'info',
+                            `Record ${matchedRecord.userID ? `with userID ${matchedRecord.userID}` : ''}, ${identifier ? `with identifier ${identifier}` : ''
+                            } sent to merger service`,
+                            false,
+                        );
+                    }
+                }
                 msg.ack();
             } catch (err) {
-                sendLog('error', 'Unknown error', true);
+                sendLog('error', 'Unknown error', true, { msg: err });
                 msg.ack();
             }
         },

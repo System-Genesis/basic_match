@@ -1,16 +1,13 @@
-/* eslint-disable no-console */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-restricted-globals */
-/* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable no-case-declarations */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-unused-expressions */
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
+import assembleUserID from '../utils/assembleUserID';
+import { DOMAIN_SUFFIXES } from '../config/enums';
+
+const domainSuffixes: Map<string, string> = new Map<string, string>(JSON.parse(JSON.stringify(DOMAIN_SUFFIXES)));
 
 const fn = fieldNames[fieldNames.sources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -24,7 +21,6 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         const fullNameRegex = new RegExp(
             `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
         );
-        // eslint-disable-next-line prefer-const
         for (const [index, val] of hr.entries()) {
             const value = val.replace('(', '').replace(')', '');
             if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
@@ -48,16 +44,16 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
             matchedRecord.hierarchy = tempHr.replace(fn.rootHierarchy.city, defaultHierarchy);
         }
     } else {
-        const isInternal: boolean = record.domains.includes(fieldNames.city_name.domainNames.internal);
-        // Keep the internal hierarchy of internal du
-        matchedRecord.hierarchy = `${isInternal ? '' : defaultHierarchy}${tempHr.includes('/') ? `/${tempHr}` : ''}`;
+        const isLocalHierarchy: boolean = tempHr.split('/')[0] === fieldNames.rootHierarchy.ourCompany;
+        // If the hierarchy start with local root - doesn't need external root hierarchy injection
+        matchedRecord.hierarchy = `${isLocalHierarchy ? '' : defaultHierarchy}${tempHr.includes('/') ? `/${tempHr}` : ''}`;
         if (matchedRecord.hierarchy.startsWith('/')) {
             matchedRecord.hierarchy = matchedRecord.hierarchy.substring(1);
         }
     }
 };
 
-const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: string, runUID: string): Promise<void> => {
+const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, runUID: string): void => {
     const rawEntityType: string = userID[0];
 
     // set the entityType
@@ -67,14 +63,26 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
-        matchedRecord.goalUserId = userID.split('@')[0];
+        matchedRecord.goalUserId = userID;
 
-        // Remove the local GU prefix
-        if (userID.startsWith(fn.mirGUPrefixes.ads || fn.mirGUPrefixes.adNN)) {
-            matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
+        if (userID.startsWith(fn.mirGUPrefixes.ads)) {
+            matchedRecord.goalUserId = userID.split('@')[0];
+            matchedRecord.goalUserId = matchedRecord.goalUserId.replace(fn.mirGUPrefixes.ads, '');
+            matchedRecord.goalUserId += domainSuffixes.get(fieldNames.sources.ads);
+        } else if (userID.startsWith(fn.mirGUPrefixes.adNN)) {
+            matchedRecord.goalUserId = userID.split('@')[0];
+            matchedRecord.goalUserId = matchedRecord.goalUserId.replace(fn.mirGUPrefixes.adNN, '');
+            matchedRecord.goalUserId += domainSuffixes.get(fieldNames.sources.adNN);
         }
+
+        // matchedRecord.goalUserId = userID.split('@')[0];
+
+        // // Remove the local GU prefix
+        // if (userID.startsWith(fn.mirGUPrefixes.ads || fn.mirGUPrefixes.adNN)) {
+        //     matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
+        // }
     } else {
-        await sendLog('error', `Invalid user id and entity type`, false, {
+        sendLog('warn', `Invalid user id and entity type`, false, {
             user: 'userID',
             source: fieldNames.sources.city,
             runUID,
@@ -83,7 +91,7 @@ const setEntityTypeAndDI = async (matchedRecord: matchedRecordType, userID: stri
     }
 
     // Set the userID
-    matchedRecord.userID = userID.split('@')[0];
+    matchedRecord.userID = userID;
 };
 
 // Give priority to job field
@@ -133,6 +141,7 @@ export default (record: any, runUID: string) => {
     matchedRecord[matchedRecordFieldNames.source] = record[fn.domains].includes(fn.domainNames.external)
         ? fieldNames.sources.city
         : fieldNames.sources.mir;
+    if (matchedRecord[matchedRecordFieldNames.userID]) matchedRecord[matchedRecordFieldNames.userID] = assembleUserID(matchedRecord);
 
     return matchedRecord;
 };

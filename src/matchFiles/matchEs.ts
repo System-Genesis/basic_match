@@ -1,13 +1,8 @@
-/* eslint-disable no-console */
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-case-declarations */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable array-callback-return */
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
+import assembleUserID from '../utils/assembleUserID';
 
 const fn = fieldNames[fieldNames.sources.es];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -19,7 +14,7 @@ const setJob = (matchedRecord: matchedRecordType, location: string, job: string)
 const setHierarchy = (matchedRecord: matchedRecordType, value: string, runUID: string): void => {
     let hr: string[] = value.split('/');
     if (hr[0] === '') {
-        sendLog('error', `Invalid hierarchy`, false, {
+        sendLog('warn', `Invalid hierarchy`, false, {
             user: matchedRecord.userID,
             source: fieldNames.sources.es,
             runUID,
@@ -28,15 +23,12 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string, runUID: s
     }
 
     // Add our root hierarchy if needed - wasn't in the original hierarchy
-    hr[0] === fieldNames.rootHierarchy.ourCompany ? null : hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+
     hr = hr.map((organizationName) => {
         return organizationName.trim();
     });
     matchedRecord.hierarchy = hr.join('/');
-};
-
-const setUserID = (matchedRecord: matchedRecordType, value: string) => {
-    matchedRecord.userID = value.split('@')[0];
 };
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
@@ -54,7 +46,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.birthDate, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.birthDate)],
     [fn.address, (matched, value) => setField(matched, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
-    [fn.userName, setUserID],
+    [fn.userName, (matched, value) => setField(matched, value, matchedRecordFieldNames.userID)],
 ]);
 
 export default (record: any, runUID: string) => {
@@ -78,6 +70,7 @@ export default (record: any, runUID: string) => {
     });
 
     matchedRecord[matchedRecordFieldNames.source] = fieldNames.sources.es;
+    if (matchedRecord[matchedRecordFieldNames.userID]) matchedRecord[matchedRecordFieldNames.userID] = assembleUserID(matchedRecord);
 
     return matchedRecord;
 };
