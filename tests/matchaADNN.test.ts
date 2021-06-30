@@ -38,4 +38,30 @@ describe('Match adNN testing', () => {
 
         expect(matchedRecord).toEqual(expectedRecord);
     });
+
+    test('Invalid match - invalid userName', () => {
+        const record: any = {
+            KfirstName: 'Viola',
+            guName: 'Viola',
+            KlastName: 'Jacobi',
+            userPrincipalName: 'BB42337541',
+            Kjob: 'Regional Applications Associate',
+            hierarchy: 'in/doloribus/quis/Regional Applications Associate - Viola Jacobi',
+            sAMAccountName: 'Geovany69',
+            mail: 'Geovany69@rabiran.com',
+        };
+
+        const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.adNN, runUID: '123' });
+
+        const expectedRecord: matchedRecordType = {
+            firstName: 'Viola',
+            lastName: 'Jacobi',
+            hierarchy: 'in/doloribus/quis',
+            job: 'Viola Jacobi',
+            mail: 'Geovany69@rabiran.com',
+            source: 'adNN_name',
+        };
+
+        expect(matchedRecord).toEqual(expectedRecord);
+    });
 });
