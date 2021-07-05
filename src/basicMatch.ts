@@ -25,6 +25,6 @@ export default (obj: queueObject): matchedRecordType | null => {
         filterFieldsByValidation(matchedRecord);
         return matchedRecord;
     }
-    sendLog('error', `Unknown source`, false, { source: dataSource });
+    sendLog('error', `UNKNOWN_SOURCE`, false, { source: dataSource });
     return null;
 };

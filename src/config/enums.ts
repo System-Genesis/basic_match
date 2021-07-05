@@ -30,7 +30,7 @@ export const AKA_UNITS = [
     'mm5',
 ];
 
-export const DOMAIN_SUFFIXES = [
+export const DOMAIN_SUFFIXES: [string, string][] = [
     [fieldNames.sources.ads, '@rabiran.com'],
     [fieldNames.sources.es, '@jello.com'],
     [fieldNames.sources.adNN, '@adnn.com'],

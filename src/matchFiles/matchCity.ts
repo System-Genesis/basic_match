@@ -7,7 +7,7 @@ import sendLog from '../logger';
 import assembleUserID from '../utils/assembleUserID';
 import { DOMAIN_SUFFIXES } from '../config/enums';
 
-const domainSuffixes: Map<string, string> = new Map<string, string>(JSON.parse(JSON.stringify(DOMAIN_SUFFIXES)));
+const domainSuffixes: Map<string, string> = new Map<string, string>(DOMAIN_SUFFIXES);
 
 const fn = fieldNames[fieldNames.sources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;

@@ -49,7 +49,7 @@ export default async (): Promise<void> => {
                 }
                 msg.ack();
             } catch (err) {
-                sendLog('error', 'Unknown error', true, { msg: err });
+                sendLog('error', 'UNKNOWN_ERROR', true, { msg: err });
                 msg.ack();
             }
         },

@@ -6,4 +6,4 @@ const main = async () => {
     await initializeRabbit();
 };
 
-main().catch((err) => sendLog('error', err, true));
+main().catch((err) => sendLog('ERROR', err, true));
