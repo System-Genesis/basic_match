@@ -1,8 +1,9 @@
-/* eslint-disable no-console */
-import connectRabbit from './utils/rabbit';
+import sendLog from './logger';
+
+import initializeRabbit from './rabbit';
 
 const main = async () => {
-    await connectRabbit();
+    await initializeRabbit();
 };
 
-main().catch((err) => console.error(err));
+main().catch((err) => sendLog('ERROR', err, true));

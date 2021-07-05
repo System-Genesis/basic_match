@@ -11,6 +11,7 @@ const config = {
         },
         beforeMatch: env.get('CONSUME_QUEUE').required().asString(),
         afterMatch: env.get('PRODUCE_QUEUE').required().asString(),
+        logQueue: env.get('LOG_QUEUE').required().asString(),
     },
 };
 
