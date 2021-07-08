@@ -22,16 +22,12 @@ export default async (): Promise<void> => {
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
-            // eslint-disable-next-line no-console
-            console.log(obj);
             try {
                 const matchedRecord: matchedRecordType | null = basicMatch(obj);
 
                 if (!matchedRecord) {
                     sendLog('error', `Didn't went trough Basic Match`, false);
                 } else {
-                    // eslint-disable-next-line no-console
-                    console.log(matchedRecord);
                     const hasIdentifier: boolean = !!(matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId);
 
                     if (!hasIdentifier) {
