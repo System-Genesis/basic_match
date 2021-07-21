@@ -16,8 +16,6 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
-    [fn.phone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.phone)],
-    [fn.mobilePhone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mobilePhone)],
     [fn.birthDate, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.birthDate)],
 ]);
 
