@@ -1,5 +1,5 @@
 import fieldNames from '../config/fieldNames';
-import setField from './setField';
+import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
 import assembleUserID from '../utils/assembleUserID';
@@ -65,6 +65,12 @@ export default (record: any, runUID: string) => {
                 setJob(matchedRecord, location, record[field]);
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field], runUID);
+            } else if (field === fn.mobilePhone || field === fn.phone) {
+                setPhone(
+                    matchedRecord,
+                    record[field],
+                    field === fn.mobilePhone ? matchedRecordFieldNames.mobilePhone : matchedRecordFieldNames.phone,
+                );
             }
         }
     });
