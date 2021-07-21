@@ -78,9 +78,6 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
 };
 
 const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    if (!Array.isArray(matchedRecord[matchedRecordFieldNames.mobilePhone])) {
-        matchedRecord[matchedRecordFieldNames.mobilePhone] = [matchedRecord[matchedRecordFieldNames.mobilePhone]];
-    }
     if (!validators().mobilePhone.test(matchedRecord[matchedRecordFieldNames.mobilePhone])) {
         sendLog('warn', 'Invalid Mobile Phone', false, {
             identifier,
