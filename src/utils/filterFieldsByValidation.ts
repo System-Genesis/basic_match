@@ -193,12 +193,14 @@ export default (matchedRecord: matchedRecordType): void => {
         matchedRecord[matchedRecordFieldNames.mobilePhone] = matchedRecord[matchedRecordFieldNames.mobilePhone].filter((mobilePhone) =>
             validateMobilePhone(matchedRecord, mobilePhone),
         );
+        if (matchedRecord[matchedRecordFieldNames.mobilePhone].length === 0) delete matchedRecord[matchedRecordFieldNames.mobilePhone];
     }
 
     if (matchedRecord[matchedRecordFieldNames.phone]) {
         matchedRecord[matchedRecordFieldNames.phone] = matchedRecord[matchedRecordFieldNames.phone].filter((phone) =>
             validatePhone(matchedRecord, phone),
         );
+        if (matchedRecord[matchedRecordFieldNames.phone].length === 0) delete matchedRecord[matchedRecordFieldNames.phone];
     }
 
     const identifier: string =
