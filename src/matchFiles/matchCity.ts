@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import fieldNames from '../config/fieldNames';
-import setField from './setField';
+import setField, { setPhone } from './setField';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
@@ -115,7 +115,6 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
-    [fn.mobilePhone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mobilePhone)],
     [fn.address, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.profession, (matchedRecord, value) => setJob(matchedRecord, value, fn.profession)],
@@ -134,6 +133,8 @@ export default (record: any, runUID: string) => {
                 setHierarchy(matchedRecord, record[field], record);
             } else if (field === fn.domainUsers) {
                 setEntityTypeAndDI(matchedRecord, record[field], runUID);
+            } else if (field === fn.mobilePhone) {
+                setPhone(matchedRecord, record[field], matchedRecordFieldNames.mobilePhone);
             }
         }
     });

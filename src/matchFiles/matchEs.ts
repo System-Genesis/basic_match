@@ -1,5 +1,5 @@
 import fieldNames from '../config/fieldNames';
-import setField from './setField';
+import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import sendLog from '../logger';
 import assembleUserID from '../utils/assembleUserID';
@@ -41,8 +41,6 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.entityType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.entityType)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
-    [fn.mobilePhone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mobilePhone)],
-    [fn.phone, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.phone)],
     [fn.birthDate, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.birthDate)],
     [fn.address, (matched, value) => setField(matched, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
@@ -65,6 +63,12 @@ export default (record: any, runUID: string) => {
                 setJob(matchedRecord, location, record[field]);
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field], runUID);
+            } else if (field === fn.mobilePhone || field === fn.phone) {
+                setPhone(
+                    matchedRecord,
+                    record[field],
+                    field === fn.mobilePhone ? matchedRecordFieldNames.mobilePhone : matchedRecordFieldNames.phone,
+                );
             }
         }
     });

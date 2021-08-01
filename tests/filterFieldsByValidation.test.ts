@@ -20,7 +20,7 @@ describe('Validate Record and filter fields', () => {
             rank: 'something',
             sex: 'ז',
             birthDate: 'happy birthday',
-            mobilePhone: '1234',
+            mobilePhone: ['1234'],
             hierarchy: 'wallmart/beatae/excepturi/iste',
             userID: 'Kiley_Rippin8@jello.com',
             mail: 'Kiley_Rippin8@je@llo.com',
