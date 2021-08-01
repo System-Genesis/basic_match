@@ -1,5 +1,5 @@
 import fieldNames from '../config/fieldNames';
-import setField from './setField';
+import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 // import akaPhone from '../types/akaPhone';
 
@@ -27,13 +27,13 @@ export default (record: any, _runUID: string): matchedRecordType => {
     const matchedRecord: matchedRecordType = {};
 
     originalRecordFields.forEach((field: string) => {
-        if (record[field] && record[field] !== fieldNames.unknown && setFieldsFuncs.has(field)) {
-            if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
-                setFieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`);
-            } else if (field === fn.phone && record[fn.areaCode]) {
-                setFieldsFuncs.get(field)!(matchedRecord, `${record[fn.areaCode]}-${record[field]}`);
-            } else {
+        if (record[field] && record[field] !== fieldNames.unknown) {
+            if (setFieldsFuncs.has(field)) {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
+            } else if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
+                setPhone(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`, matchedRecordFieldNames.mobilePhone);
+            } else if (field === fn.phone && record[fn.areaCode]) {
+                setPhone(matchedRecord, `${record[fn.areaCode]}-${record[field]}`, matchedRecordFieldNames.phone);
             }
         }
     });

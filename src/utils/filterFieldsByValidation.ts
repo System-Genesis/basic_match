@@ -171,8 +171,6 @@ const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, i
     [matchedRecordFieldNames.clearance, validateClearance],
     [matchedRecordFieldNames.dischargeDay, validateDischargeDay],
     [matchedRecordFieldNames.mail, validateMail],
-    [matchedRecordFieldNames.mobilePhone, validateMobilePhone],
-    [matchedRecordFieldNames.phone, validatePhone],
     [matchedRecordFieldNames.rank, validateRank],
     [matchedRecordFieldNames.serviceType, validateServiceType],
     [matchedRecordFieldNames.birthDate, validateBirthday],
@@ -188,6 +186,20 @@ export default (matchedRecord: matchedRecordType): void => {
             delete matchedRecord[matchedRecordFieldNames.personalNumber];
     }
 
+    if (matchedRecord[matchedRecordFieldNames.mobilePhone]) {
+        matchedRecord[matchedRecordFieldNames.mobilePhone] = matchedRecord[matchedRecordFieldNames.mobilePhone].filter((mobilePhone) =>
+            validateMobilePhone(matchedRecord, mobilePhone),
+        );
+        if (matchedRecord[matchedRecordFieldNames.mobilePhone].length === 0) delete matchedRecord[matchedRecordFieldNames.mobilePhone];
+    }
+
+    if (matchedRecord[matchedRecordFieldNames.phone]) {
+        matchedRecord[matchedRecordFieldNames.phone] = matchedRecord[matchedRecordFieldNames.phone].filter((phone) =>
+            validatePhone(matchedRecord, phone),
+        );
+        if (matchedRecord[matchedRecordFieldNames.phone].length === 0) delete matchedRecord[matchedRecordFieldNames.phone];
+    }
+
     const identifier: string =
         matchedRecord[matchedRecordFieldNames.identityCard] ||
         matchedRecord[matchedRecordFieldNames.personalNumber] ||
@@ -196,7 +208,7 @@ export default (matchedRecord: matchedRecordType): void => {
     const recordFields: string[] = Object.keys(matchedRecord);
 
     recordFields.forEach((field) => {
-        if (validationFunctions.has(field) && field !== (matchedRecordFieldNames.identityCard || matchedRecordFieldNames.personalNumber)) {
+        if (validationFunctions.has(field)) {
             // If field is invalid - delete the field
             if (!validationFunctions.get(field)!(matchedRecord, identifier)) {
                 delete matchedRecord[field];

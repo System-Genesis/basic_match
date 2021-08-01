@@ -10,8 +10,8 @@ export type matchedRecord = {
     akaUnit?: string;
     entityType?: string;
     serviceType?: string;
-    mobilePhone?: string;
-    phone?: string;
+    mobilePhone?: string[];
+    phone?: string[];
     birthDate?: string;
     address?: string;
     mail?: string;
