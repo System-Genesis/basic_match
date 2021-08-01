@@ -22,7 +22,8 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: 
 
 const setHierarchy = (matchedRecord: matchedRecordType, value: string[]): void => {
     const hr = value;
-    if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    // if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    hr.unshift(`${fieldNames.treeRoots.sf}/`);
     matchedRecord.hierarchy = hr.join('/');
 };
 
