@@ -1,18 +1,4 @@
-# docker-build:
-#   # Official docker image.
-#   image: docker:latest
-#   stage: build
-#   services:
-#     - docker:18.09-dind
-#   before_script:
-#     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-#   script:
-#     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
-#     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
-
-# # This is a basic workflow to help you get started with Actions
-
-name: try
+name: Build CI
 
 # Controls when the workflow will run
 on:
@@ -40,29 +26,18 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          username: ${{  secrets.CI_REGISTRY_USER }}
-          password: ${{ secrets.CI_REGISTRY_PASSWORD }}
+          username: ${{  secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ secrets.CI_REGISTRY_IMAGE }}
+          images: ${{ secrets.DOCKER_IMAGE }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
           push: true
-          tags: ${{ secrets.CI_COMMIT_REF_SLUG }}
-
-      # Runs a single command using the runners shell
-      # - name: login
-      #   run: docker login -u ${{ secrets.CI_REGISTRY_USER }} -p ${{ secrets.CI_REGISTRY_PASSWORD }}
-
-      # Runs a set of commands using the runners shell
-      # - name: build
-      #   run: docker build -t ${{ secrets.CI_REGISTRY_IMAGE }}:${{ secrets.CI_COMMIT_REF_SLUG }} .
-
-      # - name: push
-      #   run: docker push ${{ secrets.CI_REGISTRY_IMAGE }}:${{ secrets.CI_COMMIT_REF_SLUG }}
+          tags: ${{ secrets.DOCKER_TAG }}
