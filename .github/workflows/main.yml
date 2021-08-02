@@ -18,7 +18,7 @@ name: try
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [master, main, dev, match-to-prod-and-separate-tress]
+    branches: [master, main, dev, match-to-pncy-and-separate-tress]
   pull_request:
     branches: [master, main, dev]
 
