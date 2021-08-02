@@ -36,11 +36,11 @@ jobs:
     steps:
       # Runs a single command using the runners shell
       - name: login
-        run: docker login -u ${{ CI_REGISTRY_USER }} -p ${{ CI_REGISTRY_PASSWORD }} ${{ CI_REGISTRY }}
+        run: docker login -u ${{ secrets.CI_REGISTRY_USER }} -p ${{ secrets.CI_REGISTRY_PASSWORD }} ${{ secrets.CI_REGISTRY }}
 
       # Runs a set of commands using the runners shell
       - name: build
-        run: docker build --pull -t ${{ CI_REGISTRY_IMAGE }}:${{ CI_COMMIT_REF_SLUG }} .
+        run: docker build --pull -t ${{ secrets.CI_REGISTRY_IMAGE }}:${{ secrets.CI_COMMIT_REF_SLUG }} .
 
       - name: push
-        run: docker push ${{ CI_REGISTRY_IMAGE }}:${{ CI_COMMIT_REF_SLUG }}
+        run: docker push ${{ secrets.CI_REGISTRY_IMAGE }}:${{ secrets.CI_COMMIT_REF_SLUG }}
