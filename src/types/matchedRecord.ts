@@ -1,3 +1,5 @@
+import picture from './picture';
+
 export type matchedRecord = {
     firstName?: string;
     lastName?: string;
@@ -20,4 +22,5 @@ export type matchedRecord = {
     userID?: string;
     source?: string;
     goalUserId?: string;
+    picture?: picture;
 };

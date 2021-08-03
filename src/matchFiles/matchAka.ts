@@ -41,6 +41,8 @@ export default (record: any, _runUID: string): matchedRecordType => {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.phone) {
                 setAkaPhones(matchedRecord, record[field]);
+            } else if (field === fn.picture) {
+                matchedRecord[matchedRecordFieldNames.picture] = record[field];
             }
         }
     });
