@@ -52,12 +52,16 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
     }
 
     // Insert our root hierarchy if needed(the original hierarchy doesn't contains our root hierarchy)
-    if (hr[0] === fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    // if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+
+    // Insert tree root
+    hr.unshift(`${fieldNames.treeRoots.adNN}/`);
 
     // Delete unwanted spaces
     hr = hr.map((organizationName) => {
         return organizationName.trim();
     });
+
     matchedRecord.hierarchy = hr.join('/');
     matchedRecord.hierarchy = matchedRecord.hierarchy.replace(new RegExp('\u{200f}', 'g'), '');
 

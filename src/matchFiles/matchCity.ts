@@ -51,6 +51,13 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
             matchedRecord.hierarchy = matchedRecord.hierarchy.substring(1);
         }
     }
+
+    // If source is city or mir
+    if (record[fn.domains].includes(fn.domainNames.external)) {
+        if (!matchedRecord.hierarchy!.startsWith(fieldNames.treeRoots.city)) matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.city}/`);
+    } else {
+        matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.mir}/`);
+    }
 };
 
 const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, runUID: string): void => {
