@@ -12,7 +12,7 @@ require('dotenv').config();
 export default async (): Promise<void> => {
     sendLog('info', 'Trying connect to rabbit...', true);
 
-    await menash.connect(rabbit.uri);
+    await menash.connect(rabbit.uri, rabbit.retryOptions);
     await menash.declareQueue(rabbit.beforeMatch);
     await menash.declareQueue(rabbit.afterMatch);
     await menash.declareQueue(rabbit.logQueue);
