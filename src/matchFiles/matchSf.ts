@@ -25,7 +25,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string[]): void =
     // if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
 
     // Insert tree root
-    hr.unshift(`${fieldNames.treeRoots.sf}/`);
+    hr.unshift(`${fieldNames.treeRoots.sf}`);
     matchedRecord.hierarchy = hr.join('/');
 };
 
