@@ -214,4 +214,11 @@ export default {
     },
     unknown: 'unknown',
     invalidRankForPN: 'az',
+    treeRoots: {
+        es: 'es_name',
+        adNN: 'adNN_name',
+        sf: 'sf_name',
+        city: 'city_name',
+        mir: 'mir_name',
+    },
 };
