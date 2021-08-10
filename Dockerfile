@@ -8,5 +8,3 @@ COPY . .
 
 RUN npm run build || true
 CMD node dist/index.js
-
-EXPOSE 9000
