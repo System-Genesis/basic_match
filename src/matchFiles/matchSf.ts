@@ -16,7 +16,7 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: 
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        sendLog('warn', 'Invalid entity type', false, { user: 'userID', source: fieldNames.sources.sf, runUID });
+        sendLog('warn', 'Invalid entity type', false, { user: matchedRecord.userID, source: fieldNames.sources.sf, runUID });
     }
 };
 

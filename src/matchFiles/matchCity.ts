@@ -90,7 +90,7 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
         // }
     } else {
         sendLog('warn', `Invalid user id and entity type`, false, {
-            user: 'userID',
+            user: userID,
             source: fieldNames.sources.city,
             runUID,
         });
