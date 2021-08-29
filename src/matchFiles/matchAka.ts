@@ -11,7 +11,7 @@ const setAkaPhones = (matchedRecord: matchedRecordType, phones: akaPhone | akaPh
     phones.forEach((phone) => {
         setPhone(
             matchedRecord,
-            `${phone.KIDOMET}${phone.MIS_TELEPHON}`,
+            `0${phone.KIDOMET}${phone.MIS_TELEPHON}`,
             phone.SUG_TELEPHONE === '1' ? matchedRecordFieldNames.phone : matchedRecordFieldNames.mobilePhone,
         );
     });
