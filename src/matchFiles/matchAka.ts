@@ -2,6 +2,7 @@ import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import akaPhone from '../types/akaPhone';
+import { PNCYPicture as pictureType } from '../types/pictures';
 
 const fn = fieldNames[fieldNames.sources.aka];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -15,6 +16,19 @@ const setAkaPhones = (matchedRecord: matchedRecordType, phones: akaPhone | akaPh
             phone.SUG_TELEPHONE === '1' ? matchedRecordFieldNames.phone : matchedRecordFieldNames.mobilePhone,
         );
     });
+};
+
+const setPicture = (matchedRecord: matchedRecordType, picture: pictureType) => {
+    matchedRecord.picture = {
+        profile: {
+            url: picture.path,
+            meta: {
+                format: picture.format,
+                takenAt: picture.takenAt,
+                updatedAt: picture.updatedAt,
+            },
+        },
+    };
 };
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
@@ -42,7 +56,7 @@ export default (record: any, _runUID: string): matchedRecordType => {
             } else if (field === fn.phone) {
                 setAkaPhones(matchedRecord, record[field]);
             } else if (field === fn.picture) {
-                matchedRecord[matchedRecordFieldNames.picture] = record[field];
+                setPicture(matchedRecord, record[field]);
             }
         }
     });

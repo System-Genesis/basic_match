@@ -1,4 +1,4 @@
-import picture from './picture';
+import { picture } from './pictures';
 
 export type matchedRecord = {
     firstName?: string;
