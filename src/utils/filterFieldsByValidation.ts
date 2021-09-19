@@ -1,6 +1,6 @@
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import fieldNames from '../config/fieldNames';
-import { RANKS, SERVICE_TYPES, AKA_UNITS } from '../config/enums';
+import { RANKS, SERVICE_TYPES, AKA_UNITS, C_SERVICE_TYPES, MALE_ENUM, FEMALE_ENUM } from '../config/enums';
 import validators from '../config/validators';
 import sendLog from '../logger';
 
@@ -43,6 +43,13 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
             value: matchedRecord[matchedRecordFieldNames.serviceType],
         });
         return false;
+    }
+
+    // If source is Aka set Entity type
+    if (matchedRecord[matchedRecordFieldNames.source] === fieldNames.sources.aka) {
+        matchedRecord[matchedRecordFieldNames.entityType] = C_SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])
+            ? fieldNames.entityTypeValue.c
+            : fieldNames.entityTypeValue.s;
     }
 
     return true;
@@ -166,6 +173,23 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
     return true;
 };
 
+const validateSex = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    const sexLowerCased = matchedRecord[matchedRecordFieldNames.sex].toLowerCase();
+    if (MALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.m;
+    else if (FEMALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.f;
+    else {
+        sendLog('warn', 'Invalid sex', false, {
+            identifier,
+            user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.sex],
+        });
+        return false;
+    }
+
+    return true;
+};
+
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
     [matchedRecordFieldNames.akaUnit, validateAKAUnit],
     [matchedRecordFieldNames.clearance, validateClearance],
@@ -174,6 +198,7 @@ const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, i
     [matchedRecordFieldNames.rank, validateRank],
     [matchedRecordFieldNames.serviceType, validateServiceType],
     [matchedRecordFieldNames.birthDate, validateBirthday],
+    [matchedRecordFieldNames.sex, validateSex],
 ]);
 
 export default (matchedRecord: matchedRecordType): void => {

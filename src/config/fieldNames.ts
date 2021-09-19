@@ -221,4 +221,8 @@ export default {
         city: 'city_name',
         mir: 'mir_name',
     },
+    sexValues: {
+        f: 'female',
+        m: 'male',
+    },
 };

@@ -38,3 +38,8 @@ export const DOMAIN_SUFFIXES: [string, string][] = [
     [fieldNames.sources.city, '@city.com'],
     [fieldNames.sources.mir, '@city.com'],
 ];
+
+export const C_SERVICE_TYPES: string[] = ['F', 'G'];
+
+export const MALE_ENUM = ['m', 'male', 'ז', 'זכר'];
+export const FEMALE_ENUM = ['f', 'נ', 'נקבה', 'female'];

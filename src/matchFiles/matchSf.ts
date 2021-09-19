@@ -7,11 +7,6 @@ import assembleUserID from '../utils/assembleUserID';
 const fn = fieldNames[fieldNames.sources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
-const setSex = (matchedRecord: matchedRecordType, value: string): void => {
-    const sfSex: string[] = Object.keys(fn.sfSexValues);
-    matchedRecord.sex = value === sfSex[0] ? fn.sfSexValues[sfSex[0]] : fn.sfSexValues[sfSex[1]];
-};
-
 const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: string): void => {
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
@@ -39,7 +34,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
     [fn.userName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.userID)],
-    [fn.sex, setSex],
+    [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
 ]);
 
 export default (record: any, runUID: string) => {
