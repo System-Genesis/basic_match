@@ -70,7 +70,6 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
-        matchedRecord.goalUserId = userID;
 
         if (userID.startsWith(fn.mirGUPrefixes.ads)) {
             matchedRecord.goalUserId = userID.split('@')[0];
@@ -80,6 +79,8 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
             matchedRecord.goalUserId = userID.split('@')[0];
             matchedRecord.goalUserId = matchedRecord.goalUserId.replace(fn.mirGUPrefixes.adNN, '');
             matchedRecord.goalUserId += domainSuffixes.get(fieldNames.sources.adNN);
+        } else {
+            matchedRecord.goalUserId = userID.split('@')[0] + domainSuffixes.get(fieldNames.sources.city);
         }
 
         // matchedRecord.goalUserId = userID.split('@')[0];
