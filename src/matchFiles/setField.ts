@@ -6,6 +6,6 @@ export default (matchedRecord: matchedRecordType, value: string, fieldName: stri
 };
 
 export const setPhone = (matchedRecord: matchedRecordType, value: string | string[], fieldName: string): void => {
-    if (!Array.isArray(value)) value = [value];
-    matchedRecord[fieldName] = value;
+    if (!Array.isArray(value)) value = [value.replace('-', '')];
+    matchedRecord[fieldName] = value.map((val) => val.replace('-', ''));
 };
