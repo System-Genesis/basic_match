@@ -132,6 +132,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
 };
 
 const validateMail = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    matchedRecord[matchedRecordFieldNames.mail] = matchedRecord[matchedRecordFieldNames.mail].toLowerCase();
     if (!validators().mail.test(matchedRecord[matchedRecordFieldNames.mail])) {
         sendLog('warn', 'Invalid mail', false, {
             identifier,
