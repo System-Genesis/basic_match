@@ -54,6 +54,8 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
 
     // If source is city or mir
     if (record[fn.domains].includes(fn.domainNames.external)) {
+        if (matchedRecord.hierarchy!.startsWith(fieldNames.rootHierarchy.city))
+            matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(fieldNames.rootHierarchy.city, fieldNames.treeRoots.city);
         if (!matchedRecord.hierarchy!.startsWith(fieldNames.treeRoots.city))
             matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.city}/`);
     } else {
