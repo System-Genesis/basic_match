@@ -1,6 +1,6 @@
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import fieldNames from '../config/fieldNames';
-import { RANKS, SERVICE_TYPES, AKA_UNITS, C_SERVICE_TYPES, MALE_ENUM, FEMALE_ENUM } from '../config/enums';
+import { RANKS, SERVICE_TYPES, C_SERVICE_TYPES, MALE_ENUM, FEMALE_ENUM } from '../config/enums';
 import validators from '../config/validators';
 import sendLog from '../logger';
 
@@ -13,20 +13,6 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
             value: matchedRecord[matchedRecordFieldNames.rank],
-        });
-        return false;
-    }
-
-    return true;
-};
-
-const validateAKAUnit = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    if (!AKA_UNITS.includes(matchedRecord[matchedRecordFieldNames.akaUnit])) {
-        sendLog('warn', 'Invalid AKA Unit', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.akaUnit],
         });
         return false;
     }
@@ -195,7 +181,6 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
 };
 
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
-    [matchedRecordFieldNames.akaUnit, validateAKAUnit],
     [matchedRecordFieldNames.clearance, validateClearance],
     [matchedRecordFieldNames.dischargeDay, validateDischargeDay],
     [matchedRecordFieldNames.mail, validateMail],
