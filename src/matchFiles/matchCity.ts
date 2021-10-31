@@ -54,7 +54,10 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
 
     // If source is city or mir
     if (record[fn.domains].includes(fn.domainNames.external)) {
-        if (!matchedRecord.hierarchy!.startsWith(fieldNames.treeRoots.city)) matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.city}/`);
+        if (matchedRecord.hierarchy!.startsWith(fieldNames.rootHierarchy.city))
+            matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(fieldNames.rootHierarchy.city, fieldNames.treeRoots.city);
+        if (!matchedRecord.hierarchy!.startsWith(fieldNames.treeRoots.city))
+            matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.city}/`);
     } else {
         matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.mir}/`);
     }
@@ -70,7 +73,6 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
-        matchedRecord.goalUserId = userID;
 
         if (userID.startsWith(fn.mirGUPrefixes.ads)) {
             matchedRecord.goalUserId = userID.split('@')[0];
@@ -80,6 +82,8 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
             matchedRecord.goalUserId = userID.split('@')[0];
             matchedRecord.goalUserId = matchedRecord.goalUserId.replace(fn.mirGUPrefixes.adNN, '');
             matchedRecord.goalUserId += domainSuffixes.get(fieldNames.sources.adNN);
+        } else {
+            matchedRecord.goalUserId = userID.split('@')[0] + domainSuffixes.get(fieldNames.sources.city);
         }
 
         // matchedRecord.goalUserId = userID.split('@')[0];
@@ -90,7 +94,7 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
         // }
     } else {
         sendLog('warn', `Invalid user id and entity type`, false, {
-            user: 'userID',
+            user: userID,
             source: fieldNames.sources.city,
             runUID,
         });

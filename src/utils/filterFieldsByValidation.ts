@@ -1,6 +1,6 @@
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import fieldNames from '../config/fieldNames';
-import { RANKS, SERVICE_TYPES, AKA_UNITS } from '../config/enums';
+import { RANKS, SERVICE_TYPES, C_SERVICE_TYPES, MALE_ENUM, FEMALE_ENUM } from '../config/enums';
 import validators from '../config/validators';
 import sendLog from '../logger';
 
@@ -20,20 +20,6 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
     return true;
 };
 
-const validateAKAUnit = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    if (!AKA_UNITS.includes(matchedRecord[matchedRecordFieldNames.akaUnit])) {
-        sendLog('warn', 'Invalid AKA Unit', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.akaUnit],
-        });
-        return false;
-    }
-
-    return true;
-};
-
 const validateServiceType = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])) {
         sendLog('warn', 'Invalid Service Type', false, {
@@ -43,6 +29,13 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
             value: matchedRecord[matchedRecordFieldNames.serviceType],
         });
         return false;
+    }
+
+    // If source is Aka set Entity type
+    if (matchedRecord[matchedRecordFieldNames.source] === fieldNames.sources.aka) {
+        matchedRecord[matchedRecordFieldNames.entityType] = C_SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])
+            ? fieldNames.entityTypeValue.c
+            : fieldNames.entityTypeValue.s;
     }
 
     return true;
@@ -125,6 +118,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
 };
 
 const validateMail = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    matchedRecord[matchedRecordFieldNames.mail] = matchedRecord[matchedRecordFieldNames.mail].toLowerCase();
     if (!validators().mail.test(matchedRecord[matchedRecordFieldNames.mail])) {
         sendLog('warn', 'Invalid mail', false, {
             identifier,
@@ -139,12 +133,15 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
 };
 
 const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: string): boolean => {
-    if (matchedRecord[matchedRecordFieldNames.rank] && matchedRecord[matchedRecordFieldNames.rank] === fieldNames.invalidRankForPN) {
+    if (
+        Number.isNaN(matchedRecord[matchedRecordFieldNames.personalNumber]) ||
+        (matchedRecord[matchedRecordFieldNames.rank] && matchedRecord[matchedRecordFieldNames.rank] === fieldNames.invalidRankForPN)
+    ) {
         sendLog('warn', 'Removed Personal Number due to It is not a personal number', false, {
             identifier: identityCard,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],
-            value: fieldNames.invalidRankForPN,
+            value: matchedRecord[matchedRecordFieldNames.personalNumber],
         });
         return false;
     }
@@ -166,14 +163,31 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
     return true;
 };
 
+const validateSex = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    const sexLowerCased = matchedRecord[matchedRecordFieldNames.sex].toLowerCase();
+    if (MALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.m;
+    else if (FEMALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.f;
+    else {
+        sendLog('warn', 'Invalid sex', false, {
+            identifier,
+            user: matchedRecord[matchedRecordFieldNames.userID],
+            source: matchedRecord[matchedRecordFieldNames.source],
+            value: matchedRecord[matchedRecordFieldNames.sex],
+        });
+        return false;
+    }
+
+    return true;
+};
+
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
-    [matchedRecordFieldNames.akaUnit, validateAKAUnit],
     [matchedRecordFieldNames.clearance, validateClearance],
     [matchedRecordFieldNames.dischargeDay, validateDischargeDay],
     [matchedRecordFieldNames.mail, validateMail],
     [matchedRecordFieldNames.rank, validateRank],
     [matchedRecordFieldNames.serviceType, validateServiceType],
     [matchedRecordFieldNames.birthDate, validateBirthday],
+    [matchedRecordFieldNames.sex, validateSex],
 ]);
 
 export default (matchedRecord: matchedRecordType): void => {

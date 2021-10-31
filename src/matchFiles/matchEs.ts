@@ -25,7 +25,8 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string, runUID: s
     // Add our root hierarchy if needed - wasn't in the original hierarchy
     // if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
 
-    hr.unshift(`${fieldNames.treeRoots.es}/`);
+    // Insert tree root
+    hr.unshift(`${fieldNames.treeRoots.es}`);
 
     hr = hr.map((organizationName) => {
         return organizationName.trim();

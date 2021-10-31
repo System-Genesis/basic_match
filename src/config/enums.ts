@@ -4,32 +4,6 @@ export const RANKS = ['unknown', 'rookie', 'champion', 'ultimate'];
 
 export const SERVICE_TYPES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
-export const AKA_UNITS = [
-    'gondor',
-    'mordor',
-    'wallmart',
-    'es1',
-    'es2',
-    'es3',
-    'es4',
-    'es5',
-    'ads1',
-    'ads2',
-    'ads3',
-    'ads4',
-    'ads5',
-    'city1',
-    'city2',
-    'city3',
-    'city4',
-    'city5',
-    'mm1',
-    'mm2',
-    'mm3',
-    'mm4',
-    'mm5',
-];
-
 export const DOMAIN_SUFFIXES: [string, string][] = [
     [fieldNames.sources.ads, '@rabiran.com'],
     [fieldNames.sources.es, '@jello.com'],
@@ -38,3 +12,8 @@ export const DOMAIN_SUFFIXES: [string, string][] = [
     [fieldNames.sources.city, '@city.com'],
     [fieldNames.sources.mir, '@city.com'],
 ];
+
+export const C_SERVICE_TYPES: string[] = ['F', 'G'];
+
+export const MALE_ENUM = ['m', 'male', 'ז', 'זכר'];
+export const FEMALE_ENUM = ['f', 'נ', 'נקבה', 'female'];
