@@ -1,9 +1,35 @@
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
+import akaPhone from '../types/akaPhone';
+import { PNCYPicture as pictureType } from '../types/pictures';
 
 const fn = fieldNames[fieldNames.sources.aka];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
+
+const setAkaPhones = (matchedRecord: matchedRecordType, phones: akaPhone | akaPhone[]) => {
+    if (!Array.isArray(phones)) phones = [phones];
+    phones.forEach((phone) => {
+        setPhone(
+            matchedRecord,
+            `0${phone.KIDOMET}${phone.MIS_TELEPHON}`,
+            phone.SUG_TELEPHONE === '1' ? matchedRecordFieldNames.phone : matchedRecordFieldNames.mobilePhone,
+        );
+    });
+};
+
+const setPicture = (matchedRecord: matchedRecordType, picture: pictureType) => {
+    matchedRecord.picture = {
+        profile: {
+            meta: {
+                path: picture.path,
+                format: picture.format,
+                takenAt: picture.takenAt,
+                updatedAt: picture.updatedAt,
+            },
+        },
+    };
+};
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
@@ -28,10 +54,10 @@ export default (record: any, _runUID: string): matchedRecordType => {
         if (record[field] && record[field] !== fieldNames.unknown) {
             if (setFieldsFuncs.has(field)) {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
-            } else if (field === fn.mobilePhone && record[fn.areaCodeMobile]) {
-                setPhone(matchedRecord, `${record[fn.areaCodeMobile]}-${record[field]}`, matchedRecordFieldNames.mobilePhone);
-            } else if (field === fn.phone && record[fn.areaCode]) {
-                setPhone(matchedRecord, `${record[fn.areaCode]}-${record[field]}`, matchedRecordFieldNames.phone);
+            } else if (field === fn.phone) {
+                setAkaPhones(matchedRecord, record[field]);
+            } else if (field === fn.picture) {
+                setPicture(matchedRecord, record[field]);
             }
         }
     });

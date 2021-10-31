@@ -202,6 +202,7 @@ export default {
         userID: 'userID',
         source: 'source',
         goalUserId: 'goalUserId',
+        picture: 'picture',
     },
     entityTypeValue: {
         s: 'agumon',
