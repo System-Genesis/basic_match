@@ -8,8 +8,8 @@ export type PNCYPicture = {
 
 export type picture = {
     profile: {
-        url: string;
         meta: {
+            path: string;
             format: string;
             takenAt: string;
             updatedAt: string;
