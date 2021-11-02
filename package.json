@@ -13,7 +13,9 @@
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier": "prettier --config .prettierrc.js 'src/**/*.ts' --check",
     "prettier:fix": "prettier --config .prettierrc.js 'src/**/*.ts' --write",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "docker-dockerhub": "docker build -t systemgenesis0/basic_match . && docker push systemgenesis0/basic_match",
+    "docker-azure": "docker build -t genesisproject.azurecr.io/system-genesis/basic_match:latest . && docker push genesisproject.azurecr.io/system-genesis/basic_match:latest "
   },
   "author": "Alexander Gurevich",
   "license": "ISC",
