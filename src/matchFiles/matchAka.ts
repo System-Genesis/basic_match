@@ -19,7 +19,7 @@ const setAkaPhones = (matchedRecord: matchedRecordType, phones: akaPhone | akaPh
 };
 
 const setPicture = (matchedRecord: matchedRecordType, picture: pictureType) => {
-    matchedRecord.picture = {
+    matchedRecord.pictures = {
         profile: {
             meta: {
                 path: picture.path,

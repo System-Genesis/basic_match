@@ -22,5 +22,5 @@ export type matchedRecord = {
     userID?: string;
     source?: string;
     goalUserId?: string;
-    picture?: picture;
+    pictures?: picture;
 };
