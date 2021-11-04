@@ -57,7 +57,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         if (matchedRecord.hierarchy!.startsWith(fieldNames.rootHierarchy.city))
             matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(fieldNames.rootHierarchy.city, fieldNames.treeRoots.city);
         if (!matchedRecord.hierarchy!.startsWith(fieldNames.treeRoots.city))
-            matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.city}/`);
+            matchedRecord.hierarchy = `${fieldNames.treeRoots.city}/${matchedRecord.hierarchy!}`;
     } else {
         matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.mir}/`);
     }
