@@ -35,7 +35,7 @@ describe('Validate Record and filter fields', () => {
             lastName: 'Rippin',
             firstName: 'Kiley',
             entityType: 'agumon',
-            sex: 'ז',
+            sex: 'male',
             hierarchy: 'wallmart/beatae/excepturi/iste',
             userID: 'Kiley_Rippin8@jello.com',
             source: 'es_name',

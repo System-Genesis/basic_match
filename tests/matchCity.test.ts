@@ -38,7 +38,8 @@ describe('Test hierarchy', () => {
         };
 
         const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.city, runUID: '123' });
-        const expectedHierarchy = 'wallmart/dolores/animi/cum/ullam';
+        const expectedHierarchy = `${fieldNames.sources.city}/wallmart/dolores/animi/cum/ullam`;
+        console.log(matchedRecord!.hierarchy);
         expect(matchedRecord!.hierarchy).toEqual(expectedHierarchy);
     });
 
@@ -134,7 +135,7 @@ describe('Test Persons', () => {
 
         const expectedRecord: matchedRecordType = {
             entityType: 'agumon',
-            userID: 'e316853081@rafael.turtle.com',
+            userID: 'e316853081@city.com',
             mobilePhone: ['0502701436'],
             clearance: '3',
             firstName: 'Angel',
@@ -142,7 +143,7 @@ describe('Test Persons', () => {
             personalNumber: '10191758',
             dischargeDay: '2021-04-14T00:01:14.151Z',
             job: 'Regional Optimization Associate',
-            hierarchy: 'wallmart/fugit/nulla',
+            hierarchy: `${fieldNames.sources.city}/wallmart/fugit/nulla`,
             source: 'city_name',
         };
 
@@ -175,14 +176,14 @@ describe('Test Persons', () => {
 
         const expectedRecord: matchedRecordType = {
             entityType: 'digimon',
-            userID: 'g377183994@turtle.com',
+            userID: 'g377183994@city.com',
             mobilePhone: ['0514732022'],
             clearance: '4',
             firstName: 'Arnulfo',
             lastName: 'Price',
-            mail: 'Valentin_Osinski@turtleS.com',
+            mail: 'valentin_osinski@turtles.com',
             job: 'Product Division Administrator',
-            hierarchy: 'wallmart/perspiciatis/voluptates/reprehenderit/ut',
+            hierarchy: `${fieldNames.sources.mir}/wallmart/perspiciatis/voluptates/reprehenderit/ut`,
             source: 'mir_name',
         };
 
@@ -215,14 +216,14 @@ describe('Test Persons', () => {
 
         const expectedRecord: matchedRecordType = {
             entityType: 'agumon',
-            userID: 'e806932429@turtle.com',
+            userID: 'e806932429@city.com',
             mobilePhone: ['0532033180'],
             clearance: '5',
             firstName: 'Lonny',
             lastName: 'Hagenes',
             personalNumber: '1536984',
             identityCard: '123456782',
-            mail: 'Neil97@turtleS.com',
+            mail: 'neil97@turtles.com',
             job: 'Legacy Mobility Architect',
             hierarchy: 'city_name/bladerunners/voluptas/minus/cupiditate/qui',
             source: 'city_name',
@@ -254,12 +255,12 @@ describe('Test Goal Users', () => {
 
         const expectedRecord: matchedRecordType = {
             entityType: 'tamar',
-            goalUserId: 'm378263366@donatelo.turtle.com',
-            userID: 'm378263366@donatelo.turtle.com',
+            goalUserId: 'm378263366@city.com',
+            userID: 'm378263366@city.com',
             mobilePhone: ['0598827384'],
             firstName: 'Fredy',
             lastName: 'Rath',
-            mail: 'Eda_Brown@turtleS.com',
+            mail: 'eda_brown@turtles.com',
             job: 'International Directives Planner',
             source: 'city_name',
         };
@@ -289,12 +290,12 @@ describe('Test Goal Users', () => {
         const expectedRecord: matchedRecordType = {
             entityType: 'tamar',
             goalUserId: '324025207@rabiran.com',
-            userID: 'mads324025207@turtle.com',
+            userID: 'mads324025207@city.com',
             mobilePhone: ['0579103082'],
             firstName: 'Jed',
             lastName: 'Stoltenberg',
             job: 'Principal Research Facilitator',
-            hierarchy: 'wallmart/praesentium/deleniti',
+            hierarchy: `${fieldNames.sources.mir}/wallmart/praesentium/deleniti`,
             source: 'mir_name',
         };
 
@@ -323,12 +324,12 @@ describe('Test Goal Users', () => {
         const expectedRecord: matchedRecordType = {
             entityType: 'tamar',
             goalUserId: '437496371@adnn.com',
-            userID: 'madNN437496371@turtle.com',
+            userID: 'madnn437496371@city.com',
             mobilePhone: ['0599798640'],
             firstName: 'Cornell',
             lastName: 'Simonis',
             job: 'Customer Branding Coordinator',
-            hierarchy: 'wallmart/ipsum/quaerat',
+            hierarchy: `${fieldNames.sources.mir}/wallmart/ipsum/quaerat`,
             source: 'mir_name',
         };
 

@@ -30,9 +30,9 @@ describe('Match adNN testing', () => {
             entityType: 'agumon',
             firstName: 'Melisa',
             lastName: 'Steuber',
-            hierarchy: 'nihil/soluta/dolores',
+            hierarchy: `${fieldNames.sources.adNN}/nihil/soluta/dolores`,
             job: 'Melisa Steuber',
-            mail: 'Maxwell_Heaney@rabiran.com',
+            mail: 'maxwell_heaney@rabiran.com',
             source: 'adNN_name',
         };
 
@@ -56,9 +56,9 @@ describe('Match adNN testing', () => {
         const expectedRecord: matchedRecordType = {
             firstName: 'Viola',
             lastName: 'Jacobi',
-            hierarchy: 'in/doloribus/quis',
+            hierarchy: `${fieldNames.sources.adNN}/in/doloribus/quis`,
             job: 'Viola Jacobi',
-            mail: 'Geovany69@rabiran.com',
+            mail: 'geovany69@rabiran.com',
             source: 'adNN_name',
         };
 
