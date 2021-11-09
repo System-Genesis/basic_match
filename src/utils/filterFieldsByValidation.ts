@@ -134,10 +134,11 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
 
 const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: string): boolean => {
     if (
-        Number.isNaN(matchedRecord[matchedRecordFieldNames.personalNumber]) ||
+        isNaN(matchedRecord[matchedRecordFieldNames.personalNumber]) ||
+        !validators().personalNumber.test(matchedRecord[matchedRecordFieldNames.personalNumber]) ||
         (matchedRecord[matchedRecordFieldNames.rank] && matchedRecord[matchedRecordFieldNames.rank] === fieldNames.invalidRankForPN)
     ) {
-        sendLog('warn', 'Removed Personal Number due to It is not a personal number', false, {
+        sendLog('warn', 'Invalid personal number', false, {
             identifier: identityCard,
             user: matchedRecord[matchedRecordFieldNames.userID],
             source: matchedRecord[matchedRecordFieldNames.source],

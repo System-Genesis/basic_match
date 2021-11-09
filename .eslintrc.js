@@ -36,5 +36,6 @@ module.exports = {
         'no-unused-vars': 'off', // Checked by typescript
         'no-param-reassign': 'off',
         'prefer-destructuring': 'off',
+        'no-restricted-globals': 'off',
     },
 };
