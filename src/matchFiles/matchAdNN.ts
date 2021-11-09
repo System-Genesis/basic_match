@@ -76,6 +76,8 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
         }
         matchedRecord.job = job;
     }
+
+    matchedRecord.hierarchy = matchedRecord.hierarchy.replace(/\/\//g, '/');
 };
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
