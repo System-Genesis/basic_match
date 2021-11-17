@@ -7,7 +7,10 @@ import fn from './config/fieldNames';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
 import filterFieldsByValidation from './utils/filterFieldsByValidation';
-import sendLog from './logger';
+import * as logger from './logger';
+import { scopeOption } from './types/log';
+
+const { logFields } = fn;
 
 const matchMap = new Map([
     [fn.sources.aka, matchAka],
@@ -18,13 +21,13 @@ const matchMap = new Map([
 ]);
 
 export default (obj: queueObject): matchedRecordType | null => {
-    const { record, dataSource, runUID } = obj;
+    const { record, dataSource } = obj;
     let matchedRecord: matchedRecordType = {};
     if (matchMap.has(dataSource)) {
-        matchedRecord = matchMap.get(dataSource)!(record, runUID);
+        matchedRecord = matchMap.get(dataSource)!(record);
         filterFieldsByValidation(matchedRecord);
         return matchedRecord;
     }
-    sendLog('error', `UNKNOWN_SOURCE`, false, { source: dataSource });
+    logger.logError(false, 'Unknown source', logFields.scopes.app as scopeOption, `Source: ${dataSource} not found`);
     return null;
 };

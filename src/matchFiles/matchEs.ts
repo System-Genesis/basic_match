@@ -1,8 +1,11 @@
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import sendLog from '../logger';
+import * as logger from '../logger';
 import assembleUserID from '../utils/assembleUserID';
+import { scopeOption } from '../types/log';
+
+const { logFields } = fieldNames;
 
 const fn = fieldNames[fieldNames.sources.es];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -11,14 +14,15 @@ const setJob = (matchedRecord: matchedRecordType, location: string, job: string)
     matchedRecord.job = location ? `${job} - ${location}` : job;
 };
 
-const setHierarchy = (matchedRecord: matchedRecordType, value: string, runUID: string): void => {
+const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => {
     let hr: string[] = value.split('/');
     if (hr[0] === '') {
-        sendLog('warn', `Invalid hierarchy`, false, {
-            user: matchedRecord.userID,
-            source: fieldNames.sources.es,
-            runUID,
-        });
+        logger.logWarn(
+            false,
+            'Invalid hierarchy',
+            logFields.scopes.app as scopeOption,
+            `Invalid hierarchy ${value} for userID ${matchedRecord[matchedRecordFieldNames.userID]}`,
+        );
         return;
     }
 
@@ -50,7 +54,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.userName, (matched, value) => setField(matched, value, matchedRecordFieldNames.userID)],
 ]);
 
-export default (record: any, runUID: string) => {
+export default (record: any) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
@@ -65,7 +69,7 @@ export default (record: any, runUID: string) => {
             } else if (field === fn.job) {
                 setJob(matchedRecord, location, record[field]);
             } else if (field === fn.hierarchy) {
-                setHierarchy(matchedRecord, record[field], runUID);
+                setHierarchy(matchedRecord, record[field]);
             } else if (field === fn.mobilePhone || field === fn.phone) {
                 setPhone(
                     matchedRecord,

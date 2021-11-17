@@ -226,4 +226,17 @@ export default {
         f: 'female',
         m: 'male',
     },
+    logFields: {
+        system: 'Traking',
+        service: 'Basic Match',
+        scopes: {
+            app: 'APP',
+            system: 'SYSTEM',
+        },
+        levels: {
+            info: 'info',
+            warn: 'warn',
+            error: 'error',
+        },
+    },
 };

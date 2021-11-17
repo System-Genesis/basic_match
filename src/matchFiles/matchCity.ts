@@ -3,11 +3,14 @@ import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import sendLog from '../logger';
+import * as logger from '../logger';
 import assembleUserID from '../utils/assembleUserID';
 import { DOMAIN_SUFFIXES } from '../config/enums';
+import { scopeOption } from '../types/log';
 
 const domainSuffixes: Map<string, string> = new Map<string, string>(DOMAIN_SUFFIXES);
+
+const { logFields } = fieldNames;
 
 const fn = fieldNames[fieldNames.sources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
@@ -59,11 +62,11 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         if (!matchedRecord.hierarchy!.startsWith(fieldNames.treeRoots.city))
             matchedRecord.hierarchy = `${fieldNames.treeRoots.city}/${matchedRecord.hierarchy!}`;
     } else {
-        matchedRecord.hierarchy = matchedRecord.hierarchy!.replace(/^/, `${fieldNames.treeRoots.mir}/`);
+        matchedRecord.hierarchy = `${fieldNames.treeRoots.mir}/${matchedRecord.hierarchy!}`;
     }
 };
 
-const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, runUID: string): void => {
+const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): void => {
     const rawEntityType: string = userID[0];
 
     // set the entityType
@@ -93,11 +96,7 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string, ru
         //     matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
         // }
     } else {
-        sendLog('warn', `Invalid user id and entity type`, false, {
-            user: userID,
-            source: fieldNames.sources.city,
-            runUID,
-        });
+        logger.logWarn(false, 'Invalid userID and EntityType', logFields.scopes.app as scopeOption, `Invalid userID: ${userID}`);
         return;
     }
 
@@ -132,7 +131,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.job, (matchedRecord, value) => setJob(matchedRecord, value, fn.job)],
 ]);
 
-export default (record: any, runUID: string) => {
+export default (record: any) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
@@ -143,7 +142,7 @@ export default (record: any, runUID: string) => {
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field], record);
             } else if (field === fn.domainUsers) {
-                setEntityTypeAndDI(matchedRecord, record[field], runUID);
+                setEntityTypeAndDI(matchedRecord, record[field]);
             } else if (field === fn.mobilePhone) {
                 setPhone(matchedRecord, record[field], matchedRecordFieldNames.mobilePhone);
             }

@@ -24,6 +24,7 @@ module.exports = {
     },
     ignorePatterns: ['dist'],
     rules: {
+        'max-len': ['error', { code: 150 }],
         'import/extensions': [
             'error',
             'ignorePackages',

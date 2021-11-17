@@ -46,7 +46,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
 ]);
 
-export default (record: any, _runUID: string): matchedRecordType => {
+export default (record: any): matchedRecordType => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 

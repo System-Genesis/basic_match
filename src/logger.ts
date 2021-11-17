@@ -1,7 +1,10 @@
 import { menash } from 'menashmq';
 import * as winston from 'winston';
 import envConfig from './config/index';
-import { logObject } from './types/log';
+import { logObject, scopeOption, levelOptions } from './types/log';
+import fieldNames from './config/fieldNames';
+
+const { logFields } = fieldNames;
 
 const { rabbit } = envConfig;
 
@@ -21,21 +24,31 @@ const logger = winston.createLogger({
     transports: [new winston.transports.Console()],
 });
 
-export default (level: string, message: string, localLog: boolean, extraFields?: any): void => {
+const sendLog = (level: levelOptions, title: string, scope: scopeOption, message: string, ...extraFields: string[]) => {
     const logToSend: logObject = {
         level,
+        title,
+        scope,
+        system: logFields.system,
+        service: logFields.service,
         message,
-        system: 'Traking',
-        service: 'Basic Match',
+        ...extraFields,
     };
 
-    if (extraFields) {
-        logToSend.extraFields = extraFields;
-    }
+    menash.send(rabbit.logQueue, logToSend);
+};
 
-    if (!localLog) {
-        menash.send(rabbit.logQueue, logToSend);
-    }
+export const logInfo = (local: boolean, title: string, scope: scopeOption, message: string, ...extraFields: string[]) => {
+    if (!local) sendLog(logFields.levels.info as levelOptions, title, scope, message, ...extraFields);
+    logger[logFields.levels.info](`${title} => ${message}`);
+};
 
-    logger[level](`${message} ${!extraFields ? '' : JSON.stringify(extraFields)}`);
+export const logWarn = (local: boolean, title: string, scope: scopeOption, message: string, ...extraFields: string[]) => {
+    if (!local) sendLog(logFields.levels.warn as levelOptions, title, scope, message, ...extraFields);
+    logger[logFields.levels.warn](`${title} => ${message}`);
+};
+
+export const logError = (local: boolean, title: string, scope: scopeOption, message: string, ...extraFields: string[]) => {
+    if (!local) sendLog(logFields.levels.error as levelOptions, title, scope, message, ...extraFields);
+    logger[logFields.levels.error](`${title} => ${message}`);
 };

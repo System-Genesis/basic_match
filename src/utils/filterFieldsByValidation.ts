@@ -1,33 +1,44 @@
+/* eslint-disable max-len */
+/* eslint-disable prettier/prettier */
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import fieldNames from '../config/fieldNames';
 import { RANKS, SERVICE_TYPES, C_SERVICE_TYPES, MALE_ENUM, FEMALE_ENUM } from '../config/enums';
 import validators from '../config/validators';
-import sendLog from '../logger';
+import * as logger from '../logger';
+import { scopeOption } from '../types/log';
+
+const { logFields } = fieldNames;
+
+// TODO: Filter hierarchy
 
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const validateRank = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!RANKS.includes(matchedRecord[matchedRecordFieldNames.rank])) {
-        sendLog('warn', 'Invalid Rank', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.rank],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Rank',
+            logFields.scopes.app as scopeOption,
+            `Invalid Rank: ${matchedRecord[matchedRecordFieldNames.rank]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
     return true;
 };
 
+// Invalid Rank ${rank} for user ${userID} with identifier ${identifier} from source ${source}
+
 const validateServiceType = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])) {
-        sendLog('warn', 'Invalid Service Type', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.serviceType],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Service Type',
+            logFields.scopes.app as scopeOption,
+            `Invalid Service Type: ${matchedRecord[matchedRecordFieldNames.serviceType]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -43,12 +54,13 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
 
 const validateClearance = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().clearance.test(matchedRecord[matchedRecordFieldNames.clearance])) {
-        sendLog('warn', 'Invalid Clearance', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.clearance],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Clearance',
+            logFields.scopes.app as scopeOption,
+            `Invalid Clearance: ${matchedRecord[matchedRecordFieldNames.clearance]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -59,11 +71,13 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
     // Remove 0's from the start
     matchedRecord[matchedRecordFieldNames.identityCard] = matchedRecord[matchedRecordFieldNames.identityCard].replace(/^0+/, '');
     if (!validators().identityCard(matchedRecord[matchedRecordFieldNames.identityCard])) {
-        sendLog('warn', 'Invalid Identity Card', false, {
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.identityCard],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Identity Card',
+            logFields.scopes.app as scopeOption,
+            `Invalid Identity Card: ${matchedRecord[matchedRecordFieldNames.identityCard]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -72,12 +86,13 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
 
 const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().mobilePhone.test(matchedRecord[matchedRecordFieldNames.mobilePhone])) {
-        sendLog('warn', 'Invalid Mobile Phone', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.mobilePhone],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Mobile Phone',
+            logFields.scopes.app as scopeOption,
+            `Invalid Mobile Phone: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -86,12 +101,13 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
 
 const validatePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().phone.test(matchedRecord[matchedRecordFieldNames.phone])) {
-        sendLog('warn', 'Invalid Phone', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.phone],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Phone',
+            logFields.scopes.app as scopeOption,
+            `Invalid Phone: ${matchedRecord[matchedRecordFieldNames.phone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -105,12 +121,13 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
         const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
         matchedRecord[matchedRecordFieldNames.dischargeDay] = new Date(date.getTime() - userTimezoneOffset).toISOString();
     } else {
-        sendLog('warn', 'Invalid Discharge Day', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.dischargeDay],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Discharge Day',
+            logFields.scopes.app as scopeOption,
+            `Invalid Discharge Day: ${matchedRecord[matchedRecordFieldNames.dischargeDay]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -120,12 +137,13 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
 const validateMail = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     matchedRecord[matchedRecordFieldNames.mail] = matchedRecord[matchedRecordFieldNames.mail].toLowerCase();
     if (!validators().mail.test(matchedRecord[matchedRecordFieldNames.mail])) {
-        sendLog('warn', 'Invalid mail', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.mail],
-        });
+        logger.logWarn(
+            false,
+            'Invalid mail',
+            logFields.scopes.app as scopeOption,
+            `Invalid mail: ${matchedRecord[matchedRecordFieldNames.mail]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -138,12 +156,13 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
         !validators().personalNumber.test(matchedRecord[matchedRecordFieldNames.personalNumber]) ||
         (matchedRecord[matchedRecordFieldNames.rank] && matchedRecord[matchedRecordFieldNames.rank] === fieldNames.invalidRankForPN)
     ) {
-        sendLog('warn', 'Invalid personal number', false, {
-            identifier: identityCard,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.personalNumber],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Personal Number',
+            logFields.scopes.app as scopeOption,
+            `Invalid Personal Number: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identityCard} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -152,12 +171,13 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
 
 const validateBirthday = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!Date.parse(matchedRecord[matchedRecordFieldNames.birthDate])) {
-        sendLog('warn', 'Invalid birthday', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: fieldNames.invalidRankForPN,
-        });
+        logger.logWarn(
+            false,
+            'Invalid Birth Date',
+            logFields.scopes.app as scopeOption,
+            `Invalid Birth Date: ${matchedRecord[matchedRecordFieldNames.birthDate]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 
@@ -169,12 +189,13 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
     if (MALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.m;
     else if (FEMALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.f;
     else {
-        sendLog('warn', 'Invalid sex', false, {
-            identifier,
-            user: matchedRecord[matchedRecordFieldNames.userID],
-            source: matchedRecord[matchedRecordFieldNames.source],
-            value: matchedRecord[matchedRecordFieldNames.sex],
-        });
+        logger.logWarn(
+            false,
+            'Invalid Sex',
+            logFields.scopes.app as scopeOption,
+            `Invalid Sex: ${matchedRecord[matchedRecordFieldNames.sex]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
         return false;
     }
 

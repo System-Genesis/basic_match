@@ -1,17 +1,25 @@
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import sendLog from '../logger';
+import * as logger from '../logger';
 import assembleUserID from '../utils/assembleUserID';
+import { scopeOption } from '../types/log';
+
+const { logFields } = fieldNames;
 
 const fn = fieldNames[fieldNames.sources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
-const setEntityType = (matchedRecord: matchedRecordType, value: string, runUID: string): void => {
+const setEntityType = (matchedRecord: matchedRecordType, value: string): void => {
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
-        sendLog('warn', 'Invalid entity type', false, { user: matchedRecord.userID, source: fieldNames.sources.sf, runUID });
+        logger.logWarn(
+            false,
+            'Invalid EntityType',
+            logFields.scopes.app as scopeOption,
+            `Invalid EntityType or userID ${matchedRecord[matchedRecordFieldNames.userID]}`,
+        );
     }
 };
 
@@ -37,7 +45,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
 ]);
 
-export default (record: any, runUID: string) => {
+export default (record: any) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
@@ -46,7 +54,7 @@ export default (record: any, runUID: string) => {
             if (setFieldsFuncs.has(field)) {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.entityType) {
-                setEntityType(matchedRecord, record[field], runUID);
+                setEntityType(matchedRecord, record[field]);
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field]);
             }

@@ -5,7 +5,9 @@ import fieldNames from '../src/config/fieldNames';
 // Mock the send log function: in test don't send logs
 jest.mock('../src/logger', () => {
     return {
-        default: jest.fn(),
+        logInfo: () => { },
+        logError: () => { },
+        logWarn: () => { },
     };
 });
 
