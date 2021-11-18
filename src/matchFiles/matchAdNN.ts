@@ -17,7 +17,11 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     if (userID.toLowerCase().startsWith(fn.extension)) {
         suffixIdentifier = userID.toLowerCase().replace(fn.extension, '');
     } else {
-        logger.logWarn(false, 'Invalid suffix', logFields.scopes.app as scopeOption, `Invalid suffix for userID: ${userID}`);
+        logger.logWarn(false, 'Invalid suffix', logFields.scopes.app as scopeOption, `Invalid suffix for userID: ${userID}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        });
         return;
     }
 
@@ -45,10 +49,12 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
             false,
             'Invalid hierarchy',
             logFields.scopes.app as scopeOption,
-            `Invalid hierarchy: ${hierarchy} for userID: ${matchedRecord[matchedRecordFieldNames.userID]}`,
-            matchedRecord[matchedRecordFieldNames.identityCard] ||
-            matchedRecord[matchedRecordFieldNames.personalNumber] ||
-            matchedRecord[matchedRecordFieldNames.goalUserId],
+            `Invalid hierarchy: ${hierarchy} for userID: ${matchedRecord[matchedRecordFieldNames.userID]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
+
         );
     }
 

@@ -20,7 +20,11 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
             'Invalid Rank',
             logFields.scopes.app as scopeOption,
             `Invalid Rank: ${matchedRecord[matchedRecordFieldNames.rank]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -37,7 +41,11 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
             'Invalid Service Type',
             logFields.scopes.app as scopeOption,
             `Invalid Service Type: ${matchedRecord[matchedRecordFieldNames.serviceType]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -59,7 +67,11 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
             'Invalid Clearance',
             logFields.scopes.app as scopeOption,
             `Invalid Clearance: ${matchedRecord[matchedRecordFieldNames.clearance]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -76,7 +88,11 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
             'Invalid Identity Card',
             logFields.scopes.app as scopeOption,
             `Invalid Identity Card: ${matchedRecord[matchedRecordFieldNames.identityCard]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -91,7 +107,11 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
             'Invalid Mobile Phone',
             logFields.scopes.app as scopeOption,
             `Invalid Mobile Phone: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -106,7 +126,11 @@ const validatePhone = (matchedRecord: matchedRecordType, identifier: string): bo
             'Invalid Phone',
             logFields.scopes.app as scopeOption,
             `Invalid Phone: ${matchedRecord[matchedRecordFieldNames.phone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -126,7 +150,11 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
             'Invalid Discharge Day',
             logFields.scopes.app as scopeOption,
             `Invalid Discharge Day: ${matchedRecord[matchedRecordFieldNames.dischargeDay]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -142,7 +170,11 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
             'Invalid mail',
             logFields.scopes.app as scopeOption,
             `Invalid mail: ${matchedRecord[matchedRecordFieldNames.mail]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -161,7 +193,11 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
             'Invalid Personal Number',
             logFields.scopes.app as scopeOption,
             `Invalid Personal Number: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identityCard} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identityCard} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -176,7 +212,11 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
             'Invalid Birth Date',
             logFields.scopes.app as scopeOption,
             `Invalid Birth Date: ${matchedRecord[matchedRecordFieldNames.birthDate]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }
@@ -194,7 +234,11 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
             'Invalid Sex',
             logFields.scopes.app as scopeOption,
             `Invalid Sex: ${matchedRecord[matchedRecordFieldNames.sex]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
-            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        }
         );
         return false;
     }

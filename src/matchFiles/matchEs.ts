@@ -22,6 +22,12 @@ const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => 
             'Invalid hierarchy',
             logFields.scopes.app as scopeOption,
             `Invalid hierarchy ${value} for userID ${matchedRecord[matchedRecordFieldNames.userID]}`,
+            {
+                id:
+                    matchedRecord[matchedRecordFieldNames.identityCard] ||
+                    matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                    matchedRecord[matchedRecordFieldNames.goalUserId],
+            },
         );
         return;
     }

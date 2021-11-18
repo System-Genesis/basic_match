@@ -5,6 +5,7 @@ export type logObject = {
     system: string;
     service: string;
     message: string;
+    '@timeStamp': number;
     extraFields?: any;
 };
 

@@ -10,5 +10,4 @@ const main = async () => {
     await initializeRabbit();
 };
 
-// TODO: check if local log
-main().catch((err: any) => logger.logError(true, 'Unknown error', logFields.scopes.system as scopeOption, err.message));
+main().catch((err: any) => logger.logError(false, 'Unknown error', logFields.scopes.system as scopeOption, err.message));

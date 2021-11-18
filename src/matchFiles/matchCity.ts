@@ -96,7 +96,12 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
         //     matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
         // }
     } else {
-        logger.logWarn(false, 'Invalid userID and EntityType', logFields.scopes.app as scopeOption, `Invalid userID: ${userID}`);
+        logger.logWarn(false, 'Invalid userID and EntityType', logFields.scopes.app as scopeOption, `Invalid userID: ${userID}`, {
+            id:
+                matchedRecord[matchedRecordFieldNames.identityCard] ||
+                matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                matchedRecord[matchedRecordFieldNames.goalUserId],
+        });
         return;
     }
 

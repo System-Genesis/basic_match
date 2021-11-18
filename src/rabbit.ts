@@ -34,8 +34,7 @@ export default async (): Promise<void> => {
                 }
                 msg.ack();
             } catch (err: any) {
-                // TODO: check if local log
-                logger.logError(true, 'Unknown error', logFields.scopes.system as scopeOption, err.message);
+                logger.logError(false, 'Unknown error', logFields.scopes.system as scopeOption, err.message);
                 msg.ack();
             }
         },

@@ -19,6 +19,12 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string): void =>
             'Invalid EntityType',
             logFields.scopes.app as scopeOption,
             `Invalid EntityType or userID ${matchedRecord[matchedRecordFieldNames.userID]}`,
+            {
+                id:
+                    matchedRecord[matchedRecordFieldNames.identityCard] ||
+                    matchedRecord[matchedRecordFieldNames.personalNumber] ||
+                    matchedRecord[matchedRecordFieldNames.goalUserId],
+            },
         );
     }
 };
