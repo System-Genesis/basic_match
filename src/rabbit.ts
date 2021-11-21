@@ -1,10 +1,10 @@
 import menash, { ConsumerMessage } from 'menashmq';
+import logger from 'logger-genesis';
 import { scopeOption } from './types/log';
 import basicMatch from './basicMatch';
 import config from './config/index';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
-import * as logger from './logger';
 import fieldNames from './config/fieldNames';
 
 const { logFields } = fieldNames;
@@ -14,7 +14,7 @@ const { rabbit } = config;
 require('dotenv').config();
 
 export default async (): Promise<void> => {
-    logger.logInfo(false, 'Trying to connect to RabbitMQ...', logFields.scopes.system as scopeOption, 'Trying to connect to RabbitMQ...');
+    logger.logInfo(true, 'Trying to connect to RabbitMQ...', logFields.scopes.system as scopeOption, 'Trying to connect to RabbitMQ...');
 
     await menash.connect(rabbit.uri, rabbit.retryOptions);
     await menash.declareQueue(rabbit.beforeMatch);

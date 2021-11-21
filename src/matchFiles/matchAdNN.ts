@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
+import logger from 'logger-genesis';
 import fieldNames from '../config/fieldNames';
 import validators from '../config/validators';
 import setField from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import * as logger from '../logger';
 import assembleUserID from '../utils/assembleUserID';
 import { scopeOption } from '../types/log';
 

@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 /* eslint-disable prettier/prettier */
+import logger from 'logger-genesis';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import fieldNames from '../config/fieldNames';
 import { RANKS, SERVICE_TYPES, C_SERVICE_TYPES, MALE_ENUM, FEMALE_ENUM } from '../config/enums';
 import validators from '../config/validators';
-import * as logger from '../logger';
 import { scopeOption } from '../types/log';
 
 const { logFields } = fieldNames;

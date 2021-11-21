@@ -1,3 +1,4 @@
+import logger from 'logger-genesis';
 import matchAka from './matchFiles/matchAka';
 import matchEs from './matchFiles/matchEs';
 import matchAdNN from './matchFiles/matchAdNN';
@@ -7,7 +8,6 @@ import fn from './config/fieldNames';
 import { queueObject } from './types/queueObject';
 import { matchedRecord as matchedRecordType } from './types/matchedRecord';
 import filterFieldsByValidation from './utils/filterFieldsByValidation';
-import * as logger from './logger';
 import { scopeOption } from './types/log';
 
 const { logFields } = fn;

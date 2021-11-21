@@ -1,7 +1,7 @@
+import logger from 'logger-genesis';
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import * as logger from '../logger';
 import assembleUserID from '../utils/assembleUserID';
 import { scopeOption } from '../types/log';
 

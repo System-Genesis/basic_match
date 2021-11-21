@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   splitter:
-    image: tommyafek/splitter
+    image: systemgenesis0/splitter:latest
     restart: unless-stopped
     ports:
       - 9001:9001
@@ -21,7 +21,7 @@ services:
       - 15672:15672
 
   mocksKart:
-    image: tommyafek/mock
+    image: systemgenesis0/mock:latest
     restart: unless-stopped
     env_file: mock.env
     ports:
@@ -37,15 +37,6 @@ services:
       - 6379:6379
     volumes:
       - redis_data:/bitnami/redis/data
-
-  basicmatch:
-    image: tommyafek/basic_match:latest
-    env_file: basic_match.env
-    volumes:
-      - ./src/config/fieldNames.ts:/usr/src/app/app/config/fieldNames.ts
-    depends_on:
-      - splitter
-      - rabbit
 
 volumes:
   redis_data:

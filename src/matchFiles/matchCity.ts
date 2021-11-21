@@ -1,9 +1,9 @@
 /* eslint-disable no-restricted-syntax */
+import logger from 'logger-genesis';
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { isStrContains } from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import * as logger from '../logger';
 import assembleUserID from '../utils/assembleUserID';
 import { DOMAIN_SUFFIXES } from '../config/enums';
 import { scopeOption } from '../types/log';
