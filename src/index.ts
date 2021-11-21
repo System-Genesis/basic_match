@@ -7,8 +7,8 @@ import { scopeOption } from './types/log';
 const { logFields } = fieldNames;
 
 const main = async () => {
-    await initializeLogger();
     await initializeRabbit();
+    await initializeLogger();
 };
 
 main().catch((err: any) => logger.logError(false, 'Unknown error', logFields.scopes.system as scopeOption, err.message));

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
 import logger from 'logger-genesis';
 import { scopeOption } from './types/log';
@@ -14,14 +15,14 @@ const { rabbit } = config;
 require('dotenv').config();
 
 export default async (): Promise<void> => {
-    logger.logInfo(true, 'Trying to connect to RabbitMQ...', logFields.scopes.system as scopeOption, 'Trying to connect to RabbitMQ...');
+    console.log('Trying to connect to RabbitMQ...');
 
     await menash.connect(rabbit.uri, rabbit.retryOptions);
     await menash.declareQueue(rabbit.beforeMatch);
     await menash.declareQueue(rabbit.afterMatch);
     await menash.declareQueue(rabbit.logQueue);
 
-    logger.logInfo(false, 'RabbitMQ connected', logFields.scopes.system as scopeOption, 'RabbitMQ connected');
+    console.log('RabbitMQ connected');
 
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         (msg: ConsumerMessage) => {
