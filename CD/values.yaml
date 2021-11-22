@@ -28,4 +28,4 @@ volume:
 
 config:
   configmaps: 
-    name: basic_match
+    name: basic-match
