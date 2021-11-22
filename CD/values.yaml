@@ -4,7 +4,7 @@ replicaCount: 1
 images:
   PullSecrets: 
     name: kartingreg
-  repository: rabazhub.azurecr.io/values-test
+  repository: genesisproject.azurecr.io/basic-match
   tag: "latest"
 
 service:
@@ -13,11 +13,12 @@ service:
   - name: http
     port: 3000
 
-# volume:
-#   -name:
-#    mountPath:
-#    type:
-#    claimName:
+volume:
+  -name: basic_match-volume
+   mountPath: /usr/src/app/dist/config/
+   secretName: azure-secret
+   shareName: system-genesis/  
+   type: azurefile
 
 config:
   configmaps: 
