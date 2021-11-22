@@ -14,7 +14,13 @@ service:
     port: 3000
 
 volume:
-  -name: basic_match-volume
+  -name: basic_match-volume-enums
+   mountPath: /usr/src/app/dist/config/
+   secretName: azure-secret
+   shareName: system-genesis/  
+   type: azurefile
+   
+  -name: basic_match-volume-fieldNames
    mountPath: /usr/src/app/dist/config/
    secretName: azure-secret
    shareName: system-genesis/  
