@@ -23,13 +23,3 @@ volume:
 config:
   configmaps: 
     name: basic_match
-
-ingress:
-  enabled: true
-  hosts:
-  - host: test-cd.branch-yesodot.org
-    paths:
-      - path: /message
-        service: testname
-        port: "3000"
-  
