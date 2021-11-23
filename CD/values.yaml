@@ -3,7 +3,7 @@ replicaCount: 1
 
 images:
   PullSecrets: 
-    name: kartoffelreg
+    name: kartingreg
   repository: genesisproject.azurecr.io/basic-match
   tag: "latest"
 
@@ -14,10 +14,10 @@ service:
     port: 3000
 
 volume:
-  - name: mom
-    mountPath: /spikeUtils
+  - name: basic-match-volumes
+    mountPath: /usr/src/app/dist/config/
     secretName: azure-secret
-    shareName: momentum/spike-utils
+    shareName: system-genesis/basic-match/
     type: azurefile
 
 config:
