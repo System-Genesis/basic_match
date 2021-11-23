@@ -1,10 +1,10 @@
-name: "basic_match"
+name: "basic-match"
 replicaCount: 1
 
 images:
   PullSecrets: 
     name: kartingreg
-  repository: rabazhub.azurecr.io/values-test
+  repository: genesisproject.azurecr.io/basic-match
   tag: "latest"
 
 service:
@@ -13,22 +13,13 @@ service:
   - name: http
     port: 3000
 
-# volume:
-#   -name:
-#    mountPath:
-#    type:
-#    claimName:
+volume:
+  - name: basic-match-volumes
+    mountPath: /usr/src/app/dist/config/
+    secretName: azure-secret
+    shareName: system-genesis/basic-match/
+    type: azurefile
 
 config:
   configmaps: 
-    name: basic_match
-
-ingress:
-  enabled: true
-  hosts:
-  - host: test-cd.branch-yesodot.org
-    paths:
-      - path: /message
-        service: testname
-        port: "3000"
-  
+    name: basic-match
