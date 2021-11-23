@@ -17,10 +17,10 @@ const setJob = (matchedRecord: matchedRecordType, location: string, job: string)
 const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => {
     let hr: string[] = value.split('/');
     if (hr[0] === '') {
-        logger.logWarn(
+        logger.warn(
             false,
-            'Invalid hierarchy',
             logFields.scopes.app as scopeOption,
+            'Invalid hierarchy',
             `Invalid hierarchy ${value} for userID ${matchedRecord[matchedRecordFieldNames.userID]}`,
             {
                 id:

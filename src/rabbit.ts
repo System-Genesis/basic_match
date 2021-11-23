@@ -35,7 +35,7 @@ export default async (): Promise<void> => {
                 }
                 msg.ack();
             } catch (err: any) {
-                logger.logError(false, 'Unknown error', logFields.scopes.system as scopeOption, err.message);
+                logger.error(false, logFields.scopes.system as scopeOption, 'Unknown error', err.message);
                 msg.ack();
             }
         },

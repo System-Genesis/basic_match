@@ -11,4 +11,4 @@ const main = async () => {
     await initializeLogger();
 };
 
-main().catch((err: any) => logger.logError(false, 'Unknown error', logFields.scopes.system as scopeOption, err.message));
+main().catch((err: any) => logger.error(false, logFields.scopes.system as scopeOption, 'Unknown error', err.message));
