@@ -14,12 +14,12 @@ service:
     port: 3000
 
 volume:
-  - name: basic-match-volumes
-    mountPath: /opt
+  - name: mom
+    mountPath: /spikeUtils
     secretName: azure-secret
-    shareName: system-genesis/
+    shareName: momentum/spike-utils
     type: azurefile
-    
+
 config:
   configmaps: 
     name: basic-match
