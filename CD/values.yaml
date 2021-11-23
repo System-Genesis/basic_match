@@ -15,11 +15,11 @@ service:
 
 volume:
   - name: basic-match-volumes
-    mountPath: /usr/src/app/dist/config
+    mountPath: /opt
     secretName: azure-secret
-    shareName: system-genesis/basic-match/
+    shareName: system-genesis/
     type: azurefile
-
+    
 config:
   configmaps: 
     name: basic-match
