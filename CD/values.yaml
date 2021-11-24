@@ -18,8 +18,7 @@ volume:
     mountPath: /usr/src/app/dist/config/
     secretName: azure-secret
     shareName: system-genesis/basic-match/
-    type: azurefile
-    
+    type: azurefile 
   - name: basic-match-field-names
     mountPath: /usr/src/app/dist/config/
     secretName: azure-secret
