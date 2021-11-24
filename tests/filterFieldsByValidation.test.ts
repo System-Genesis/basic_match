@@ -1,17 +1,15 @@
+/* eslint-disable prettier/prettier */
+import logger from 'logger-genesis';
 import { matchedRecord as matchedRecordType } from '../src/types/matchedRecord';
 import filterFieldsByValidation from '../src/utils/filterFieldsByValidation';
 
-// Mock the send log function: in test don't send logs
-jest.mock('../src/logger', () => {
-    return {
-        logInfo: () => { },
-        logError: () => { },
-        logWarn: () => { },
-    };
-});
+// Mock the logs functions: in test don't send logs
+logger.info = () => { };
+logger.warn = () => { };
+logger.error = () => { };
 
 describe('Validate Record and filter fields', () => {
-    it('filter all fields', () => {
+    it('filter all fields', async () => {
         const record: matchedRecordType = {
             job: 'Coordinator - District Solutions Technician',
             personalNumber: '568755651',

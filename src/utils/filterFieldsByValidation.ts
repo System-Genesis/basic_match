@@ -9,8 +9,6 @@ import { scopeOption } from '../types/log';
 
 const { logFields } = fieldNames;
 
-// TODO: Filter hierarchy
-
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const validateRank = (matchedRecord: matchedRecordType, identifier: string): boolean => {
@@ -21,9 +19,7 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
             'Invalid Rank',
             `Invalid Rank: ${matchedRecord[matchedRecordFieldNames.rank]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -42,9 +38,7 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
             'Invalid Service Type',
             `Invalid Service Type: ${matchedRecord[matchedRecordFieldNames.serviceType]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -68,9 +62,7 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
             'Invalid Clearance',
             `Invalid Clearance: ${matchedRecord[matchedRecordFieldNames.clearance]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -89,9 +81,7 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
             'Invalid Identity Card',
             `Invalid Identity Card: ${matchedRecord[matchedRecordFieldNames.identityCard]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: matchedRecord[matchedRecordFieldNames.personalNumber]
         }
         );
         return false;
@@ -108,9 +98,7 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
             'Invalid Mobile Phone',
             `Invalid Mobile Phone: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -127,9 +115,7 @@ const validatePhone = (matchedRecord: matchedRecordType, identifier: string): bo
             'Invalid Phone',
             `Invalid Phone: ${matchedRecord[matchedRecordFieldNames.phone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -151,9 +137,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
             'Invalid Discharge Day',
             `Invalid Discharge Day: ${matchedRecord[matchedRecordFieldNames.dischargeDay]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -171,9 +155,7 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
             'Invalid mail',
             `Invalid mail: ${matchedRecord[matchedRecordFieldNames.mail]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -194,9 +176,7 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
             'Invalid Personal Number',
             `Invalid Personal Number: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identityCard} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identityCard
         }
         );
         return false;
@@ -213,9 +193,7 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
             'Invalid Birth Date',
             `Invalid Birth Date: ${matchedRecord[matchedRecordFieldNames.birthDate]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -225,7 +203,7 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
 };
 
 const validateSex = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    const sexLowerCased = matchedRecord[matchedRecordFieldNames.sex].toLowerCase();
+    const sexLowerCased: string = matchedRecord[matchedRecordFieldNames.sex].toLowerCase();
     if (MALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.m;
     else if (FEMALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.f;
     else {
@@ -235,9 +213,7 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
             'Invalid Sex',
             `Invalid Sex: ${matchedRecord[matchedRecordFieldNames.sex]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
-            id: matchedRecord[matchedRecordFieldNames.identityCard] ||
-                matchedRecord[matchedRecordFieldNames.personalNumber] ||
-                matchedRecord[matchedRecordFieldNames.goalUserId],
+            id: identifier
         }
         );
         return false;
@@ -245,6 +221,24 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
 
     return true;
 };
+
+const validateHierarchy = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    const hierarchyReg: RegExp = new RegExp(`[^a-zA-Z0-9\u0590-\u05FF/\\"'. ,!()_*%@$-]`, 'g');
+    matchedRecord[matchedRecordFieldNames.hierarchy] = matchedRecord[matchedRecordFieldNames.hierarchy].replace(hierarchyReg, '');
+    const hierarchy: string = matchedRecord[matchedRecordFieldNames.hierarchy];
+    if (hierarchy.endsWith('/') || hierarchy.includes('//')) {
+        logger.warn(
+            false,
+            logFields.scopes.app as scopeOption,
+            'Invalid Hierarchy',
+            `Invalid hierarchy: ${hierarchy} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+            { id: identifier });
+        return false;
+    }
+
+    return true;
+}
 
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
     [matchedRecordFieldNames.clearance, validateClearance],
@@ -254,6 +248,7 @@ const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, i
     [matchedRecordFieldNames.serviceType, validateServiceType],
     [matchedRecordFieldNames.birthDate, validateBirthday],
     [matchedRecordFieldNames.sex, validateSex],
+    [matchedRecordFieldNames.hierarchy, validateHierarchy],
 ]);
 
 export default (matchedRecord: matchedRecordType): void => {

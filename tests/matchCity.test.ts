@@ -1,15 +1,13 @@
+/* eslint-disable prettier/prettier */
+import logger from 'logger-genesis';
 import basicMatch from '../src/basicMatch';
 import { matchedRecord as matchedRecordType } from '../src/types/matchedRecord';
 import fieldNames from '../src/config/fieldNames';
 
-// Mock the send log function: in test don't send logs
-jest.mock('../src/logger', () => {
-    return {
-        logInfo: () => { },
-        logError: () => { },
-        logWarn: () => { },
-    };
-});
+// Mock the logs functions: in test don't send logs
+logger.info = () => { };
+logger.warn = () => { };
+logger.error = () => { };
 
 describe('Test hierarchy', () => {
     test('Test local hierarchy', () => {
@@ -41,7 +39,6 @@ describe('Test hierarchy', () => {
 
         const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.city, runUID: '123' });
         const expectedHierarchy = `${fieldNames.sources.city}/wallmart/dolores/animi/cum/ullam`;
-        console.log(matchedRecord!.hierarchy);
         expect(matchedRecord!.hierarchy).toEqual(expectedHierarchy);
     });
 
