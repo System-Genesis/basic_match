@@ -20,7 +20,6 @@ export default async (): Promise<void> => {
     await menash.connect(rabbit.uri, rabbit.retryOptions);
     await menash.declareQueue(rabbit.beforeMatch);
     await menash.declareQueue(rabbit.afterMatch);
-    await menash.declareQueue(rabbit.logQueue);
 
     console.log('RabbitMQ connected');
 
