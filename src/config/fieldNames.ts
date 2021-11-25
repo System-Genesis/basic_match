@@ -227,8 +227,6 @@ export default {
         m: 'male',
     },
     logFields: {
-        system: 'Traking',
-        service: 'Basic Match',
         scopes: {
             app: 'APP',
             system: 'SYSTEM',
