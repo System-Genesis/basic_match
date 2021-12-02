@@ -15,9 +15,9 @@ service:
 
 volume:
   - name: basic-match-enums
-    mountPath: /usr/src/app/dist/config/
+    mountPath: /usr/src/app/dist/config
     secretName: azure-secret
-    shareName: system-genesis/basic-match/
+    shareName: system-genesis/basic-match
     type: azurefile 
  
 #  - name: basic-match-field-names
