@@ -12,7 +12,7 @@ const { logFields } = fieldNames;
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
 const validateRank = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    if (!RANKS.includes(matchedRecord[matchedRecordFieldNames.rank])) {
+    if (!(matchedRecord[matchedRecordFieldNames.rank] in RANKS)) {
         logger.warn(
             false,
             logFields.scopes.app as scopeOption,
