@@ -31,7 +31,7 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string): void =>
 
 const setHierarchy = (matchedRecord: matchedRecordType, value: string[]): void => {
     const hr = value;
-    // if (hr[0] !== fieldNames.rootHierarchy.ourCompany) hr.unshift(fieldNames.rootHierarchy.ourCompany);
+    if (hr[0] === fieldNames.rootHierarchy.ourCompany) hr.shift();
 
     // Insert tree root
     hr.unshift(`${fieldNames.treeRoots.sf}`);
