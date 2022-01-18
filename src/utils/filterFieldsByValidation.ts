@@ -174,7 +174,7 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
             false,
             logFields.scopes.app as scopeOption,
             'Invalid Personal Number',
-            `Invalid Personal Number: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            `Invalid Personal Number: ${matchedRecord[matchedRecordFieldNames.personalNumber]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } with identifier: ${identityCard} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
             id: identityCard
         }
@@ -257,7 +257,7 @@ export default (matchedRecord: matchedRecordType): void => {
     }
 
     if (matchedRecord[matchedRecordFieldNames.personalNumber]) {
-        if (!validatePersonalNumber(matchedRecord, matchedRecord[matchedRecordFieldNames.personalNumber]))
+        if (!validatePersonalNumber(matchedRecord, matchedRecord[matchedRecordFieldNames.identityCard]))
             delete matchedRecord[matchedRecordFieldNames.personalNumber];
     }
 
