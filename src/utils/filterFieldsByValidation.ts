@@ -14,7 +14,7 @@ const matchedRecordFieldNames = fieldNames.matchedRecord;
 const validateRank = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!(matchedRecord[matchedRecordFieldNames.rank] in RANKS)) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Rank',
             `Invalid Rank: ${matchedRecord[matchedRecordFieldNames.rank]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -33,7 +33,7 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
 const validateServiceType = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Service Type',
             `Invalid Service Type: ${matchedRecord[matchedRecordFieldNames.serviceType]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -57,7 +57,7 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
 const validateClearance = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().clearance.test(matchedRecord[matchedRecordFieldNames.clearance])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Clearance',
             `Invalid Clearance: ${matchedRecord[matchedRecordFieldNames.clearance]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -76,7 +76,7 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
     matchedRecord[matchedRecordFieldNames.identityCard] = matchedRecord[matchedRecordFieldNames.identityCard].replace(/^0+/, '');
     if (!validators().identityCard(matchedRecord[matchedRecordFieldNames.identityCard])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Identity Card',
             `Invalid Identity Card: ${matchedRecord[matchedRecordFieldNames.identityCard]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -93,7 +93,7 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
 const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().mobilePhone.test(matchedRecord[matchedRecordFieldNames.mobilePhone])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Mobile Phone',
             `Invalid Mobile Phone: ${matchedRecord[matchedRecordFieldNames.mobilePhone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -110,7 +110,7 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
 const validatePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().phone.test(matchedRecord[matchedRecordFieldNames.phone])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Phone',
             `Invalid Phone: ${matchedRecord[matchedRecordFieldNames.phone]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -132,7 +132,7 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
         matchedRecord[matchedRecordFieldNames.dischargeDay] = new Date(date.getTime() - userTimezoneOffset).toISOString();
     } else {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Discharge Day',
             `Invalid Discharge Day: ${matchedRecord[matchedRecordFieldNames.dischargeDay]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -150,7 +150,7 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
     matchedRecord[matchedRecordFieldNames.mail] = matchedRecord[matchedRecordFieldNames.mail].toLowerCase();
     if (!validators().mail.test(matchedRecord[matchedRecordFieldNames.mail])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid mail',
             `Invalid mail: ${matchedRecord[matchedRecordFieldNames.mail]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -171,7 +171,7 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
         (matchedRecord[matchedRecordFieldNames.rank] && matchedRecord[matchedRecordFieldNames.rank] === fieldNames.invalidRankForPN)
     ) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Personal Number',
             `Invalid Personal Number: ${matchedRecord[matchedRecordFieldNames.personalNumber]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -188,7 +188,7 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
 const validateBirthday = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!Date.parse(matchedRecord[matchedRecordFieldNames.birthDate])) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Birth Date',
             `Invalid Birth Date: ${matchedRecord[matchedRecordFieldNames.birthDate]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -208,7 +208,7 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
     else if (FEMALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.f;
     else {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Sex',
             `Invalid Sex: ${matchedRecord[matchedRecordFieldNames.sex]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
@@ -228,7 +228,7 @@ const validateHierarchy = (matchedRecord: matchedRecordType, identifier: string)
     const hierarchy: string = matchedRecord[matchedRecordFieldNames.hierarchy];
     if (hierarchy.endsWith('/') || hierarchy.includes('//')) {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid Hierarchy',
             `Invalid hierarchy: ${hierarchy} for userID: ${matchedRecord[matchedRecordFieldNames.userID]

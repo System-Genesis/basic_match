@@ -31,6 +31,13 @@ export default async (): Promise<void> => {
 
                 if (matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId)) {
                     menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
+                    logger.info(
+                        false,
+                        logFields.scopes.app as scopeOption,
+                        'Sending Record to Merger',
+                        `Record with userID: ${matchedRecord.userID}, identifier: ${matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId
+                        } from source: ${matchedRecord?.source} was send to Merger`,
+                    );
                 }
                 msg.ack();
             } catch (err: any) {
