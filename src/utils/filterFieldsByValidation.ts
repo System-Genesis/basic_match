@@ -186,7 +186,8 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
 };
 
 const validateBirthday = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    if (!Date.parse(matchedRecord[matchedRecordFieldNames.birthDate])) {
+    const dateMS = Date.parse(matchedRecord[matchedRecordFieldNames.birthDate]);
+    if (!dateMS) {
         logger.warn(
             true,
             logFields.scopes.app as scopeOption,
@@ -199,6 +200,7 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
         return false;
     }
 
+    matchedRecord[matchedRecordFieldNames.birthDate] = new Date(dateMS).toISOString();
     return true;
 };
 
