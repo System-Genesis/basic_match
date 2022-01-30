@@ -127,7 +127,7 @@ const validatePhone = (matchedRecord: matchedRecordType, identifier: string): bo
 const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     const value = matchedRecord[matchedRecordFieldNames.dischargeDay];
     const date: Date | null = value && value !== fieldNames.unknown ? new Date(value) : null;
-    if (date) {
+    if (date && !isNaN(date.getTime())) {
         const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
         matchedRecord[matchedRecordFieldNames.dischargeDay] = new Date(date.getTime() - userTimezoneOffset).toISOString();
     } else {

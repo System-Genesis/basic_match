@@ -22,7 +22,9 @@ export default async (): Promise<void> => {
     await menash.declareQueue(rabbit.afterMatch);
 
     console.log('RabbitMQ connected');
+};
 
+export const initializeConsumer = async () => {
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
