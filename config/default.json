@@ -1,0 +1,14 @@
+{
+  "akaUnitsMap": {
+    "name1": {
+      "newCode": "0001",
+      "oldCode": "abc",
+      "newName": "Name1"
+    },
+    "name2": {
+      "newCode": "0002",
+      "oldCode": "abcd",
+      "newName": "Name2"
+    }
+  }
+}

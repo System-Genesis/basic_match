@@ -28,6 +28,6 @@ export default (obj: queueObject): matchedRecordType | null => {
         filterFieldsByValidation(matchedRecord);
         return matchedRecord;
     }
-    logger.error(false, logFields.scopes.app as scopeOption, 'Unknown source', `Source: ${dataSource} not found`);
+    logger.error(true, logFields.scopes.app as scopeOption, 'Unknown source', `Source: ${dataSource} not found`);
     return null;
 };

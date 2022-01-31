@@ -1,6 +1,12 @@
 import fieldNames from './fieldNames';
 
-export const RANKS = ['unknown', 'rookie', 'champion', 'ultimate'];
+// eslint-disable-next-line no-shadow
+export enum RANKS {
+    'unknown' = 1,
+    'rookie' = 2,
+    'champion' = 3,
+    'ultimate' = 4,
+}
 
 export const SERVICE_TYPES = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 

@@ -15,7 +15,7 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string): void =>
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else {
         logger.warn(
-            false,
+            true,
             logFields.scopes.app as scopeOption,
             'Invalid EntityType',
             `Invalid EntityType or userID ${matchedRecord[matchedRecordFieldNames.userID]}`,

@@ -1,24 +1,13 @@
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
-import akaPhone from '../types/akaPhone';
 import { PNCYPicture as pictureType } from '../types/pictures';
+import { RANKS } from '../config/enums';
 
 const fn = fieldNames[fieldNames.sources.aka];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
-const setAkaPhones = (matchedRecord: matchedRecordType, phones: akaPhone | akaPhone[]) => {
-    if (!Array.isArray(phones)) phones = [phones];
-    phones.forEach((phone) => {
-        setPhone(
-            matchedRecord,
-            `0${phone.KIDOMET}${phone.MIS_TELEPHON}`,
-            phone.SUG_TELEPHONE === '1' ? matchedRecordFieldNames.phone : matchedRecordFieldNames.mobilePhone,
-        );
-    });
-};
-
-const setPicture = (matchedRecord: matchedRecordType, picture: pictureType) => {
+const setPicture = (matchedRecord: matchedRecordType, picture: pictureType): void => {
     matchedRecord.pictures = {
         profile: {
             meta: {
@@ -31,10 +20,14 @@ const setPicture = (matchedRecord: matchedRecordType, picture: pictureType) => {
     };
 };
 
+const setRank = (matchedRecord: matchedRecordType, rank: number): void => {
+    matchedRecord[matchedRecordFieldNames.rank] = RANKS[rank];
+};
+
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
-    [fn.rank, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.rank)],
+    [fn.rank, (matchedRecord, value) => setRank(matchedRecord, parseInt(value, 10))],
     [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
     [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
@@ -43,7 +36,8 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.birthDate, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.birthDate)],
-    [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
+    [fn.mobilePhone, (matchedRecord, value) => setPhone(matchedRecord, value, matchedRecordFieldNames.mobilePhone)],
+    [fn.phone, (matchedRecord, value) => setPhone(matchedRecord, value, matchedRecordFieldNames.phone)],
 ]);
 
 export default (record: any): matchedRecordType => {
@@ -54,8 +48,6 @@ export default (record: any): matchedRecordType => {
         if (record[field] && record[field] !== fieldNames.unknown) {
             if (setFieldsFuncs.has(field)) {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
-            } else if (field === fn.phone) {
-                setAkaPhones(matchedRecord, record[field]);
             } else if (field === fn.picture) {
                 setPicture(matchedRecord, record[field]);
             }

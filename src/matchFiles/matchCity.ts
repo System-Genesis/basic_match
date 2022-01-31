@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 import logger from 'logger-genesis';
+import config from 'config';
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
 import { isStrContains } from '../utils/isStrContains';
@@ -96,7 +97,7 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
         //     matchedRecord.goalUserId = matchedRecord.goalUserId.replace(new RegExp(`${fn.mirGUPrefixes.ads}|${fn.mirGUPrefixes.ads}`, 'gi'), '');
         // }
     } else {
-        logger.warn(false, logFields.scopes.app as scopeOption, 'Invalid userID and EntityType', `Invalid userID: ${userID}`, {
+        logger.warn(true, logFields.scopes.app as scopeOption, 'Invalid userID and EntityType', `Invalid userID: ${userID}`, {
             id:
                 matchedRecord[matchedRecordFieldNames.identityCard] ||
                 matchedRecord[matchedRecordFieldNames.personalNumber] ||
@@ -120,6 +121,12 @@ const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName
     }
 };
 
+const convertAkaUnit = (matchedRecord: matchedRecordType, value: string): void => {
+    const akaUnitsMap: any = config.get('akaUnitsMap');
+
+    matchedRecord[matchedRecordFieldNames.akaUnit] = akaUnitsMap[value]?.newName || value;
+};
+
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
@@ -128,7 +135,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
     [fn.identityCard, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.identityCard)],
     [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
-    [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
+    [fn.unitName, (matchedRecord, value) => convertAkaUnit(matchedRecord, value)],
     [fn.serviceType, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.serviceType)],
     [fn.address, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.address)],
     [fn.mail, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.mail)],
