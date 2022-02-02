@@ -10,10 +10,22 @@ const { logFields } = fieldNames;
 const fn = fieldNames[fieldNames.sources.es];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
+/**
+ * Sets the job.
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } location - Extra field tha mey be given
+ * @param { string } job - The given job
+ */
 const setJob = (matchedRecord: matchedRecordType, location: string, job: string): void => {
     matchedRecord.job = location ? `${job} - ${location}` : job;
 };
 
+/**
+ * Sets the hierarchy.
+ * If the hierarchy is invalid sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } value - The given hierarchy
+ */
 const setHierarchy = (matchedRecord: matchedRecordType, value: string): void => {
     let hr: string[] = value.split('/');
     if (hr[0] === '') {

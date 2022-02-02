@@ -7,6 +7,11 @@ import { RANKS } from '../config/enums';
 const fn = fieldNames[fieldNames.sources.aka];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
+/**
+ * Sets the pictures field
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { pictureType } picture - The given picture metadata
+ */
 const setPicture = (matchedRecord: matchedRecordType, picture: pictureType): void => {
     matchedRecord.pictures = {
         profile: {
@@ -20,6 +25,12 @@ const setPicture = (matchedRecord: matchedRecordType, picture: pictureType): voi
     };
 };
 
+/**
+ * Sets the rank.
+ * Convert from a rank code to a string rank
+ * @param matchedRecord - The generated record.
+ * @param rank - The given rank code.
+ */
 const setRank = (matchedRecord: matchedRecordType, rank: number): void => {
     matchedRecord[matchedRecordFieldNames.rank] = RANKS[rank];
 };

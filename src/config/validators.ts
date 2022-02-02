@@ -1,4 +1,7 @@
 /* eslint-disable no-return-assign */
+/**
+ * Contains all the regex function for the relevant fields
+ */
 export default () => {
     return {
         phone: /^\d{1,2}-?\d{6,7}$|^\*\d{3}$|^\d{4,5}$/,

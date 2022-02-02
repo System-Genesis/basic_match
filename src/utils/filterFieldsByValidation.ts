@@ -11,6 +11,14 @@ const { logFields } = fieldNames;
 
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
+/**
+ * Checks if the rank is valid.
+ * Determines if the rank is valid by checking if the rank exists in the ranks' list
+ * If the rank is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the rank is valid
+ */
 const validateRank = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!(matchedRecord[matchedRecordFieldNames.rank] in RANKS)) {
         logger.warn(
@@ -28,8 +36,14 @@ const validateRank = (matchedRecord: matchedRecordType, identifier: string): boo
     return true;
 };
 
-// Invalid Rank ${rank} for user ${userID} with identifier ${identifier} from source ${source}
-
+/**
+ * Checks if the service type is valid.
+ * Determines if the service type is valid by checking if the service type exists in the service types' list
+ * If the service type is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the service type is valid
+ */
 const validateServiceType = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!SERVICE_TYPES.includes(matchedRecord[matchedRecordFieldNames.serviceType])) {
         logger.warn(
@@ -54,6 +68,14 @@ const validateServiceType = (matchedRecord: matchedRecordType, identifier: strin
     return true;
 };
 
+/**
+ * Checks if the clearance is valid.
+ * Determines if the clearance is valid by it's length and type
+ * If the clearance is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the clearance is valid
+ */
 const validateClearance = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().clearance.test(matchedRecord[matchedRecordFieldNames.clearance])) {
         logger.warn(
@@ -71,6 +93,14 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
     return true;
 };
 
+/**
+ * Checks if the identity card is valid.
+ * Determines if the identity card is valid by checking if it's a number, and by the state's algorithm.
+ * If the identity card is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the identity card is valid
+ */
 const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
     // Remove 0's from the start
     matchedRecord[matchedRecordFieldNames.identityCard] = matchedRecord[matchedRecordFieldNames.identityCard].replace(/^0+/, '');
@@ -90,6 +120,14 @@ const validateIdentityCard = (matchedRecord: matchedRecordType): boolean => {
     return true;
 };
 
+/**
+ * Checks if the mobile phone is valid.
+ * Determines if the mobile phone is valid by checking if it's a number and in the correct format
+ * If the mobile phone is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the mobile phone is valid
+ */
 const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().mobilePhone.test(matchedRecord[matchedRecordFieldNames.mobilePhone])) {
         logger.warn(
@@ -107,6 +145,14 @@ const validateMobilePhone = (matchedRecord: matchedRecordType, identifier: strin
     return true;
 };
 
+/**
+ * Checks if the phone is valid.
+ * Determines if the phone is valid by checking if it's a number and in the correct format
+ * If the phone is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the phone is valid
+ */
 const validatePhone = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     if (!validators().phone.test(matchedRecord[matchedRecordFieldNames.phone])) {
         logger.warn(
@@ -124,6 +170,15 @@ const validatePhone = (matchedRecord: matchedRecordType, identifier: string): bo
     return true;
 };
 
+/**
+ * Checks if the discharge day is valid.
+ * Determines if the discharge day is valid by checking if it's a date and in the correct format
+ * Also fixes the offset difference time
+ * If the discharge day is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the discharge day is valid
+ */
 const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     const value = matchedRecord[matchedRecordFieldNames.dischargeDay];
     const date: Date | null = value && value !== fieldNames.unknown ? new Date(value) : null;
@@ -146,6 +201,14 @@ const validateDischargeDay = (matchedRecord: matchedRecordType, identifier: stri
     return true;
 };
 
+/**
+ * Checks if the mail is valid.
+ * Determines if the mail is valid by checking if it's in the correct format
+ * If the mail is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the mail is valid
+ */
 const validateMail = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     matchedRecord[matchedRecordFieldNames.mail] = matchedRecord[matchedRecordFieldNames.mail].toLowerCase();
     if (!validators().mail.test(matchedRecord[matchedRecordFieldNames.mail])) {
@@ -164,6 +227,14 @@ const validateMail = (matchedRecord: matchedRecordType, identifier: string): boo
     return true;
 };
 
+/**
+ * Checks if the personal number is valid.
+ * Determines if the personal number is valid by checking if it's a number and in the correct length
+ * If the personal number is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the personal number is valid
+ */
 const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: string): boolean => {
     if (
         isNaN(matchedRecord[matchedRecordFieldNames.personalNumber]) ||
@@ -185,6 +256,15 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
     return true;
 };
 
+/**
+ * Checks if the birthday is valid.
+ * Determines if the birthday is valid by checking if it's a date and in the correct format
+ * Also fixes the offset difference time
+ * If the birthday is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the birthday is valid
+ */
 const validateBirthday = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     const dateMS = Date.parse(matchedRecord[matchedRecordFieldNames.birthDate]);
     if (!dateMS) {
@@ -204,6 +284,15 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
     return true;
 };
 
+/**
+ * Checks if the sex is valid.
+ * Determines if the sex is valid by checking if it's in the sex's list
+ * Also fixes the offset difference time
+ * If the sex is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the sex is valid
+ */
 const validateSex = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     const sexLowerCased: string = matchedRecord[matchedRecordFieldNames.sex].toLowerCase();
     if (MALE_ENUM.includes(sexLowerCased)) matchedRecord[matchedRecordFieldNames.sex] = fieldNames.sexValues.m;
@@ -224,6 +313,15 @@ const validateSex = (matchedRecord: matchedRecordType, identifier: string): bool
     return true;
 };
 
+/**
+ * Checks if the hierarchy is valid.
+ * Determines if the hierarchy is valid by checking if it's in the correct format.
+ * Also fixes the offset difference time
+ * If the hierarchy is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @return { boolean } true if the hierarchy is valid
+ */
 const validateHierarchy = (matchedRecord: matchedRecordType, identifier: string): boolean => {
     const hierarchyReg: RegExp = new RegExp(`[^a-zA-Z0-9\u0590-\u05FF/\\"'. ,!()_*%@$-]`, 'g');
     matchedRecord[matchedRecordFieldNames.hierarchy] = matchedRecord[matchedRecordFieldNames.hierarchy].replace(hierarchyReg, '');
@@ -254,15 +352,19 @@ const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, i
 ]);
 
 export default (matchedRecord: matchedRecordType): void => {
+
+    // Firstly validate the identity card due to it's an identifier
     if (matchedRecord[matchedRecordFieldNames.identityCard]) {
         if (!validateIdentityCard(matchedRecord)) delete matchedRecord[matchedRecordFieldNames.identityCard];
     }
 
+    // Secondly validate the personalNumber due to it's an identifier
     if (matchedRecord[matchedRecordFieldNames.personalNumber]) {
         if (!validatePersonalNumber(matchedRecord, matchedRecord[matchedRecordFieldNames.identityCard]))
             delete matchedRecord[matchedRecordFieldNames.personalNumber];
     }
 
+    // The mobile phone field is an array, so filter each element individually
     if (matchedRecord[matchedRecordFieldNames.mobilePhone]) {
         matchedRecord[matchedRecordFieldNames.mobilePhone] = matchedRecord[matchedRecordFieldNames.mobilePhone].filter((mobilePhone) =>
             validateMobilePhone(matchedRecord, mobilePhone),
@@ -270,6 +372,7 @@ export default (matchedRecord: matchedRecordType): void => {
         if (matchedRecord[matchedRecordFieldNames.mobilePhone].length === 0) delete matchedRecord[matchedRecordFieldNames.mobilePhone];
     }
 
+    // The phone field is an array, so filter each element individually
     if (matchedRecord[matchedRecordFieldNames.phone]) {
         matchedRecord[matchedRecordFieldNames.phone] = matchedRecord[matchedRecordFieldNames.phone].filter((phone) =>
             validatePhone(matchedRecord, phone),

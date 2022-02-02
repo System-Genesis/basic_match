@@ -14,6 +14,9 @@ const { rabbit } = config;
 
 require('dotenv').config();
 
+/**
+ * Connecting to Rabbit and declaring the queues
+ */
 export default async (): Promise<void> => {
     console.log('Trying to connect to RabbitMQ...');
 
@@ -24,13 +27,17 @@ export default async (): Promise<void> => {
     console.log('RabbitMQ connected');
 };
 
-export const initializeConsumer = async () => {
+/**
+ * Activate the flow of the record and sends the return value to the queue.
+ */
+export const initializeConsumer = async (): Promise<void> => {
     await menash.queue(rabbit.beforeMatch).activateConsumer(
         (msg: ConsumerMessage) => {
             const obj: queueObject = msg.getContent() as queueObject;
             try {
                 const matchedRecord: matchedRecordType | null = basicMatch(obj);
 
+                // Checks the record has an identifier
                 if (matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId)) {
                     menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
                     logger.info(

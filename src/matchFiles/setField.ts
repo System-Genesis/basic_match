@@ -1,10 +1,21 @@
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 
-// Set the records' field - the function gets the field name
+/**
+ * Sets the field and it's value
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } value - The value of the field
+ * @param { string } fieldName - The name of the field
+ */
 export default (matchedRecord: matchedRecordType, value: string, fieldName: string): void => {
     matchedRecord[fieldName] = value.toString();
 };
 
+/**
+ * Sets one of the phone numbers field
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } value - The value of the field
+ * @param { string } fieldName - The name of the field
+ */
 export const setPhone = (matchedRecord: matchedRecordType, value: string | string[], fieldName: string): void => {
     if (!Array.isArray(value)) value = [value];
 

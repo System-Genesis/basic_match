@@ -6,7 +6,11 @@ import { scopeOption } from './types/log';
 
 const { logFields } = fieldNames;
 
-const main = async () => {
+/**
+ * The main function.
+ * Calls all the initializations
+ */
+const main = async (): Promise<void> => {
     await initializeRabbit();
     await initializeLogger();
     await initializeConsumer();

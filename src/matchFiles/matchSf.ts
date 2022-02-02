@@ -10,6 +10,12 @@ const { logFields } = fieldNames;
 const fn = fieldNames[fieldNames.sources.sf];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
+/**
+ * Sets the entity type.
+ * If the entity type is invalid sends a warning log.
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } value - The value of the field from which determine the entity type.
+ */
 const setEntityType = (matchedRecord: matchedRecordType, value: string): void => {
     if (value === fn.s) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
@@ -28,6 +34,12 @@ const setEntityType = (matchedRecord: matchedRecordType, value: string): void =>
         );
     }
 };
+
+/**
+ * Sets the hierarchy.
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string[] } value - The given hierarchy, given in an array of strings
+ */
 
 const setHierarchy = (matchedRecord: matchedRecordType, value: string[]): void => {
     const hr = value;

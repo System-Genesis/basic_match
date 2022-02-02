@@ -3,7 +3,7 @@ import logger from 'logger-genesis';
 import config from 'config';
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
-import { isStrContains } from '../utils/isStrContains';
+import isStrContains from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import assembleUserID from '../utils/assembleUserID';
 import { DOMAIN_SUFFIXES } from '../config/enums';
@@ -16,6 +16,12 @@ const { logFields } = fieldNames;
 const fn = fieldNames[fieldNames.sources.city];
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
+/**
+ * Sets the hierarchy.
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } hierarchy - The given hierarchy.
+ * @param { record } any - The original record
+ */
 const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
     let tempHr: string = hierarchy.replace('\\', '/');
@@ -67,10 +73,17 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
     }
 };
 
+/**
+ * Sets the entity type and userID.
+ * If the entity is Goal User, sets the goalUserId(Goal User identifier).
+ * If the given userID is invalid due to an invalid suffix, sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } userID - The given userID
+ */
 const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): void => {
     const rawEntityType: string = userID[0];
 
-    // set the entityType
+    // set the entityType, determine by the suffix
     if (fn.entityTypePrefix.s.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.s;
     } else if (fn.entityTypePrefix.c.includes(rawEntityType)) {
@@ -78,10 +91,13 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
     } else if (fn.entityTypePrefix.gu.includes(rawEntityType)) {
         matchedRecord.entityType = fieldNames.entityTypeValue.gu;
 
+        // Goal user originally from ADs
         if (userID.startsWith(fn.mirGUPrefixes.ads)) {
             matchedRecord.goalUserId = userID.split('@')[0];
             matchedRecord.goalUserId = matchedRecord.goalUserId.replace(fn.mirGUPrefixes.ads, '');
             matchedRecord.goalUserId += domainSuffixes.get(fieldNames.sources.ads);
+
+            // Goal user originally from adNN
         } else if (userID.startsWith(fn.mirGUPrefixes.adNN)) {
             matchedRecord.goalUserId = userID.split('@')[0];
             matchedRecord.goalUserId = matchedRecord.goalUserId.replace(fn.mirGUPrefixes.adNN, '');
@@ -110,8 +126,14 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
     matchedRecord.userID = userID;
 };
 
-// Give priority to job field
+/**
+ * Sets the job.
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } value - the given job
+ * @param { string } originFieldName - The name of the field in the original record
+ */
 const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName: string): void => {
+    // Give priority to job field
     if (originFieldName === fn.profession) {
         if (!matchedRecord[matchedRecordFieldNames.job]) {
             matchedRecord[matchedRecordFieldNames.job] = value;
@@ -121,6 +143,11 @@ const setJob = (matchedRecord: matchedRecordType, value: string, originFieldName
     }
 };
 
+/**
+ * Convert from old Aka unit to new one if there is.
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } value - The given Aka unit
+ */
 const convertAkaUnit = (matchedRecord: matchedRecordType, value: string): void => {
     const akaUnitsMap: any = config.get('akaUnitsMap');
 

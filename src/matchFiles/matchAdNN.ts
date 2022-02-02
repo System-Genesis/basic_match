@@ -11,8 +11,15 @@ const fn = fieldNames[fieldNames.sources.adNN];
 const { logFields } = fieldNames;
 const matchedRecordFieldNames = fieldNames.matchedRecord;
 
-// We derive the identifier, the DI and the entity type form the original userID
+/**
+ * Sets the identifier, userID and the entity type
+ * If the userID's suffix is invalid, sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ * @param { string } userID - The given userID
+ */
 const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: string): void => {
+
+    // We derive the identifier, the DI and the entity type form the original userID
     let suffixIdentifier: string;
     if (userID.toLowerCase().startsWith(fn.extension)) {
         suffixIdentifier = userID.toLowerCase().replace(fn.extension, '');
@@ -38,9 +45,17 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
     matchedRecord.userID = userID.toLowerCase();
 };
 
-// Take out job and hierarchy from the Hierarchy field. For the most part the last field contains the job and the full name
-// Example: root/OG1/OG2/OG3/full name - job
+/**
+ * Sets the hierarchy and the job
+ * If the given hierarchy is invalid, sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } hierarchy - The given hierarchy
+ * @param { any } record - The original record
+ */
 const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
+
+    // Take out job and hierarchy from the Hierarchy field. For the most part the last field contains the job and the full name
+    // Example: root/OG1/OG2/OG3/full name - job
     let job: string;
     const splitSymbol = hierarchy.includes('\\') ? '\\' : '/';
     let hr: string[] = hierarchy.substring(0, hierarchy.lastIndexOf(splitSymbol)).trim().split(splitSymbol);
@@ -97,6 +112,7 @@ export default (record: any) => {
     const originalRecordFields: string[] = Object.keys(record);
     const matchedRecord: matchedRecordType = {};
 
+    // Firstly set the identifier
     setIdentifierDIAndEntityType(matchedRecord, record[fn.sAMAccountName]);
 
     originalRecordFields.forEach((field: string) => {

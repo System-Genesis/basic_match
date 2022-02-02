@@ -12,6 +12,9 @@ import { scopeOption } from './types/log';
 
 const { logFields } = fn;
 
+/**
+ * Function map for each source
+ */
 const matchMap = new Map([
     [fn.sources.aka, matchAka],
     [fn.sources.es, matchEs],
@@ -20,6 +23,11 @@ const matchMap = new Map([
     [fn.sources.sf, matchSf],
 ]);
 
+/**
+ * Navigate the record to it's function, filter the field of the record by validate each one
+ * @param { queueObject } record got from the queue
+ * @return Object in matchedRecord format.
+ */
 export default (obj: queueObject): matchedRecordType | null => {
     const { record, dataSource } = obj;
     let matchedRecord: matchedRecordType = {};
