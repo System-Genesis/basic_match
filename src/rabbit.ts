@@ -21,8 +21,8 @@ export default async (): Promise<void> => {
     console.log('Trying to connect to RabbitMQ...');
 
     await menash.connect(rabbit.uri, rabbit.retryOptions);
-    await menash.declareQueue(rabbit.beforeMatch);
-    await menash.declareQueue(rabbit.afterMatch);
+    await menash.declareQueue(rabbit.beforeMatch, { durable: true });
+    await menash.declareQueue(rabbit.afterMatch, { durable: true });
 
     console.log('RabbitMQ connected');
 };
@@ -39,7 +39,11 @@ export const initializeConsumer = async (): Promise<void> => {
 
                 // Checks the record has an identifier
                 if (matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId)) {
-                    menash.send(rabbit.afterMatch, { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID });
+                    menash.send(
+                        rabbit.afterMatch,
+                        { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID },
+                        { persistent: true },
+                    );
                     logger.info(
                         false,
                         logFields.scopes.app as scopeOption,
