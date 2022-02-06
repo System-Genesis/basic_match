@@ -5,6 +5,8 @@ After creating the record, validate the basic object's fields and if a field is 
 
 The only required condition for a record is to have an identifier: Identity Card, Personal Number or Goal User Id.
 
+After creating the record, sends it to the merger.
+
 ## output:
 
 matched record:
