@@ -3,6 +3,8 @@
 Creates a basic object from the given record. The record can come from different sources.
 After creating the record, validate the basic object's fields and if a field is invalid, delete it.
 
+The only required condition for a record is to have an identifier: Identity Card, Personal Number or Goal User Id.
+
 ## output:
 
 matched record:
