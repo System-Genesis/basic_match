@@ -30,7 +30,7 @@ matched record:
     source?: string;
     goalUserId?: string;
     pictures?: picture;
-}```
+}
 
 picture:
 ```{
@@ -43,5 +43,4 @@ picture:
         };
     };
 }
-```
 ````
