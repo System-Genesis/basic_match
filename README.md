@@ -7,7 +7,7 @@ After creating the record, validate the basic object's fields and if a field is 
 
 matched record:
 
-````{
+```{
     firstName?: string;
     lastName?: string;
     rank?: string;
@@ -33,7 +33,7 @@ matched record:
 }
 
 picture:
-```{
+{
     profile: {
         meta: {
         path: string;
@@ -43,4 +43,4 @@ picture:
         };
     };
 }
-````
+```
