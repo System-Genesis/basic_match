@@ -33,7 +33,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         );
         for (const [index, val] of hr.entries()) {
             const value = val.replace('(', '').replace(')', '');
-            if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
+            if (fullNameRegex.test(value) || !value) {
                 hr.splice(index);
                 break;
             }
