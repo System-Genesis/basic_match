@@ -76,7 +76,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         const isLocalHierarchy: boolean = tempHr.split('/')[0] === fieldNames.rootHierarchy.ourCompany;
         // If the hierarchy start with local root - doesn't need external root hierarchy injection
         // matchedRecord.hierarchy = `${isLocalHierarchy ? '' : defaultHierarchy}${tempHr.includes('/') ? `/${tempHr}` : ''}`;
-        matchedRecord.hierarchy = `${isLocalHierarchy ? '' : defaultHierarchy}${tempHr ? `/${tempHr}` : ''}`;
+        matchedRecord.hierarchy = `${isLocalHierarchy ? '' : defaultHierarchy}${tempHr ? `/${tempHr}` : '/invalidHierarchy'}`;
         if (matchedRecord.hierarchy.startsWith('/')) {
             matchedRecord.hierarchy = matchedRecord.hierarchy.substring(1);
         }
