@@ -3,11 +3,11 @@ import logger from 'logger-genesis';
 import config from 'config';
 import fieldNames from '../config/fieldNames';
 import setField, { setPhone } from './setField';
-import isStrContains from '../utils/isStrContains';
 import { matchedRecord as matchedRecordType } from '../types/matchedRecord';
 import assembleUserID from '../utils/assembleUserID';
 import { DOMAIN_SUFFIXES } from '../config/enums';
 import { scopeOption } from '../types/log';
+import isStrContains from '../utils/isStrContains';
 
 const domainSuffixes: Map<string, string> = new Map<string, string>(DOMAIN_SUFFIXES);
 
@@ -31,12 +31,24 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         const fullNameRegex = new RegExp(
             `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
         );
+
+        let cutHierarchyFlag = false;
         for (const [index, val] of hr.entries()) {
             const value = val.replace('(', '').replace(')', '');
-            if (fullNameRegex.test(value) || !value) {
+            if (isStrContains(value, ['-'])) {
+                if (fullNameRegex.test(value) || index === hr.length - 1) cutHierarchyFlag = true;
+            } else if (fullNameRegex.test(value) || !value) cutHierarchyFlag = true;
+            if (cutHierarchyFlag) {
                 hr.splice(index);
                 break;
             }
+
+            // if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
+            //     if (!(isStrContains(value, ['-']) && fullNameRegex.test(value))) {
+            //         hr.splice(index);
+            //         break;
+            //     }
+            // }
         }
 
         // this condition come to fix insertion of "defaultHierarchy" to user that come from our "environment" to
