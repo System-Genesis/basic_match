@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-return-assign */
 /**
  * Contains all the regex function for the relevant fields

@@ -32,7 +32,7 @@ const setIdentifierDIAndEntityType = (matchedRecord: matchedRecordType, userID: 
         return;
     }
 
-    if (validators().identityCard(suffixIdentifier)) {
+    if (suffixIdentifier.length >= 8 && validators().identityCard(suffixIdentifier)) {
         // if the unique number is identity Number so it's a c
         matchedRecord.identityCard = suffixIdentifier.toString();
         matchedRecord.entityType = fieldNames.entityTypeValue.c;
