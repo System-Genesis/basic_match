@@ -32,12 +32,19 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
             `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
         );
 
+        const firstNameAndLastNameRegex = new RegExp(
+            `${record.firstName.split(' ')[0].replace('(', '').replace(')', '')}( |\t)+${record.lastName
+                .split(' ')[0]
+                .replace('(', '')
+                .replace(')', '')}`,
+        );
+
         let cutHierarchyFlag = false;
         for (const [index, val] of hr.entries()) {
             const value = val.replace('(', '').replace(')', '');
             if (isStrContains(value, ['-'])) {
                 if (fullNameRegex.test(value) || index === hr.length - 1) cutHierarchyFlag = true;
-            } else if (fullNameRegex.test(value) || !value) cutHierarchyFlag = true;
+            } else if (fullNameRegex.test(value) || firstNameAndLastNameRegex.test(value) || !value) cutHierarchyFlag = true;
             if (cutHierarchyFlag) {
                 hr.splice(index);
                 break;
