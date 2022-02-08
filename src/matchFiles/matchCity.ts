@@ -25,44 +25,42 @@ const matchedRecordFieldNames = fieldNames.matchedRecord;
 const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
     const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
     let tempHr: string = hierarchy.replace('\\', '/');
-    if (tempHr.includes('/')) {
-        const hr: string[] = tempHr.split('/').map((unit) => unit.trim());
+    const hr: string[] = tempHr.split('/').map((unit) => unit.trim());
 
-        const fullNameRegex = new RegExp(
-            `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
-        );
+    const fullNameRegex = new RegExp(
+        `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
+    );
 
-        const firstNameAndLastNameRegex = new RegExp(
-            `${record.firstName.split(' ')[0].replace('(', '').replace(')', '')}( |\t)+${record.lastName
-                .split(' ')[0]
-                .replace('(', '')
-                .replace(')', '')}`,
-        );
+    const firstNameAndLastNameRegex = new RegExp(
+        `${record.firstName.split(' ')[0].replace('(', '').replace(')', '')}( |\t)+${record.lastName
+            .split(' ')[0]
+            .replace('(', '')
+            .replace(')', '')}`,
+    );
 
-        let cutHierarchyFlag = false;
-        for (const [index, val] of hr.entries()) {
-            const value = val.replace('(', '').replace(')', '');
-            if (isStrContains(value, ['-'])) {
-                if (fullNameRegex.test(value) || index === hr.length - 1) cutHierarchyFlag = true;
-            } else if (fullNameRegex.test(value) || firstNameAndLastNameRegex.test(value) || !value) cutHierarchyFlag = true;
-            if (cutHierarchyFlag) {
-                hr.splice(index);
-                break;
-            }
-
-            // if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
-            //     if (!(isStrContains(value, ['-']) && fullNameRegex.test(value))) {
-            //         hr.splice(index);
-            //         break;
-            //     }
-            // }
+    let cutHierarchyFlag = false;
+    for (const [index, val] of hr.entries()) {
+        const value = val.replace('(', '').replace(')', '');
+        if (isStrContains(value, ['-'])) {
+            if (fullNameRegex.test(value) || index === hr.length - 1) cutHierarchyFlag = true;
+        } else if (fullNameRegex.test(value) || firstNameAndLastNameRegex.test(value) || !value) cutHierarchyFlag = true;
+        if (cutHierarchyFlag) {
+            hr.splice(index);
+            break;
         }
 
-        // this condition come to fix insertion of "defaultHierarchy" to user that come from our "environment" to
-        // city "environment" and than return to us from city API.
-        // Prevent "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
-        tempHr = hr.join('/').substring(hr.join('/').lastIndexOf(fieldNames.rootHierarchy.city));
+        // if (isStrContains(value, ['-']) || fullNameRegex.test(value) || !value) {
+        //     if (!(isStrContains(value, ['-']) && fullNameRegex.test(value))) {
+        //         hr.splice(index);
+        //         break;
+        //     }
+        // }
     }
+
+    // this condition come to fix insertion of "defaultHierarchy" to user that come from our "environment" to
+    // city "environment" and than return to us from city API.
+    // Prevent "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
+    tempHr = hr.join('/').substring(hr.join('/').lastIndexOf(fieldNames.rootHierarchy.city));
 
     // this condition come to avoid insertion of "defaultHierarchy" to user that come from our "environment" to
     // city "environment" and than return to us from city API
