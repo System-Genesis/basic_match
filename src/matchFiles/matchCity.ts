@@ -128,6 +128,8 @@ const setEntityTypeAndDI = (matchedRecord: matchedRecordType, userID: string): v
             matchedRecord.goalUserId = userID.split('@')[0] + domainSuffixes.get(fieldNames.sources.city);
         }
 
+        matchedRecord.goalUserId = matchedRecord.goalUserId.toLowerCase();
+
         // matchedRecord.goalUserId = userID.split('@')[0];
 
         // // Remove the local GU prefix
