@@ -266,8 +266,12 @@ const validatePersonalNumber = (matchedRecord: matchedRecordType, identityCard: 
  * @return { boolean } true if the birthday is valid
  */
 const validateBirthday = (matchedRecord: matchedRecordType, identifier: string): boolean => {
-    const dateMS = Date.parse(matchedRecord[matchedRecordFieldNames.birthDate]);
-    if (!dateMS) {
+    const value = matchedRecord[matchedRecordFieldNames.birthDate];
+    const date: Date | null = value && value !== fieldNames.unknown ? new Date(value) : null;
+    if (date && !isNaN(date.getTime())) {
+        const userTimezoneOffset: number = date.getTimezoneOffset() * 60000;
+        matchedRecord[matchedRecordFieldNames.birthDate] = new Date(date.getTime() - userTimezoneOffset).toISOString();
+    } else {
         logger.warn(
             true,
             logFields.scopes.app as scopeOption,
@@ -280,7 +284,6 @@ const validateBirthday = (matchedRecord: matchedRecordType, identifier: string):
         return false;
     }
 
-    matchedRecord[matchedRecordFieldNames.birthDate] = new Date(dateMS).toISOString();
     return true;
 };
 
