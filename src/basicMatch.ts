@@ -31,11 +31,15 @@ const matchMap = new Map([
 export default (obj: queueObject): matchedRecordType | null => {
     const { record, dataSource } = obj;
     let matchedRecord: matchedRecordType = {};
-    if (matchMap.has(dataSource)) {
-        matchedRecord = matchMap.get(dataSource)!(record);
-        filterFieldsByValidation(matchedRecord);
-        return matchedRecord;
+
+    if (!matchMap.has(dataSource)) {
+        logger.error(true, logFields.scopes.app as scopeOption, 'Unknown source', `Source: ${dataSource} not found`);
+
+        return null;
     }
-    logger.error(true, logFields.scopes.app as scopeOption, 'Unknown source', `Source: ${dataSource} not found`);
-    return null;
+
+    matchedRecord = matchMap.get(dataSource)!(record);
+    filterFieldsByValidation(matchedRecord);
+
+    return matchedRecord;
 };
