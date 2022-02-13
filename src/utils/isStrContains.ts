@@ -2,7 +2,7 @@
  * Checks if a string contains the given patterns
  * @param { string } target -  The string that being checked
  * @param { string [] } pattern - Contains the pattern that being searched in the given string
- * @return { boolean } true if the string contains at least one pattern
+ * @returns { boolean } true if the string contains at least one pattern
  */
 export default (target: string, pattern: string[]): boolean => {
     let value = 0;

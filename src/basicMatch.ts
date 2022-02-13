@@ -26,7 +26,7 @@ const matchMap = new Map([
 /**
  * Navigate the record to it's function, filter the field of the record by validate each one
  * @param { queueObject } record got from the queue
- * @return Object in matchedRecord format.
+ * @returns Object in matchedRecord format.
  */
 export default (obj: queueObject): matchedRecordType | null => {
     const { record, dataSource } = obj;
