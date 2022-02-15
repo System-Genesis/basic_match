@@ -28,14 +28,13 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
     const hr: string[] = tempHr.split('/').map((unit) => unit.trim());
 
     const fullNameRegex = new RegExp(
-        `${record.firstName.replace('(', '').replace(')', '')}( |\t)+${record.lastName.replace('(', '').replace(')', '')}`,
+        `${record.firstName ? record.firstName.replace('(', '').replace(')', '') : ''}( |\t)+${record.lastName ? record.lastName.replace('(', '').replace(')', '') : ''
+        }`,
     );
 
     const firstNameAndLastNameRegex = new RegExp(
-        `${record.firstName.split(' ')[0].replace('(', '').replace(')', '')}( |\t)+${record.lastName
-            .split(' ')[0]
-            .replace('(', '')
-            .replace(')', '')}`,
+        `${record.firstName ? record.firstName.split(' ')[0].replace('(', '').replace(')', '') : ''}( |\t)+${record.lastName ? record.lastName.split(' ')[0].replace('(', '').replace(')', '') : ''
+        }`,
     );
 
     let cutHierarchyFlag = false;
