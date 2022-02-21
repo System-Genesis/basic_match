@@ -10,7 +10,7 @@ logger.warn = () => { };
 logger.error = () => { };
 
 describe('Match adNN testing', () => {
-    test('Valid match - valid userName', () => {
+    test('Valid match - Solider', () => {
         const record: any = {
             KfirstName: 'Melisa',
             guName: 'Melisa',
@@ -28,6 +28,35 @@ describe('Match adNN testing', () => {
             userID: 'nn17892194@adnn.com',
             personalNumber: '17892194',
             entityType: 'agumon',
+            firstName: 'Melisa',
+            lastName: 'Steuber',
+            hierarchy: `${fieldNames.sources.adNN}/nihil/soluta/dolores`,
+            job: 'Melisa Steuber',
+            mail: 'maxwell_heaney@rabiran.com',
+            source: 'adNN_name',
+        };
+
+        expect(matchedRecord).toEqual(expectedRecord);
+    });
+
+    test('Valid match - Civilian', () => {
+        const record: any = {
+            KfirstName: 'Melisa',
+            guName: 'Melisa',
+            KlastName: 'Steuber',
+            userPrincipalName: 'Maxwell_Heaney',
+            Kjob: 'Human Program Agent',
+            hierarchy: 'nihil/soluta/dolores/Human Program Agent - Melisa Steuber',
+            sAMAccountName: 'nn123456782',
+            mail: 'Maxwell_Heaney@rabiran.com',
+        };
+
+        const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.adNN, runUID: '123' });
+
+        const expectedRecord: matchedRecordType = {
+            userID: 'nn123456782@adnn.com',
+            identityCard: '123456782',
+            entityType: 'digimon',
             firstName: 'Melisa',
             lastName: 'Steuber',
             hierarchy: `${fieldNames.sources.adNN}/nihil/soluta/dolores`,

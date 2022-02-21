@@ -26,7 +26,7 @@ describe('Test hierarchy', () => {
             profession: 'null',
             department: 'city5',
             stype: '',
-            hr: 'wallmart/dolores/animi/cum/ullam',
+            hr: 'wallmart/dolores/animi/cum/ullam/Lead Implementation Analyst - Carlos Schoen',
             company: 'odyssey',
             isPortalUser: false,
             tags: [
@@ -103,6 +103,38 @@ describe('Test hierarchy', () => {
 
         const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.city, runUID: '123' });
         const expectedHierarchy = 'city_name/bladerunners/quas/et/recusandae/eos';
+        expect(matchedRecord!.hierarchy).toEqual(expectedHierarchy);
+    });
+
+    test('Test external invalid hierarchy - only full name', () => {
+        const record = {
+            domUser: 'e702048317@turtle.com',
+            telephone: '0502335236',
+            clearance: 4,
+            firstName: 'Bud',
+            lastName: 'Gulgowski',
+            mail: null,
+            tz: null,
+            personalNumber: '',
+            rank: 'champion',
+            rld: '',
+            job: 'Regional Group Planner',
+            profession: 'unknown',
+            department: 'city6',
+            stype: '',
+            hr: 'Bud Gulgowski',
+            company: 'bladerunners',
+            isPortalUser: false,
+            tags: [
+                {
+                    name: 'transportable',
+                },
+            ],
+            domains: ['external'],
+        };
+
+        const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.city, runUID: '123' });
+        const expectedHierarchy = 'city_name/invalidHierarchy';
         expect(matchedRecord!.hierarchy).toEqual(expectedHierarchy);
     });
 });
@@ -205,7 +237,7 @@ describe('Test Persons', () => {
             profession: 'unknown',
             department: 'city3',
             stype: '',
-            hr: 'voluptas/minus/cupiditate/qui',
+            hr: 'city_name/voluptas/minus/cupiditate/qui',
             company: 'bladerunners',
             isPortalUser: true,
             domains: ['external'],
@@ -230,6 +262,8 @@ describe('Test Persons', () => {
 
         expect(matchedRecord).toEqual(expectedRecord);
     });
+
+
 });
 
 describe('Test Goal Users', () => {
@@ -335,3 +369,34 @@ describe('Test Goal Users', () => {
         expect(matchedRecord).toEqual(expectedRecord);
     });
 });
+
+describe('Test Invalid userID', () => {
+    const record: any = {
+        domUser: 'a437496371@turtle.com',
+        telephone: '0599798640',
+        firstName: 'Cornell',
+        lastName: 'Simonis',
+        mail: '',
+        job: 'Customer Branding Coordinator',
+        profession: '',
+        stype: '',
+        hr: 'wallmart/ipsum/quaerat',
+        company: 'interstellar',
+        isPortalUser: true,
+        tags: [],
+        domains: ['local'],
+    };
+
+    const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.city, runUID: '123' });
+
+    const expectedRecord: matchedRecordType = {
+        mobilePhone: ['0599798640'],
+        firstName: 'Cornell',
+        lastName: 'Simonis',
+        job: 'Customer Branding Coordinator',
+        hierarchy: `${fieldNames.sources.mir}/wallmart/ipsum/quaerat`,
+        source: 'mir_name',
+    };
+
+    expect(matchedRecord).toEqual(expectedRecord);
+})

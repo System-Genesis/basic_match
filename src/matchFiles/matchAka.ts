@@ -18,8 +18,8 @@ const setPicture = (matchedRecord: matchedRecordType, picture: pictureType): voi
             meta: {
                 path: picture.path,
                 format: picture.format,
-                takenAt: picture.takenAt,
-                updatedAt: picture.updatedAt,
+                ...(picture.takenAt ? { takenAt: picture.takenAt } : undefined),
+                ...(picture.updatedAt ? { updatedAt: picture.updatedAt } : undefined),
             },
         },
     };

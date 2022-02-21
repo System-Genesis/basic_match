@@ -19,7 +19,7 @@ describe('Match Es testing', () => {
             tz: '50747744',
             entity: 'agumon',
             rnk: 'rookie',
-            rld: null,
+            rld: '2022-08-06',
             sex: 'ז',
             birthday: '2006-08-29T09:46:01.167Z',
             vphone: '1914',
@@ -29,6 +29,7 @@ describe('Match Es testing', () => {
             userName: 'Kiley_Rippin8',
             mail: 'Kiley_Rippin8@jello.com',
             location: 'District Solutions Technician',
+            adr: '13 Alenby, Tel Aviv'
         };
 
         // const matchedRecord: matchedRecordType = matchEs(record, '123');
@@ -43,7 +44,9 @@ describe('Match Es testing', () => {
             entityType: 'agumon',
             rank: 'rookie',
             sex: 'male',
-            birthDate: '2006-08-29T09:46:01.167Z',
+            birthDate: '2006-08-29T12:46:01.167Z',
+            dischargeDay: '2022-08-06T03:00:00.000Z',
+            address: '13 Alenby, Tel Aviv',
             phone: ['01914'],
             mobilePhone: ['0539528948'],
             hierarchy: `${fieldNames.sources.es}/beatae/excepturi/iste`,

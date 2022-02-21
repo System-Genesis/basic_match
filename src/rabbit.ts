@@ -28,6 +28,15 @@ export default async (): Promise<void> => {
 };
 
 /**
+ * Check if the generated record is valid - Has required fields(EntityType and at least on identifier)
+ * @param matchedRecord - The generated record.
+ * @returns true if the record is valid, false otherwise.
+ */
+const validMatchedRecord = (matchedRecord: matchedRecordType | null) => {
+    return matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId) && matchedRecord.entityType;
+};
+
+/**
  * Activate the flow of the record and sends the return value to the queue.
  */
 export const initializeConsumer = async (): Promise<void> => {
@@ -37,11 +46,10 @@ export const initializeConsumer = async (): Promise<void> => {
             try {
                 const matchedRecord: matchedRecordType | null = basicMatch(obj);
 
-                // Checks the record has an identifier
-                if (matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId)) {
+                if (validMatchedRecord(matchedRecord)) {
                     menash.send(
                         rabbit.afterMatch,
-                        { record: matchedRecord, dataSource: matchedRecord.source, runUID: obj.runUID },
+                        { record: matchedRecord, dataSource: matchedRecord!.source, runUID: obj.runUID },
                         { persistent: true },
                     );
                     logger.info(
@@ -49,7 +57,7 @@ export const initializeConsumer = async (): Promise<void> => {
                         logFields.scopes.app as scopeOption,
                         'Sending Record to Merger',
                         `Record with userID: ${matchedRecord.userID}, identifier: ${matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId
-                        } from source: ${matchedRecord?.source} was send to Merger`,
+                        } from source: ${matchedRecord!.source} was send to Merger`,
                     );
                 }
                 msg.ack();

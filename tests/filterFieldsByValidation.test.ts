@@ -13,6 +13,7 @@ describe('Validate Record and filter fields', () => {
         const record: matchedRecordType = {
             job: 'Coordinator - District Solutions Technician',
             personalNumber: '568755651',
+            identityCard: '1462',
             serviceType: 'R',
             lastName: 'Rippin',
             firstName: 'Kiley',

@@ -67,7 +67,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         if (tempHr.includes(defaultHierarchy)) {
             matchedRecord.hierarchy = tempHr;
         } else if (tempHr.startsWith(fieldNames.rootHierarchy.city)) {
-            matchedRecord.hierarchy = tempHr.replace(fn.rootHierarchy.city, defaultHierarchy);
+            matchedRecord.hierarchy = tempHr.replace(fieldNames.rootHierarchy.city, defaultHierarchy);
         }
     } else {
         const isLocalHierarchy: boolean = tempHr.split('/')[0] === fieldNames.rootHierarchy.ourCompany;

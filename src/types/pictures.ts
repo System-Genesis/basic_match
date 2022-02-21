@@ -11,8 +11,8 @@ export type picture = {
         meta: {
             path: string;
             format: string;
-            takenAt: string;
-            updatedAt: string;
+            takenAt?: string;
+            updatedAt?: string;
         };
     };
 };
