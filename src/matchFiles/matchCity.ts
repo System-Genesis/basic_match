@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
 import logger from 'logger-genesis';
 import config from 'config';

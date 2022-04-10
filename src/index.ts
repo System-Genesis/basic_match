@@ -3,6 +3,7 @@ import initializeLogger from './logger';
 import fieldNames from './config/fieldNames';
 import initializeRabbit, { initializeConsumer } from './rabbit';
 import { scopeOption } from './types/log';
+import initializeHttp from './http/app';
 
 const { logFields } = fieldNames;
 
@@ -11,6 +12,7 @@ const { logFields } = fieldNames;
  * Calls all the initializations
  */
 const main = async (): Promise<void> => {
+    initializeHttp();
     await initializeRabbit();
     await initializeLogger();
     await initializeConsumer();

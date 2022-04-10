@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 import menash, { ConsumerMessage } from 'menashmq';
 import logger from 'logger-genesis';
@@ -56,7 +58,8 @@ export const initializeConsumer = async (): Promise<void> => {
                         false,
                         logFields.scopes.app as scopeOption,
                         'Sending Record to Merger',
-                        `Record with userID: ${matchedRecord.userID}, identifier: ${matchedRecord!.personalNumber || matchedRecord!.identityCard || matchedRecord!.goalUserId
+                        `Record with userID: ${matchedRecord!.userID}, identifier: ${matchedRecord!.personalNumber
+                        || matchedRecord!.identityCard || matchedRecord!.goalUserId
                         } from source: ${matchedRecord!.source} was send to Merger`,
                     );
                 }
