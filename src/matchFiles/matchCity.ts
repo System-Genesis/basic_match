@@ -25,7 +25,7 @@ const matchedRecordFieldNames = fieldNames.matchedRecord;
  * @param { record } any - The original record
  */
 const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, record: any): void => {
-    const defaultHierarchy = `${fieldNames.rootHierarchy.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
+    const defaultHierarchy = `${fieldNames.sources.city}${record[fn.company] ? `/${record[fn.company]}` : ''}`;
     let tempHr: string = hierarchy.replace('\\', '/');
     const hr: string[] = tempHr.split('/').map((unit) => unit.trim());
 
