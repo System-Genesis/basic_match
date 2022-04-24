@@ -62,7 +62,7 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
     // city "environment" and than return to us from city API.
     // Prevent "fn.rootHierarchy.city/fn.rootHierarchy.city/fn.rootHierarchy.city.."
     tempHr = hr.join('/').substring(hr.join('/').lastIndexOf(fieldNames.rootHierarchy.city));
-    tempHr = hr.join('/').substring(hr.join('/').lastIndexOf(fieldNames.sources.city));
+    tempHr = tempHr.substring(tempHr.lastIndexOf(fieldNames.sources.city));
 
     // this condition come to avoid insertion of "defaultHierarchy" to user that come from our "environment" to
     // city "environment" and than return to us from city API
