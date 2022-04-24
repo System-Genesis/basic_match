@@ -77,7 +77,8 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
         // If the hierarchy start with local root - doesn't need external root hierarchy injection
 
         // If tempHr, build hierarchy a usual
-        if (tempHr) matchedRecord.hierarchy = `${isLocalHierarchy ? '' : defaultHierarchy}/${tempHr}`;
+        // eslint-disable-next-line no-nested-ternary
+        if (tempHr) matchedRecord.hierarchy = `${isLocalHierarchy ? '' : !tempHr.startsWith(defaultHierarchy) ? defaultHierarchy : ''}/${tempHr}`;
         // If no tempHr, enter record to invalid hierarchies group
         else matchedRecord.hierarchy = `${fieldNames.rootHierarchy.city}/invalidHierarchy`;
 
