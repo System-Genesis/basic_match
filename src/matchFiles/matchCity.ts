@@ -78,11 +78,13 @@ const setHierarchy = (matchedRecord: matchedRecordType, hierarchy: string, recor
 
         // If tempHr, build hierarchy a usual
         // eslint-disable-next-line no-nested-ternary
-        if (tempHr) matchedRecord.hierarchy = `${isLocalHierarchy ? '' : !tempHr.startsWith(defaultHierarchy) ? defaultHierarchy : ''}/${tempHr}`;
+        if (tempHr && !tempHr.includes('invalidHierarchy')) matchedRecord.hierarchy = `${isLocalHierarchy ? ''
+            : !tempHr.startsWith(defaultHierarchy) ? defaultHierarchy : ''}/${tempHr}`;
+
         // If no tempHr, enter record to invalid hierarchies group
         else matchedRecord.hierarchy = `${fieldNames.rootHierarchy.city}/invalidHierarchy`;
 
-        if (matchedRecord.hierarchy.startsWith('/')) {
+        if (matchedRecord.hierarchy?.startsWith('/')) {
             matchedRecord.hierarchy = matchedRecord.hierarchy.substring(1);
         }
     }
