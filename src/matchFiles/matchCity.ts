@@ -183,6 +183,24 @@ const convertAkaUnit = (matchedRecord: matchedRecordType, value: string): void =
     matchedRecord[matchedRecordFieldNames.akaUnit] = akaUnitsMap[value]?.newName || value;
 };
 
+/**
+ * Removes unwanted fields.
+ * @param { matchedRecordType } matchedRecord - The generated record.
+ */
+const removeUnwantedFields = (matchedRecord: matchedRecordType): void => {
+
+    // If the entityType is GU, remove all other identifiers
+    if (matchedRecord[matchedRecordFieldNames.entityType] === fieldNames.entityTypeValue.gu) {
+        delete matchedRecord[matchedRecordFieldNames.personalNumber];
+        delete matchedRecord[matchedRecordFieldNames.identityCard];
+    }
+
+    // If source is mir, entityType is unwanted
+    if (matchedRecord[matchedRecordFieldNames.source] === fieldNames.sources.mir) {
+        delete matchedRecord[matchedRecordFieldNames.entityType];
+    }
+}
+
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
@@ -221,6 +239,8 @@ export default (record: any) => {
         ? fieldNames.sources.city
         : fieldNames.sources.mir;
     if (matchedRecord[matchedRecordFieldNames.userID]) matchedRecord[matchedRecordFieldNames.userID] = assembleUserID(matchedRecord);
+
+    removeUnwantedFields(matchedRecord);
 
     return matchedRecord;
 };
