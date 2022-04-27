@@ -35,7 +35,8 @@ export default async (): Promise<void> => {
  * @returns true if the record is valid, false otherwise.
  */
 const validMatchedRecord = (matchedRecord: matchedRecordType | null) => {
-    return matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard || matchedRecord.goalUserId) && matchedRecord.entityType;
+    return matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard ||
+        matchedRecord.goalUserId) && matchedRecord.entityType;
 };
 
 /**
@@ -62,6 +63,12 @@ export const initializeConsumer = async (): Promise<void> => {
                         || matchedRecord!.identityCard || matchedRecord!.goalUserId
                         } from source: ${matchedRecord!.source} was send to Merger`,
                     );
+                } else {
+                    logger.error(
+                        true,
+                        logFields.scopes.app as scopeOption,
+                        'Not Sending Record to Merger',
+                        `Record with userID: ${matchedRecord!.userID} is not being sent to Merger`)
                 }
                 msg.ack();
             } catch (err: any) {

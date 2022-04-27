@@ -184,6 +184,7 @@ const convertAkaUnit = (matchedRecord: matchedRecordType, value: string): void =
 };
 
 /**
+ * 
  * Removes unwanted fields.
  * @param { matchedRecordType } matchedRecord - The generated record.
  */
@@ -195,10 +196,6 @@ const removeUnwantedFields = (matchedRecord: matchedRecordType): void => {
         delete matchedRecord[matchedRecordFieldNames.identityCard];
     }
 
-    // If source is mir, entityType is unwanted
-    if (matchedRecord[matchedRecordFieldNames.source] === fieldNames.sources.mir) {
-        delete matchedRecord[matchedRecordFieldNames.entityType];
-    }
 }
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
