@@ -178,7 +178,8 @@ export default {
         entityType: 'entity',
         dischargeDay: 'discharge',
         primaryDU: 'primaryDU',
-        s: 'soldier',
+        og: '1010',
+        employeeNumber: 'emId',
     },
     matchedRecord: {
         firstName: 'firstName',
@@ -203,11 +204,15 @@ export default {
         source: 'source',
         goalUserId: 'goalUserId',
         picture: 'picture',
+        employeeNumber: 'employeeNumber',
+        organization: 'organization',
+        employeeId: 'employeeId',
     },
     entityTypeValue: {
         s: 'agumon',
         c: 'digimon',
         gu: 'tamar',
+        e: 'external',
     },
     rootHierarchy: {
         ourCompany: 'wallmart',

@@ -17,8 +17,15 @@ const matchedRecordFieldNames = fieldNames.matchedRecord;
  * @param { string } value - The value of the field from which determine the entity type.
  */
 const setEntityType = (matchedRecord: matchedRecordType, value: string): void => {
-    if (value === fn.s) {
-        matchedRecord.entityType = fieldNames.entityTypeValue.s;
+    if (value === fieldNames.entityTypeValue.e && matchedRecord[fn.employeeNumber]) {
+        matchedRecord[matchedRecordFieldNames.entityType] = fieldNames.entityTypeValue.e;
+        matchedRecord[matchedRecordFieldNames.organization] = fn.og;
+        matchedRecord[matchedRecordFieldNames.employeeNumber] = matchedRecord[fn.employeeNumber];
+        matchedRecord[matchedRecordFieldNames.employeeId] = `${matchedRecord[matchedRecordFieldNames.organization]}-${
+            matchedRecord[matchedRecordFieldNames.employeeNumber]
+        }`;
+    } else if (value === fieldNames.entityTypeValue.s || value === fieldNames.entityTypeValue.c) {
+        matchedRecord[matchedRecordFieldNames.entityType] = value;
     } else {
         logger.warn(
             true,
