@@ -1,3 +1,4 @@
+/* eslint-disable */
 import logger from 'logger-genesis';
 import fieldNames from '../config/fieldNames';
 import setField from './setField';
@@ -16,14 +17,13 @@ const matchedRecordFieldNames = fieldNames.matchedRecord;
  * @param { matchedRecordType } matchedRecord - The generated record.
  * @param { string } value - The value of the field from which determine the entity type.
  */
-const setEntityType = (matchedRecord: matchedRecordType, value: string): void => {
-    if (value === fieldNames.entityTypeValue.e && matchedRecord[fn.employeeNumber]) {
+const setEntityType = (matchedRecord: matchedRecordType, value: string, record: any): void => {
+    if (value === fieldNames.entityTypeValue.e && record[fn.employeeNumber]) {
         matchedRecord[matchedRecordFieldNames.entityType] = fieldNames.entityTypeValue.e;
         matchedRecord[matchedRecordFieldNames.organization] = fn.og;
-        matchedRecord[matchedRecordFieldNames.employeeNumber] = matchedRecord[fn.employeeNumber];
-        matchedRecord[matchedRecordFieldNames.employeeId] = `${matchedRecord[matchedRecordFieldNames.organization]}-${
-            matchedRecord[matchedRecordFieldNames.employeeNumber]
-        }`;
+        matchedRecord[matchedRecordFieldNames.employeeNumber] = record[fn.employeeNumber];
+        matchedRecord[matchedRecordFieldNames.employeeId] = `${matchedRecord[matchedRecordFieldNames.organization]}-${matchedRecord[matchedRecordFieldNames.employeeNumber]
+            }`;
     } else if (value === fieldNames.entityTypeValue.s || value === fieldNames.entityTypeValue.c) {
         matchedRecord[matchedRecordFieldNames.entityType] = value;
     } else {
@@ -79,7 +79,7 @@ export default (record: any) => {
             if (setFieldsFuncs.has(field)) {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.entityType) {
-                setEntityType(matchedRecord, record[field]);
+                setEntityType(matchedRecord, record[field], record);
             } else if (field === fn.hierarchy) {
                 setHierarchy(matchedRecord, record[field]);
             }

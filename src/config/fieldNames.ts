@@ -179,7 +179,7 @@ export default {
         dischargeDay: 'discharge',
         primaryDU: 'primaryDU',
         og: '1010',
-        employeeNumber: 'emId',
+        employeeNumber: 'employeeNumber',
     },
     matchedRecord: {
         firstName: 'firstName',
