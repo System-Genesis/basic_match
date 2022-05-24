@@ -36,7 +36,7 @@ export default async (): Promise<void> => {
  */
 const validMatchedRecord = (matchedRecord: matchedRecordType | null) => {
     return matchedRecord && (matchedRecord.personalNumber || matchedRecord.identityCard ||
-        matchedRecord.goalUserId) && matchedRecord.entityType;
+        matchedRecord.goalUserId || matchedRecord.employeeId) && matchedRecord.entityType;
 };
 
 /**

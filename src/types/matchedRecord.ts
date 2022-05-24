@@ -23,4 +23,7 @@ export type matchedRecord = {
     source?: string;
     goalUserId?: string;
     pictures?: picture;
+    employeeId?: string;
+    organization?: string;
+    employeeNumber?: string;
 };
