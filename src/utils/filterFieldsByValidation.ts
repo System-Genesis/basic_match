@@ -344,19 +344,19 @@ const validateHierarchy = (matchedRecord: matchedRecordType, identifier: string)
 }
 
 /**
- * Checks if the employeeId is valid.
- * Determines if the employeeId is valid by checking if it's in the correct format.
- * If the employeeId is invalid also sends a warning log
+ * Checks if the employeeNumber is valid.
+ * Determines if the employeeNumber is valid by checking if it's in the correct format.
+ * If the employeeNumber is invalid also sends a warning log
  * @param { matchedRecordType } matchedRecord - The generated record
- * @returns { boolean } true if the employeeId is valid
+ * @returns { boolean } true if the employeeNumber is valid
  */
-const validateEmployeeId = (matchedRecord: matchedRecordType): boolean => {
-    if (!validators().employeeId.test(matchedRecord[matchedRecordFieldNames.employeeId])) {
+const validateEmployeeNumber = (matchedRecord: matchedRecordType): boolean => {
+    if (!validators().employeeNumber.test(matchedRecord[matchedRecordFieldNames.employeeNumber])) {
         logger.warn(
             true,
             logFields.scopes.app as scopeOption,
-            'Invalid employeeId',
-            `Invalid employeeId: ${matchedRecord[matchedRecordFieldNames.employeeId]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            'Invalid employeeNumber',
+            `Invalid employeeNumber: ${matchedRecord[matchedRecordFieldNames.employeeNumber]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
             } from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
         );
         return false;
@@ -391,8 +391,11 @@ export default (matchedRecord: matchedRecordType): void => {
 
     // If employeeId is the identifier, check it firstly
     if (matchedRecord[matchedRecordFieldNames.employeeId]) {
-        if (!validateEmployeeId(matchedRecord))
+        if (!validateEmployeeNumber(matchedRecord)) {
             delete matchedRecord[matchedRecordFieldNames.employeeId];
+            delete matchedRecord[matchedRecordFieldNames.employeeNumber];
+            delete matchedRecord[matchedRecordFieldNames.organization];
+        }
     }
 
     // The mobile phone field is an array, so filter each element individually
