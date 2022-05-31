@@ -343,6 +343,28 @@ const validateHierarchy = (matchedRecord: matchedRecordType, identifier: string)
     return true;
 }
 
+/**
+ * Checks if the employeeId is valid.
+ * Determines if the employeeId is valid by checking if it's in the correct format.
+ * If the employeeId is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @returns { boolean } true if the employeeId is valid
+ */
+const validateEmployeeId = (matchedRecord: matchedRecordType): boolean => {
+    if (!validators().employeeId.test(matchedRecord[matchedRecordFieldNames.employeeId])) {
+        logger.warn(
+            true,
+            logFields.scopes.app as scopeOption,
+            'Invalid employeeId',
+            `Invalid employeeId: ${matchedRecord[matchedRecordFieldNames.employeeId]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } from source: ${matchedRecord[matchedRecordFieldNames.source]}`,
+        );
+        return false;
+    }
+
+    return true;
+}
+
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
     [matchedRecordFieldNames.clearance, validateClearance],
     [matchedRecordFieldNames.dischargeDay, validateDischargeDay],
@@ -367,6 +389,12 @@ export default (matchedRecord: matchedRecordType): void => {
             delete matchedRecord[matchedRecordFieldNames.personalNumber];
     }
 
+    // If employeeId is the identifier, check it firstly
+    if (matchedRecord[matchedRecordFieldNames.employeeId]) {
+        if (!validateEmployeeId(matchedRecord))
+            delete matchedRecord[matchedRecordFieldNames.employeeId];
+    }
+
     // The mobile phone field is an array, so filter each element individually
     if (matchedRecord[matchedRecordFieldNames.mobilePhone]) {
         matchedRecord[matchedRecordFieldNames.mobilePhone] = matchedRecord[matchedRecordFieldNames.mobilePhone].filter((mobilePhone) =>
@@ -386,7 +414,8 @@ export default (matchedRecord: matchedRecordType): void => {
     const identifier: string =
         matchedRecord[matchedRecordFieldNames.identityCard] ||
         matchedRecord[matchedRecordFieldNames.personalNumber] ||
-        matchedRecord[matchedRecordFieldNames.goalUserId];
+        matchedRecord[matchedRecordFieldNames.goalUserId] ||
+        matchedRecord[matchedRecordFieldNames.employeeId];
 
     const recordFields: string[] = Object.keys(matchedRecord);
 
