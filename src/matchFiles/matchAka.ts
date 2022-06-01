@@ -35,11 +35,20 @@ const setRank = (matchedRecord: matchedRecordType, rank: number): void => {
     matchedRecord[matchedRecordFieldNames.rank] = RANKS[rank];
 };
 
+/**
+ * Sets the clearance.
+ * Convert from a clearance code to a string clearance
+ * @param matchedRecord - The generated record.
+ */
+const setClearance = (matchedRecord: matchedRecordType): void => {
+    matchedRecord[matchedRecordFieldNames.clearance] = matchedRecord[matchedRecordFieldNames.clearance]?.substr(-1);
+    matchedRecord[matchedRecordFieldNames.fullClearance] = matchedRecord[matchedRecordFieldNames.clearance];
+};
+
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
     [fn.firstName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.firstName)],
     [fn.lastName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.lastName)],
     [fn.rank, (matchedRecord, value) => setRank(matchedRecord, parseInt(value, 10))],
-    [fn.clearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.clearance)],
     [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
     [fn.identityCard, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.identityCard)],
@@ -61,6 +70,8 @@ export default (record: any): matchedRecordType => {
                 setFieldsFuncs.get(field)!(matchedRecord, record[field]);
             } else if (field === fn.picture) {
                 setPicture(matchedRecord, record[field]);
+            } else if (field === fn.clearance) {
+                setClearance(matchedRecord);
             }
         }
     });

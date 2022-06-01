@@ -207,9 +207,10 @@ export default {
         employeeNumber: 'employeeNumber',
         organization: 'organization',
         employeeId: 'employeeId',
+        fullClearance: 'fullClearance',
     },
     entityTypeValue: {
-        s: 'agumon',
+        s: 'agumon', // Soldier
         c: 'digimon',
         gu: 'tamar',
         e: 'external',
