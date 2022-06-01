@@ -26,4 +26,5 @@ export type matchedRecord = {
     employeeId?: string;
     organization?: string;
     employeeNumber?: string;
+    fullClearance?: string;
 };
