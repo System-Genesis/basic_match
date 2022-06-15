@@ -94,6 +94,31 @@ const validateClearance = (matchedRecord: matchedRecordType, identifier: string)
 };
 
 /**
+ * Checks if the fullClearance is valid.
+ * Determines if the fullClearance is valid by it's length and type
+ * If the fullClearance is invalid also sends a warning log
+ * @param { matchedRecordType } matchedRecord - The generated record
+ * @param { string } identifier - One of the identifiers of the record
+ * @returns { boolean } true if the fullClearance is valid
+ */
+const validateFullClearance = (matchedRecord: matchedRecordType, identifier: string): boolean => {
+    if (!validators().fullClearance.test(matchedRecord[matchedRecordFieldNames.fullClearance])) {
+        logger.warn(
+            true,
+            logFields.scopes.app as scopeOption,
+            'Invalid fullClearance',
+            `Invalid fullClearance: ${matchedRecord[matchedRecordFieldNames.fullClearance]} for userID: ${matchedRecord[matchedRecordFieldNames.userID]
+            } with identifier: ${identifier} from source: ${matchedRecord[matchedRecordFieldNames.source]}`, {
+            id: identifier
+        }
+        );
+        return false;
+    }
+
+    return true;
+};
+
+/**
  * Checks if the identity card is valid.
  * Determines if the identity card is valid by checking if it's a number, and by the state's algorithm.
  * If the identity card is invalid also sends a warning log
@@ -367,6 +392,7 @@ const validateEmployeeNumber = (matchedRecord: matchedRecordType): boolean => {
 
 const validationFunctions = new Map<string, (matchedRecord: matchedRecordType, identifier: string) => boolean>([
     [matchedRecordFieldNames.clearance, validateClearance],
+    [matchedRecordFieldNames.fullClearance, validateFullClearance],
     [matchedRecordFieldNames.dischargeDay, validateDischargeDay],
     [matchedRecordFieldNames.mail, validateMail],
     [matchedRecordFieldNames.rank, validateRank],
