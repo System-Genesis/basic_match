@@ -41,7 +41,7 @@ const setRank = (matchedRecord: matchedRecordType, rank: number): void => {
  * @param matchedRecord - The generated record.
  */
 const setClearance = (matchedRecord: matchedRecordType, clearance: string): void => {
-    matchedRecord[matchedRecordFieldNames.clearance] = clearance.charAt(0);
+    matchedRecord[matchedRecordFieldNames.clearance] = clearance.charAt(2);
     matchedRecord[matchedRecordFieldNames.fullClearance] = clearance;
 };
 
