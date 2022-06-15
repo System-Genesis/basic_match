@@ -40,9 +40,9 @@ const setRank = (matchedRecord: matchedRecordType, rank: number): void => {
  * Convert from a clearance code to a string clearance
  * @param matchedRecord - The generated record.
  */
-const setClearance = (matchedRecord: matchedRecordType): void => {
-    matchedRecord[matchedRecordFieldNames.clearance] = matchedRecord[matchedRecordFieldNames.clearance]?.substr(-1);
-    matchedRecord[matchedRecordFieldNames.fullClearance] = matchedRecord[matchedRecordFieldNames.clearance];
+const setClearance = (matchedRecord: matchedRecordType, clearance: string): void => {
+    matchedRecord[matchedRecordFieldNames.clearance] = clearance.charAt(0);
+    matchedRecord[matchedRecordFieldNames.fullClearance] = clearance;
 };
 
 const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value: string) => void>([
@@ -51,6 +51,7 @@ const setFieldsFuncs = new Map<string, (matchedRecord: matchedRecordType, value:
     [fn.rank, (matchedRecord, value) => setRank(matchedRecord, parseInt(value, 10))],
     [fn.sex, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.sex)],
     [fn.personalNumber, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.personalNumber)],
+    [fn.fullClearance, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.fullClearance)],
     [fn.identityCard, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.identityCard)],
     [fn.dischargeDay, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.dischargeDay)],
     [fn.unitName, (matchedRecord, value) => setField(matchedRecord, value, matchedRecordFieldNames.akaUnit)],
@@ -71,7 +72,7 @@ export default (record: any): matchedRecordType => {
             } else if (field === fn.picture) {
                 setPicture(matchedRecord, record[field]);
             } else if (field === fn.clearance) {
-                setClearance(matchedRecord);
+                setClearance(matchedRecord, record[field]);
             }
         }
     });

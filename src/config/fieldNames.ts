@@ -28,6 +28,7 @@ export default {
         areaCodeMobile: 'mAreaCode',
         dischargeDay: 'rld',
         clearance: 'clearance',
+        fullClearance: 'fullClearance',
         unitName: 'hr',
         telephoneType: 'telephoneType',
         uniqeFieldForDeepDiff: 'mi',

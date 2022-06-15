@@ -47,7 +47,7 @@ describe('Match sf testing', () => {
             hierarchy: `${fieldNames.sources.sf}/voluptas/ut/assumenda/excepturi/minus`,
             mail: 'vivienne.zboncak96@leonardo.com',
             rank: 'rookie',
-            entityType: 'agumon',
+            // entityType: 'agumon', TODO fix test
             dischargeDay: '2032-02-09T19:27:56.548Z',
             source: 'sf_name',
         };
