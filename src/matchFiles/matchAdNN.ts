@@ -71,6 +71,9 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
         }
 
         );
+
+        matchedRecord.hierarchy = fieldNames.treeRoots.adNN;
+        return;
     }
 
     // Insert our root hierarchy if needed(the original hierarchy doesn't contains our root hierarchy)
