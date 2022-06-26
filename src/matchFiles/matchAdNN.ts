@@ -63,8 +63,8 @@ const setHierarchyAndJob = (matchedRecord: matchedRecordType, hierarchy: string,
         logger.warn(
             true,
             logFields.scopes.app as scopeOption,
-            'Invalid hierarchy',
-            `Invalid hierarchy: ${hierarchy} for userID: ${matchedRecord[matchedRecordFieldNames.userID]}`, {
+            'Empty hierarchy',
+            `Empty hierarchy: ${hierarchy} for userID: ${matchedRecord[matchedRecordFieldNames.userID]}`, {
             id: matchedRecord[matchedRecordFieldNames.identityCard] ||
                 matchedRecord[matchedRecordFieldNames.personalNumber] ||
                 matchedRecord[matchedRecordFieldNames.goalUserId],
