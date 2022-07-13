@@ -47,6 +47,13 @@ export default (obj: queueObject): matchedRecordType | null => {
         matchedRecord[fn.matchedRecord.identityCard] === matchedRecord[fn.matchedRecord.personalNumber]
     ) {
         delete matchedRecord[fn.matchedRecord.personalNumber];
+        logger.warn(
+            true,
+            logFields.scopes.app as scopeOption,
+            'Duplicate identityCard and personalNumber',
+            `Deleting personalNumber - identityCard: ${matchedRecord[fn.matchedRecord.identityCard]} and personalNumber: ${matchedRecord[fn.matchedRecord.personalNumber]
+            } in user: ${matchedRecord[fn.matchedRecord.userID]}`,
+        );
     }
 
     return matchedRecord;
