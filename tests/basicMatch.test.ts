@@ -55,4 +55,32 @@ describe('Check Return type - validation of source', () => {
 
         expect(matchedRecord).toEqual(null);
     })
+
+    test('Civilian with duplicate identityCard', () => {
+        const record: any = {
+            entity: fieldNames.entityTypeValue.c,
+            firstName: 'firstName',
+            lastName: 'lastName',
+            tz: '212174783',
+            mi: '212174783',
+            hr: 'a/b/c',
+            tf: 'developer',
+            userName: 'abc_123',
+        };
+
+        const matchedRecord: matchedRecordType | null = basicMatch({ record, dataSource: fieldNames.sources.es, runUID: '123' });
+
+        const expectedRecord: matchedRecordType = {
+            userID: 'abc_123@jello.com',
+            identityCard: '212174783',
+            entityType: fieldNames.entityTypeValue.c,
+            firstName: 'firstName',
+            lastName: 'lastName',
+            hierarchy: `${fieldNames.sources.es}/a/b/c`,
+            job: 'developer',
+            source: fieldNames.sources.es,
+        };
+
+        expect(matchedRecord).toEqual(expectedRecord);
+    })
 })

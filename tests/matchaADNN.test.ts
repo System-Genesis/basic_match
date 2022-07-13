@@ -100,7 +100,7 @@ describe('Match adNN testing', () => {
             guName: 'Viola',
             KlastName: 'Jacobi',
             userPrincipalName: 'BB42337541',
-            Kjob: 'Regional Applications Associate',
+            Kjob: 'Viola Jacobi',
             hierarchy: 'Viola Jacobi',
             sAMAccountName: 'Geovany69',
             mail: 'Geovany69@rabiran.com',
@@ -112,7 +112,6 @@ describe('Match adNN testing', () => {
             firstName: 'Viola',
             lastName: 'Jacobi',
             hierarchy: `${fieldNames.sources.adNN}`,
-            job: 'Viola Jacobi',
             mail: 'geovany69@rabiran.com',
             source: 'adNN_name',
         };

@@ -41,5 +41,13 @@ export default (obj: queueObject): matchedRecordType | null => {
     matchedRecord = matchMap.get(dataSource)!(record);
     filterFieldsByValidation(matchedRecord);
 
+    // Prevent duplicate personalNumber for Civilian - if identityCard in personalNumber
+    if (
+        matchedRecord[fn.matchedRecord.entityType] === fn.entityTypeValue.c &&
+        matchedRecord[fn.matchedRecord.identityCard] === matchedRecord[fn.matchedRecord.personalNumber]
+    ) {
+        delete matchedRecord[fn.matchedRecord.personalNumber];
+    }
+
     return matchedRecord;
 };
